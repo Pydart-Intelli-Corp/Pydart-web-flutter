@@ -185,10 +185,19 @@ class _SecondaryGradientButtonState extends State<SecondaryGradientButton> {
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: Text(
                 widget.text,
-                style: buttonTextStyle.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: Colors.white,
+                         
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                            shadows: [
+                              Shadow(
+                                color:const Color.fromARGB(48, 0, 179, 170),
+                                blurRadius: 10,
+                              )
+                            ],
+                          ),
               ),
             ),
           ),

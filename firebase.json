@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "pydart-india",
     "public": "build/web",
     "ignore": [
       "firebase.json",

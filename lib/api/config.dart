@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-String apiUrl = "http://localhost/api";
+String apiUrl = "https://lactosure.azurewebsites.net/api";
 String domainurl = "https:pydart.in";
 
 bool isLoading = false;

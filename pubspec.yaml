@@ -1,7 +1,7 @@
 name: flutter_website
 publish_to: none
 description: The flutter.dev website rebuilt in Flutter.
-version: 2.0.0
+version: 2.0.2
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -29,9 +29,11 @@ dependencies:
   cloud_firestore: ^5.6.3
   firebase_storage: ^12.4.2
   firebase_analytics: ^11.4.2
+  flutter_image_compress: ^2.4.0
   connectivity_plus: ^6.1.3
   go_router: ^14.8.0
   intl: ^0.20.2
+  dotted_border: ^2.1.0
   lottie: ^3.3.1
   font_awesome_flutter: ^10.8.0
   url_strategy: ^0.3.0
@@ -43,6 +45,8 @@ dependencies:
   rive: ^0.13.20
   file_picker: ^9.0.2
   flutter_animate: ^4.5.2
+  visibility_detector: ^0.4.0+2
+  flutter_staggered_animations: ^1.1.1
 #  responsive_framework:
 #    path: responsive_framework/
 
@@ -56,9 +60,16 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/images/embedded/
+    - assets/images/insights/
+    - assets/images/others/
+    - assets/images/services/
+    - assets/images/team/
+    - assets/images/career/
     
     - assets/frames/
     - assets/logos/
+    - assets/logos/insights/
     - assets/videos/
   fonts:
     - family: Google Sans
@@ -68,6 +79,13 @@ flutter:
           weight: 700
         - asset: assets/fonts/product_sans_italic.ttf
           style: italic
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Black.ttf
+        - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
+
+
     - family: Roboto
       fonts:
         - asset: assets/fonts/roboto_regular.ttf

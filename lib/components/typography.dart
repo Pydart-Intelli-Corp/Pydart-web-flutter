@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_website/components/colors.dart';
 
-
-
-const String fontFamily = "Google Sans";
+const String fontFamily = "Montserrat";
 
 // Simple
 const TextStyle headlineTextStyle = TextStyle(
@@ -18,9 +16,13 @@ const TextStyle headlineSecondaryTextStyle = TextStyle(
     fontFamily: fontFamily);
 
 const TextStyle bodyTextStyle = TextStyle(
-    fontSize: 13, color: Color.fromARGB(255, 121, 121, 121), height: 1.5, fontFamily: "Roboto");
+    fontSize: 13,
+    color: Color.fromARGB(255, 121, 121, 121),
+    height: 1.5,
+    fontFamily: fontFamily);
 
-TextStyle bodyLinkTextStyle = bodyTextStyle.copyWith(color: const Color.fromARGB(255, 121, 121, 121), fontSize: 12);
+TextStyle bodyLinkTextStyle = bodyTextStyle.copyWith(
+    color: const Color.fromARGB(255, 121, 121, 121), fontSize: 12);
 
 const TextStyle buttonTextStyle = TextStyle(
     fontSize: 18, color: Colors.white, height: 1, fontFamily: fontFamily);

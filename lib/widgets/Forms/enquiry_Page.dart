@@ -33,10 +33,11 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
   String _displayedSuggestion = '';
   bool isLoading = false;
 
+  // Map to track field validation for visual feedback
   final Map<String, ValueNotifier<bool>> _fieldValidMap = {
-    "Full Name": ValueNotifier<bool>(true),
-    "Email Address": ValueNotifier<bool>(true),
-    "Mobile Number": ValueNotifier<bool>(true),
+    "Name": ValueNotifier<bool>(true),
+    "Mobile": ValueNotifier<bool>(true),
+    "Email": ValueNotifier<bool>(true),
   };
 
   @override
@@ -75,19 +76,25 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
   }
 
   void _clearSuggestion() {
-    setState(() => _displayedSuggestion = '');
+    setState(() {
+      _displayedSuggestion = '';
+    });
   }
 
   bool isValidEmail(String email) {
-    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return emailRegex.hasMatch(email);
   }
 
   bool isValidMobile(String mobile) {
-    return RegExp(r'^[0-9]{10}$').hasMatch(mobile);
+    final mobileRegex = RegExp(r'^[0-9]{10}$'); // Ensures exactly 10 digits
+    return mobileRegex.hasMatch(mobile);
   }
 
-  void _onPurposeChanged() => _showSuggestionInline();
+  void _onPurposeChanged() {
+    _showSuggestionInline();
+  }
 
   void _showSuggestionInline() {
     if (!_purposeFocusNode.hasFocus || _purposeSuggestions.isEmpty) {
@@ -107,58 +114,58 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
         break;
       }
     }
-    setState(() => _displayedSuggestion = matchedSuggestion);
+    setState(() {
+      _displayedSuggestion = matchedSuggestion;
+    });
   }
 
   Future<void> _closeDialog(BuildContext context) async {
     await _controller.reverse();
-    if (context.mounted) Navigator.pop(context);
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   Future<bool> sendEnquiryEmail({
-    required String recipientEmail,
-    required String recipientName,
-    required String mobile,
-    required String selectedService,
-    required String purpose,
-    required BuildContext context,
-  }) async {
-    String endPoint = "$apiUrl/emaillead/EnquiryMail";
-    try {
-      final response = await http.post(
-        Uri.parse(endPoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "recipientEmail": recipientEmail,
-          "recipientName": recipientName,
-          "mobile": mobile,
-          "selectedService": selectedService,
-          "purpose": purpose,
-        }),
-      );
+  required String recipientEmail,
+  required String recipientName,
+  required String mobile,
+  required String selectedService,
+  required String purpose,
+  required BuildContext context,
+}) async {
+  // Build the URI with query parameters
+  final Uri uri = Uri.parse("$apiUrl/Email/EnquiryMail").replace(
+    queryParameters: {
+      'recipientEmail': recipientEmail,
+      'recipientName': recipientName,
+      'mobile': mobile,
+      'selectedService': selectedService,
+      'purpose': purpose,
+    },
+  );
 
-      if (response.statusCode == 200) {
-        if (context.mounted) {
-          CustomSnackbar.success(context, "Your inquiry has been received successfully");
-        }
-        setState(() => isLoading = false);
-        _closeDialog(context);
-        return true;
-      } else {
-        if (context.mounted) {
-          CustomSnackbar.error(context, "Submission failed. Please try again later.");
-        }
-        setState(() => isLoading = false);
-        return false;
-      }
-    } catch (e) {
-      if (context.mounted) {
-        CustomSnackbar.error(context, "Server error occurred. Please try again later.");
-      }
-      setState(() => isLoading = false);
-      return false;
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
+ _closeDialog(context);
+    final success = response.statusCode == 200;
+    if (context.mounted) {
+      success
+          ? CustomSnackbar.success(context, "Your inquiry has been received successfully")
+          : CustomSnackbar.error(context, "Submission failed. Please try again later.");
     }
+    return success;
+  } catch (e) {
+    if (context.mounted) {
+      CustomSnackbar.error(context, "Server error occurred. Please try again later.");
+    }
+    return false;
   }
+}
+
 
   void _updatePurposeSuggestions(String service) {
     switch (service) {
@@ -218,25 +225,11 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
           "I want to integrate IoT for my existing product.",
         ];
         break;
-      case 'College Project':
+      case 'AI Services':
         _purposeSuggestions = [
-          "I need help with my college project.",
-          "I need assistance in my final year project.",
-          "I want guidance in a coding related project",
-        ];
-        break;
-      case 'Auto CAD':
-        _purposeSuggestions = [
-          "I need assistance in designing in AutoCAD.",
-          "I'm seeking experts for my 2D or 3D CAD design",
-          "I want to design a building using AutoCAD",
-        ];
-        break;
-      case 'PCB Designing':
-        _purposeSuggestions = [
-          "I'm looking for assistance in PCB design",
-          "I need help with my PCB project",
-          "I want to design a complex multilayer PCB",
+          "I need help integrating AI into my products.",
+          "I'm interested in developing machine learning solutions.",
+          "I need consultation for implementing AI algorithms.",
         ];
         break;
       default:
@@ -247,165 +240,141 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
 
   @override
   Widget build(BuildContext context) {
+    // Use LayoutBuilder to adjust dialog size based on screen size
     return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+      filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4), // Deeper blur for focus
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600, minWidth: 300),
+            constraints: const BoxConstraints(
+              maxWidth: 600, // Maximum width for larger screens
+              minWidth: 300, // Minimum width for smaller screens
+            ),
             child: Dialog(
-              elevation: 16,
-              backgroundColor: Colors.transparent,
-              insetPadding: const EdgeInsets.all(20),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.darkNavy.withOpacity(0.95),
-                      AppColors.darkNavy.withOpacity(0.98),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                        icon: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [const Color.fromARGB(255, 255, 0, 0), const Color.fromARGB(255, 255, 0, 0)],
-                            ),
-                          ),
-                          child: const Icon(Icons.close, color: Colors.white, size: 24),
-                        ),
-                        onPressed: () => _closeDialog(context),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 28),
+              elevation: 10,
+              backgroundColor: AppColors.darkNavy.withOpacity(0.95),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 24, horizontal: 20),
                       child: Form(
                         key: _formKey,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Start Your Project",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                                shadows: [
-                                  Shadow(
-                                    color: AppColors.accent.withOpacity(0.2),
-                                    blurRadius: 10,
+                            // Header section with title and close button
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Kickstart Your Project Now",
+                                  style: AppColors.buttonTextStyle.copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    _closeDialog(context);
+                                  },
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Fill the form below and our team will contact you",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            const SizedBox(height: 32),
-                            _buildModernTextField(
+                            const SizedBox(height: 16),
+                            _buildTextField(
                               controller: nameController,
-                              label: 'Full Name',
-                              icon: Icons.person_outline,
+                              label: 'Name',
                               validator: (value) => value!.isEmpty
                                   ? 'Please enter your name'
                                   : null,
                             ),
-                            const SizedBox(height: 20),
-                            _buildModernTextField(
+                            const SizedBox(height: 12),
+                            _buildTextField(
                               controller: emailController,
-                              label: 'Email Address',
-                              icon: Icons.email_outlined,
+                              label: 'Email',
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
-                                if (value == null || value.isEmpty) return 'Email is required';
-                                if (!isValidEmail(value)) return 'Enter a valid email';
+                                if (value == null || value.isEmpty) {
+                                  return 'Email is required';
+                                } else if (!isValidEmail(value)) {
+                                  return 'Enter a valid email';
+                                }
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 20),
-                            _buildModernTextField(
+                            const SizedBox(height: 12),
+                            _buildTextField(
                               controller: mobileController,
-                              label: 'Mobile Number',
-                              icon: Icons.phone_iphone_outlined,
+                              label: 'Mobile',
                               keyboardType: TextInputType.phone,
                               validator: (value) {
-                                if (value == null || value.isEmpty) return 'Mobile number is required';
-                                if (!isValidMobile(value)) return 'Enter a valid 10-digit number';
+                                if (value == null || value.isEmpty) {
+                                  return 'Mobile number is required';
+                                } else if (!isValidMobile(value)) {
+                                  return 'Enter a valid 10-digit mobile number';
+                                }
                                 return null;
                               },
                             ),
+                            const SizedBox(height: 12),
+                            _buildDropdownField(
+                              value: selectedValue,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedValue = value!;
+                                  _updatePurposeSuggestions(selectedValue);
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            _buildPurposeTextField(
+                              controller: purposeController,
+                              label: 'Purpose',
+                              maxLines: 3,
+                              focusNode: _purposeFocusNode,
+                              suggestion: _displayedSuggestion,
+                            ),
                             const SizedBox(height: 20),
-                            _buildModernDropdown(),
-                            const SizedBox(height: 20),
-                            _buildPurposeField(),
-                            const SizedBox(height: 32),
-                          Align(
-  alignment: Alignment.center,
-  child: SizedBox(
-    width: 200, // Adjust this value as needed
-    height: 50,
-    child: PrimaryGradientButton(
-      onPressed: () async {
-        setState(() => isLoading = true);
-        if (_formKey.currentState!.validate()) {
-          await sendEnquiryEmail(
-            recipientEmail: emailController.text,
-            recipientName: nameController.text,
-            mobile: mobileController.text,
-            selectedService: selectedValue,
-            purpose: purposeController.text,
-            context: context,
-          );
-        } else {
-          CustomSnackbar.error(
-            context,
-            "Please fill all required fields correctly!",
-          );
-          setState(() => isLoading = false);
-        }
-      },
-      text: "Submit Request",
-      isLoading: isLoading,
-      gradient: const LinearGradient(
-        colors: [AppColors.accentBlue, AppColors.accent],
-      ),
-    ),
-  ),
-)
+                            Center(
+                              child: PrimaryGradientButton(
+                                onPressed: () async {
+                                  setState(() => isLoading = true);
 
+                                  if (_formKey.currentState!.validate()) {
+                                    await sendEnquiryEmail(
+                                      recipientEmail: emailController.text,
+                                      recipientName: nameController.text,
+                                      mobile: mobileController.text,
+                                      selectedService: selectedValue,
+                                      purpose: purposeController.text,
+                                      context: context,
+                                    );
+                                  } else {
+                                    CustomSnackbar.error(
+                                        context,
+                                        "Please fill all required fields correctly!");
+                                    setState(() => isLoading = false);
+                                  }
+                                },
+                                text: "Submit",
+                                isLoading: isLoading,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -414,96 +383,127 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
     );
   }
 
-  Widget _buildModernTextField({
+  Widget _buildPurposeTextField({
     required TextEditingController controller,
     required String label,
-    required IconData icon,
+    FocusNode? focusNode,
+    int maxLines = 1,
+    String suggestion = '',
+  }) {
+    return Stack(
+      alignment: Alignment.topLeft,
+      children: [
+        TextFormField(
+          focusNode: focusNode,
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: AppColors.buttonTextStyle,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.accentBlue),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.accent),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          maxLines: maxLines,
+        ),
+        if (suggestion.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 10),
+            child: Text(
+              suggestion,
+              style: const TextStyle(
+                  color: Colors.grey, fontStyle: FontStyle.italic),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    FocusNode? focusNode,
     TextInputType keyboardType = TextInputType.text,
     required String? Function(String?) validator,
+    int maxLines = 1,
   }) {
     return ValueListenableBuilder<bool>(
       valueListenable: _fieldValidMap[label]!,
       builder: (context, isValid, child) {
         return TextFormField(
+          focusNode: focusNode,
           controller: controller,
-          style: const TextStyle(color: Colors.white, fontSize: 15),
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             labelText: label,
             labelStyle: TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            prefixIcon: Icon(icon, color: Colors.white70, size: 22),
-            filled: true,
-            fillColor: AppColors.darkNavy.withOpacity(0.4),
+                color: isValid ? Colors.white : Colors.red,
+                fontWeight: FontWeight.w500),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isValid ? Colors.white24 : Colors.redAccent,
-                width: 1,
-              ),
+                  color: isValid ? AppColors.accentBlue : Colors.red),
+              borderRadius: BorderRadius.circular(8),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: AppColors.accentBlue,
-                width: 2,
-              ),
+                  color: isValid ? AppColors.accent : Colors.red),
+              borderRadius: BorderRadius.circular(8),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: Colors.redAccent,
-                width: 1.5,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
           ),
           keyboardType: keyboardType,
-          validator: validator,
-          onChanged: (value) => _fieldValidMap[label]!.value = validator(value) == null,
+          validator: (value) {
+            bool isValidField = validator(value) == null;
+            _fieldValidMap[label]!.value = isValidField;
+            return isValidField ? null : validator(value);
+          },
+          onChanged: (value) {
+            _fieldValidMap[label]!.value = validator(value) == null;
+          },
+          onTap: () {
+            if (!_fieldValidMap[label]!.value) {
+              _formKey.currentState!.validate();
+            }
+          },
+          maxLines: maxLines,
         );
       },
     );
   }
 
-  Widget _buildModernDropdown() {
+  Widget _buildDropdownField({
+    required String value,
+    required ValueChanged<String?> onChanged,
+  }) {
     return DropdownButtonFormField<String>(
-      value: selectedValue,
+      value: value,
       decoration: InputDecoration(
-        labelText: 'Service Type',
-        labelStyle: TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-        ),
-        prefixIcon: Container(
-          padding: const EdgeInsets.only(left: 12, right: 8),
-          child: Icon(Icons.work_outline, color: Colors.white70, size: 22),
-        ),
-        filled: true,
-        fillColor: AppColors.darkNavy.withOpacity(0.4),
+        labelText: 'Service',
+        labelStyle: AppColors.buttonTextStyle,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(8),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.white24, width: 1),
+          borderSide: BorderSide(color: AppColors.accentBlue),
+          borderRadius: BorderRadius.circular(8),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.accentBlue, width: 2),
+          borderSide: BorderSide(color: AppColors.accent),
+          borderRadius: BorderRadius.circular(8),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       ),
       dropdownColor: AppColors.darkNavy,
-      icon: const Icon(Icons.arrow_drop_down, color: Colors.white70),
+      icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
       items: [
         'Mobile Application',
         'Web Application',
@@ -513,84 +513,20 @@ class ResponsiveDialogState extends State<ResponsiveDialog>
         'Smart Home',
         'Embedded System',
         'IOT Projects',
-      ].map((String value) => DropdownMenuItem<String>(
-        value: value,
-        child: Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      )).toList(),
-      onChanged: (value) => setState(() {
-        selectedValue = value!;
-        _updatePurposeSuggestions(selectedValue);
-      }),
-      style: const TextStyle(color: Colors.white, fontSize: 15),
+        'AI Services',  // New option added here
+      ]
+          .map((String value) => DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ))
+          .toList(),
+      onChanged: onChanged,
+      style: const TextStyle(color: Colors.white),
       isExpanded: true,
-      menuMaxHeight: 400,
-    );
-  }
-
-  Widget _buildPurposeField() {
-    return Stack(
-      alignment: Alignment.topLeft,
-      children: [
-        TextFormField(
-          focusNode: _purposeFocusNode,
-          controller: purposeController,
-          style: const TextStyle(color: Colors.white, fontSize: 15),
-          maxLines: 3,
-          decoration: InputDecoration(
-            labelText: 'Project Details',
-            labelStyle: TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            alignLabelWithHint: true,
-            prefixIcon: Container(
-              padding: const EdgeInsets.only(left: 12, right: 8),
-              child: Icon(Icons.edit_outlined, color: Colors.white70, size: 22),
-            ),
-            filled: true,
-            fillColor: AppColors.darkNavy.withOpacity(0.4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.white24, width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.accentBlue, width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-          ),
-        ),
-        if (_displayedSuggestion.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 56, top: 16),
-            child: Text(
-              _displayedSuggestion,
-              style: TextStyle(
-                color: Colors.white54,
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-                shadows: [
-                  Shadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-            ),
-          ),
-      ],
+      menuMaxHeight: 500,
     );
   }
 }

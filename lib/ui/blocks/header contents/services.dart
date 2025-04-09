@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_website/router.dart';
+import 'package:flutter_website/ui/blocks/common/header.dart';
 import 'package:flutter_website/ui/blocks/header%20contents/hoverdropdown.dart';
 import 'package:flutter_website/widgets/buttons/text_hover_button.dart';
+import 'package:provider/provider.dart';
 
 class OurServices extends StatefulWidget {
   final VoidCallback onItemPressed;
@@ -86,7 +89,10 @@ class _OurServicesState extends State<OurServices> {
                     title: _ourServices[0].title,
                     subtitle: _ourServices[0].subtitle,
                     isActive: _hoveredIndex == 0,
-                    onTap: () => widget.openUrl(_ourServices[0].buttonLink),
+             onTap: (){widget.onItemPressed();
+                  Provider.of<NavigationProvider>(context, listen: false).active =
+                      'services';
+                  Navigator.pushReplacementNamed(context, Routes.services);},
                     onParentTap: widget.onItemPressed,
                     onHover: (isHovered) =>
                         setState(() => _hoveredIndex = isHovered ? 0 : _hoveredIndex),
@@ -96,7 +102,10 @@ class _OurServicesState extends State<OurServices> {
                     title: _ourServices[1].title,
                     subtitle: _ourServices[1].subtitle,
                     isActive: _hoveredIndex == 1,
-                    onTap: () => widget.openUrl(_ourServices[1].buttonLink),
+                  onTap: (){widget.onItemPressed();
+                  Provider.of<NavigationProvider>(context, listen: false).active =
+                      'services';
+                  Navigator.pushReplacementNamed(context, Routes.services);},
                     onParentTap: widget.onItemPressed,
                     onHover: (isHovered) =>
                         setState(() => _hoveredIndex = isHovered ? 1 : _hoveredIndex),
@@ -106,7 +115,10 @@ class _OurServicesState extends State<OurServices> {
                     title: _ourServices[2].title,
                     subtitle: _ourServices[2].subtitle,
                     isActive: _hoveredIndex == 2,
-                    onTap: () => widget.openUrl(_ourServices[2].buttonLink),
+                     onTap: (){widget.onItemPressed();
+                  Provider.of<NavigationProvider>(context, listen: false).active =
+                      'services';
+                  Navigator.pushReplacementNamed(context, Routes.services);},
                     onParentTap: widget.onItemPressed,
                     onHover: (isHovered) =>
                         setState(() => _hoveredIndex = isHovered ? 2 : _hoveredIndex),
@@ -164,10 +176,10 @@ class _OurServicesState extends State<OurServices> {
                       MouseRegion(
                         cursor: SystemMouseCursors.click,
                         child: InkWell(
-                          onTap: () {
-                            widget.onItemPressed();
-                            widget.openUrl(_ourServices[_hoveredIndex].buttonLink);
-                          },
+                         onTap: (){widget.onItemPressed();
+                  Provider.of<NavigationProvider>(context, listen: false).active =
+                      'services';
+                  Navigator.pushReplacementNamed(context, Routes.services);},
                           hoverColor: Colors.transparent,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -188,7 +200,10 @@ class _OurServicesState extends State<OurServices> {
                             child: TextHoverButton(
                               label: "Learn More",
                               color: navLinkColor,
-                              onPressed: () {},
+                              onPressed: () {  widget.onItemPressed();
+                  Provider.of<NavigationProvider>(context, listen: false).active =
+                      'services';
+                  Navigator.pushReplacementNamed(context, Routes.services);},
                             ),
                           ),
                         ),

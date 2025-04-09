@@ -1,17 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_website/preload.dart';
 import 'package:flutter_website/ui/blocks/common/header.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart' as rf;
 import 'package:url_strategy/url_strategy.dart';
-
-import 'router.dart'; // Import the router configuration
+import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
+
+  // Configure image cache size (200MB)
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 200 * 1024 * 1024;
 
   try {
     await Firebase.initializeApp(
@@ -33,10 +36,65 @@ void main() async {
     }
   }
 
-  runApp( ChangeNotifierProvider(
+  // Precache these images globally
+
+  runApp(
+    ChangeNotifierProvider(
       create: (_) => NavigationProvider(),
-      child: const MyApp(),
-    ),);
+      child: PrecacheManager(
+        assets: precacheImageList,
+        child: const MyApp(),
+      ),
+    ),
+  );
+}
+
+class PrecacheManager extends StatefulWidget {
+  final Widget child;
+  final List<String> assets;
+
+  const PrecacheManager({
+    super.key,
+    required this.child,
+    required this.assets,
+  });
+
+  @override
+  State<PrecacheManager> createState() => _PrecacheManagerState();
+}
+
+class _PrecacheManagerState extends State<PrecacheManager> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAssets());
+  }
+
+  Future<void> _loadAssets() async {
+    if (kDebugMode) {
+      print('🚀 Starting asset precaching...');
+    }
+    
+    for (final asset in widget.assets) {
+      try {
+        await precacheImage(AssetImage(asset), context);
+        if (kDebugMode) {
+          print('🖼️ Precached: $asset');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('❗ Error precaching $asset: $e');
+        }
+      }
+    }
+    
+    if (kDebugMode) {
+      print('✅ Completed asset precaching');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class MyApp extends StatelessWidget {
@@ -47,7 +105,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Pydart Intelli corp',
       debugShowCheckedModeBanner: false,
-      // Use the routes defined in router.dart
       initialRoute: Routes.home,
       getPages: Routes.pages,
       theme: ThemeData(useMaterial3: true).copyWith(

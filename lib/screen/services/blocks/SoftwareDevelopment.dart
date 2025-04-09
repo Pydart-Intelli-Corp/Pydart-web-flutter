@@ -13,7 +13,8 @@ class SoftwareDevelopmentBlock extends StatefulWidget {
   const SoftwareDevelopmentBlock({super.key});
 
   @override
-  State<SoftwareDevelopmentBlock> createState() => _SoftwareDevelopmentBlockState();
+  State<SoftwareDevelopmentBlock> createState() =>
+      _SoftwareDevelopmentBlockState();
 }
 
 class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
@@ -98,7 +99,7 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
           end: Alignment.bottomRight,
           colors: [
             Colors.black.withOpacity(0.97),
-            AppColors.deepBlue
+            AppColors.deepBlue,
           ],
         ),
         boxShadow: [
@@ -145,7 +146,7 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
       child: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/software.jpg'),
+            image: AssetImage('assets/images/services/software.jpg'),
             repeat: ImageRepeat.repeat,
           ),
         ),
@@ -161,24 +162,25 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
         children: [
           Text(
             "Software Solutions",
-            style: headlineTextStyle.copyWith(
-              color: Colors.white,
-              fontSize: isMobile ? 32 : 56,
-              fontWeight: FontWeight.w800,
-              height: 1.1,
-              shadows: [
-                Shadow(
-                  color: AppColors.primary.withOpacity(0.3),
-                  blurRadius: 15,
-                )
-              ],
-            ),
+               style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: Colors.white,
+                            fontSize: isMobile ? 28 : 40,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                            shadows: [
+                              Shadow(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                blurRadius: 10,
+                              )
+                            ],
+                          ),
           ),
           const SizedBox(height: 25),
           Text(
-            "Transform your business with cutting-edge software solutions. "
-            "From concept to deployment - we engineer success at scale.",
+            "Transform your business with cutting-edge software solutions. From concept to deployment - we engineer success at scale.",
             style: headlineTextStyleMobile.copyWith(
+              fontFamily: "Montserrat",
               color: Colors.white70,
               fontSize: isMobile ? 16 : 20,
               height: 1.6,
@@ -303,7 +305,8 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
     );
   }
 
-  Widget _buildServiceCard(Map<String, dynamic> service, {required bool isMobile}) {
+  Widget _buildServiceCard(Map<String, dynamic> service,
+      {required bool isMobile}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(25),
@@ -344,6 +347,7 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
                 child: Text(
                   service['title'],
                   style: TextStyle(
+                    fontFamily: "Montserrat",
                     color: Colors.white,
                     fontSize: isMobile ? 22 : 24,
                     fontWeight: FontWeight.w700,
@@ -355,12 +359,13 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
           const SizedBox(height: 25),
           RichText(
             text: TextSpan(
-              children: _processContent(service['content'], isMobile: isMobile),
               style: TextStyle(
+                fontFamily: "Montserrat",
                 color: Colors.white70,
                 fontSize: isMobile ? 15 : 16,
                 height: 1.6,
               ),
+              children: _processContent(service['content'], isMobile: isMobile),
             ),
           ),
         ],
@@ -371,23 +376,30 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
   List<TextSpan> _processContent(String content, {required bool isMobile}) {
     List<TextSpan> spans = [];
     final lines = content.split('\n');
-    
+
     for (var line in lines) {
       if (line.startsWith('-')) {
         spans.add(TextSpan(
           text: '▹ ',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: AppColors.primary,
             fontSize: isMobile ? 16 : 18,
           ),
         ));
         spans.add(TextSpan(
           text: line.replaceFirst('-', '') + '\n',
+          style: TextStyle(
+            fontFamily: "Montserrat",
+            color: Colors.white70,
+            fontSize: isMobile ? 15 : 16,
+          ),
         ));
       } else {
         spans.add(TextSpan(
           text: line + '\n',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: Colors.white,
             fontSize: isMobile ? 17 : 19,
             fontWeight: FontWeight.w500,
@@ -420,6 +432,7 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
           Text(
             "Our Development Ecosystem",
             style: headlineTextStyle.copyWith(
+              fontFamily: "Montserrat",
               color: Colors.white,
               fontSize: isMobile ? 24 : 28,
             ),
@@ -436,12 +449,26 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
             ),
             itemCount: 8,
             itemBuilder: (context, index) => _buildTechItem(
-              ["Python", "Java", ".NET Core", "Node.js", 
-               "AWS", "Docker", "Kubernetes", "Terraform"][index],
-              ["assets/logos/python.png", "assets/logos/java.png",
-               "assets/logos/dotnet.png", "assets/logos/nodejs.png",
-               "assets/logos/aws.png", "assets/logos/docker.png",
-               "assets/logos/kubernetes.png", "assets/logos/terraform.png"][index],
+              [
+                "Python",
+                "Java",
+                ".NET Core",
+                "Node.js",
+                "AWS",
+                "Docker",
+                "Kubernetes",
+                "Terraform"
+              ][index],
+              [
+                "assets/logos/python.png",
+                "assets/logos/java.png",
+                "assets/logos/dotnet.png",
+                "assets/logos/nodejs.png",
+                "assets/logos/aws.png",
+                "assets/logos/docker.png",
+                "assets/logos/kubernetes.png",
+                "assets/logos/terraform.png"
+              ][index],
               isMobile,
             ),
           ),
@@ -474,6 +501,7 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
             Text(
               name,
               style: TextStyle(
+                fontFamily: "Montserrat",
                 color: Colors.white,
                 fontSize: isMobile ? 16 : 18,
                 fontWeight: FontWeight.w500,
@@ -488,23 +516,22 @@ class _SoftwareDevelopmentBlockState extends State<SoftwareDevelopmentBlock> {
   Widget _buildContactSection(bool isMobile) {
     return Center(
       child: PrimaryGradientButton(
-                        onPressed: () => _showDetailsPopup(context,"Computer Software"),
-                      text: "Schedule Free Consultation →",
-                      padding: isMobile
-                          ? const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 14)
-                          : const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 16),
-                    ),
+        onPressed: () =>
+            _showDetailsPopup(context, "Computer Software"),
+        text: "Schedule Free Consultation →",
+        padding: isMobile
+            ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)
+            : const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      ),
     );
   }
 
-void _showDetailsPopup(BuildContext context, String dropdownValue) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return ResponsiveDialog(dropdownValue: dropdownValue);
-    },
-  );
-}
+  void _showDetailsPopup(BuildContext context, String dropdownValue) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ResponsiveDialog(dropdownValue: dropdownValue);
+      },
+    );
+  }
 }

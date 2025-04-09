@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_website/components/colors.dart';
+import 'package:flutter_website/core/extensions/color_extensions.dart';
 
 import 'package:flutter_website/ui/blocks/block_wrapper.dart';
 import 'package:flutter_website/ui/blocks/common/footer.dart';
@@ -92,13 +93,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   FloatingActionButton(
                     onPressed: _scrollToTop,
-                    backgroundColor: const Color.fromARGB(23, 32, 95, 122),
+                      backgroundColor: AppColors.scroll,
                     child: const Icon(Icons.arrow_upward, color: Colors.white),
                   ),
                   const SizedBox(height: 10),
                   FloatingActionButton(
                     onPressed: _scrollToBottom,
-                    backgroundColor: const Color.fromARGB(23, 32, 95, 122),
+                    backgroundColor: AppColors.scroll,
                     child:
                         const Icon(Icons.arrow_downward, color: Colors.white),
                   ),

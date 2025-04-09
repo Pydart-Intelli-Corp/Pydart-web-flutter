@@ -1,88 +1,82 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_website/components/colors.dart';
 
+import 'package:flutter_website/screen/services/ServicesHead.dart';
 import 'package:flutter_website/screen/services/blocks/Embeddedsystem.dart';
 import 'package:flutter_website/screen/services/blocks/Generative_AI.dart';
 import 'package:flutter_website/screen/services/blocks/MobileDevelopment.dart';
-
 import 'package:flutter_website/screen/services/blocks/SoftwareDevelopment.dart';
 import 'package:flutter_website/screen/services/blocks/WebDevelopment.dart';
-
 import 'package:flutter_website/screen/services/blocks/features.dart';
-
 import 'package:flutter_website/ui/blocks/common/footer.dart';
 import 'package:flutter_website/ui/blocks/common/header.dart';
-import 'dart:async';
 
-import 'ServicesHead.dart';
-
-// Custom Scroll Behavior to disable the overscroll glow.
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
 }
 
 class ServicesScreen extends StatefulWidget {
-  const ServicesScreen({super.key});
+  const ServicesScreen({Key? key}) : super(key: key);
 
   @override
   State<ServicesScreen> createState() => _ServicesScreenState();
 }
 
 class _ServicesScreenState extends State<ServicesScreen> {
-  final ScrollController _scrollController = ScrollController();
+  bool _isLoaded = false;
   bool _showScrollButtons = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      final maxScroll = _scrollController.position.maxScrollExtent;
-      final currentScroll = _scrollController.offset;
-      if (currentScroll > maxScroll / 10) {
-        if (!_showScrollButtons) {
-          setState(() {
-            _showScrollButtons = true;
-          });
-        }
-      } else {
-        if (_showScrollButtons) {
-          setState(() {
-            _showScrollButtons = false;
-          });
-        }
-      }
+    _scrollController.addListener(_handleScroll);
+  }
+
+  void _handleScroll() {
+    final bool isAtBottom =
+        _scrollController.position.pixels == _scrollController.position.maxScrollExtent;
+    final bool isAtTop = _scrollController.position.pixels == 0;
+    setState(() {
+      _showScrollButtons = !isAtBottom && !isAtTop;
     });
   }
 
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOutQuart,
     );
   }
 
   void _scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOutQuart,
     );
   }
 
+  Future<void> _precacheAssets() async {
+    await precacheImage(const AssetImage('assets/images/others/whoweare.png'), context);
+    await precacheImage(const AssetImage('assets/icons/whoweare.png'), context);
+    setState(() => _isLoaded = true);
+  }
+
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isLoaded) _precacheAssets();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Using LayoutBuilder to get the available height (excluding the AppBar)
     return Scaffold(
       backgroundColor: background,
       appBar: const PreferredSize(
@@ -91,104 +85,128 @@ class _ServicesScreenState extends State<ServicesScreen> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final halfHeight = constraints.maxHeight / 2;
-          // Adjust the offset here (e.g. 50 pixels) to move all content upward.
-          const double upwardOffset = 300;
           return Stack(
             children: [
-              // Background with two halves:
-              // Top half: Video player.
-              // Bottom half: Black screen.
               Column(
                 children: [
                   SizedBox(
-                    height: halfHeight,
-                    child: const FixedImageBackground(),
+                    height: constraints.maxHeight / 2,
+                    child: const FixedImageSlider(),
                   ),
-                  Expanded(
-                    child: Container(color: Colors.black),
-                  ),
+                  Expanded(child: Container(color: Colors.black)),
                 ],
               ),
-              // Scrollable Content Layer – starting below the video,
-              // but shifted upward by subtracting from the top padding.
-              ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
-                child: ListView(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.only(top:10),
-                  children:  [
-                    ServicesHead(),
-                    GenerativeAIBlock(),
-                    Features(),
-                    MobileAppDevelopmentBlock(),
-                    WebDevelopmentBlock(),
-                    SoftwareDevelopmentBlock(),
-                   
-                    EmbeddedSystemDevelopmentBlock(),
-            
-                    Footer(  g1: Color.fromARGB(255, 5, 11, 13), // First gradient color
-        g2: Color.fromARGB(255, 4, 6, 9), // Second gradient color
-        ),
-                  ],
-                ),
-              ),
-              // Floating Scroll Buttons Layer
-              if (_showScrollButtons)
-                Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FloatingActionButton(
-                        onPressed: _scrollToTop,
-                        backgroundColor: Color.fromARGB(23, 32, 95, 122),
-                        child: Icon(Icons.arrow_upward, color: Colors.white),
-                      ),
-                      SizedBox(height: 10),
-                      FloatingActionButton(
-                        onPressed: _scrollToBottom,
-                        backgroundColor: Color.fromARGB(23, 32, 95, 122),
-                        child: Icon(Icons.arrow_downward, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildContentLayer(),
+              if (_showScrollButtons) _buildScrollButtons(),
             ],
           );
         },
       ),
     );
   }
+
+  Widget _buildContentLayer() {
+    return ScrollConfiguration(
+      behavior: NoGlowScrollBehavior(),
+      child: AnimationLimiter(
+        child: ListView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(top: 10),
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 600),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              verticalOffset: 50.0,
+              curve: Curves.easeInOutCubic,
+              child: FadeInAnimation(
+                curve: Curves.easeInOutCirc,
+                child: widget,
+              ),
+            ),
+            children: const [
+              ServicesHead(),
+              Features(),
+              AIBlock(),
+              MobileAppDevelopmentBlock(),
+              WebDevelopmentBlock(),
+              SoftwareDevelopmentBlock(),
+              EmbeddedSystemDevelopmentBlock(),
+              Footer(
+                g1: Color.fromARGB(255, 5, 11, 13),
+                g2: Color.fromARGB(255, 4, 6, 9),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScrollButtons() {
+    return Positioned(
+      bottom: 30,
+      right: 30,
+      child: Column(
+        children: [
+          ScaleTransition(
+            scale: CurvedAnimation(
+              parent: AlwaysStoppedAnimation(_showScrollButtons ? 1.0 : 0.0),
+              curve: Curves.elasticOut,
+            ),
+            child: FloatingActionButton(
+              onPressed: _scrollToTop,
+              backgroundColor: Colors.blueGrey.withOpacity(0.8),
+              child: const Icon(Icons.arrow_upward, color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 15),
+          ScaleTransition(
+            scale: CurvedAnimation(
+              parent: AlwaysStoppedAnimation(_showScrollButtons ? 1.0 : 0.0),
+              curve: Curves.elasticOut,
+            ),
+            child: FloatingActionButton(
+              onPressed: _scrollToBottom,
+              backgroundColor: Colors.blueGrey.withOpacity(0.8),
+              child: const Icon(Icons.arrow_downward, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class FixedImageBackground extends StatefulWidget {
-  const FixedImageBackground({Key? key}) : super(key: key);
+/// A widget that shows a sliding images carousel instead of a video background.
+class FixedImageSlider extends StatefulWidget {
+  const FixedImageSlider({Key? key}) : super(key: key);
 
   @override
-  _FixedImageBackgroundState createState() => _FixedImageBackgroundState();
+  _FixedImageSliderState createState() => _FixedImageSliderState();
 }
 
-class _FixedImageBackgroundState extends State<FixedImageBackground> {
-  // List of image asset paths.
-  final List<String> imagePaths = [
-    'assets/images/service1.png',
-    'assets/images/service2.png',
-    'assets/images/service6.png',
-  ];
-
-  final PageController _pageController = PageController();
+class _FixedImageSliderState extends State<FixedImageSlider> {
+  final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
-  late Timer _timer;
+  Timer? _timer;
+
+  // List of image assets to display.
+  final List<String> _images = [
+    'assets/images/services/service1.png',
+    'assets/images/services/service2.png',
+    'assets/images/services/service6.png',
+  ];
 
   @override
   void initState() {
     super.initState();
-    // Change image every 5 seconds.
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      _currentPage = (_currentPage + 1) % imagePaths.length;
+    // Auto-slide images every 3 seconds.
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < _images.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
       _pageController.animateToPage(
         _currentPage,
         duration: const Duration(milliseconds: 800),
@@ -199,7 +217,7 @@ class _FixedImageBackgroundState extends State<FixedImageBackground> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -208,13 +226,17 @@ class _FixedImageBackgroundState extends State<FixedImageBackground> {
   Widget build(BuildContext context) {
     return PageView.builder(
       controller: _pageController,
-      itemCount: imagePaths.length,
+      itemCount: _images.length,
       itemBuilder: (context, index) {
-        return Image.asset(
-          imagePaths[index],
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 1000),
+          child: Image.asset(
+            _images[index],
+            key: ValueKey(_images[index]),
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
         );
       },
     );

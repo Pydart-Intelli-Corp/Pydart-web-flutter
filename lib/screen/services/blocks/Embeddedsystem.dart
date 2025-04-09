@@ -21,11 +21,11 @@ class _EmbeddedSystemDevelopmentBlockState
     extends State<EmbeddedSystemDevelopmentBlock> {
   // List of images for the slider.
   final List<String> sliderImages = [
-    'assets/images/5.jpg',
-    'assets/images/2.jpg',
-    'assets/images/1.jpg',
-        'assets/images/3.jpg',
-            'assets/images/4.jpg',
+    'assets/images/embedded/5.jpg',
+    'assets/images/embedded/2.jpg',
+    'assets/images/embedded/1.jpg',
+    'assets/images/embedded/3.jpg',
+    'assets/images/embedded/4.jpg',
   ];
 
   int _currentPage = 0;
@@ -73,33 +73,33 @@ class _EmbeddedSystemDevelopmentBlockState
       'color': Colors.orangeAccent
     },
   ];
-@override
-void initState() {
-  super.initState();
-  _pageController = PageController(initialPage: 0);
-  
-  // Shuffle the images at startup
-  sliderImages.shuffle();
 
-  // Auto-slide every 5 seconds.
-  _sliderTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-    if (_pageController.hasClients) {
-      _currentPage++;
-      
-      if (_currentPage >= sliderImages.length) {
-        _currentPage = 0;
-        sliderImages.shuffle(); // Shuffle again when looping back
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
+
+    // Shuffle the images at startup
+    sliderImages.shuffle();
+
+    // Auto-slide every 5 seconds.
+    _sliderTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      if (_pageController.hasClients) {
+        _currentPage++;
+
+        if (_currentPage >= sliderImages.length) {
+          _currentPage = 0;
+          sliderImages.shuffle(); // Shuffle again when looping back
+        }
+
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
       }
-
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-    }
-  });
-}
-
+    });
+  }
 
   @override
   void dispose() {
@@ -136,20 +136,15 @@ void initState() {
         borderRadius: BorderRadius.circular(0),
         child: Stack(
           children: [
+            // Background Image
             Positioned.fill(
               child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: const AssetImage('assets/images/software.jpg'),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.7),
-                      BlendMode.darken,
-                    ),
-                  ),
-                ),
+                color: const Color.fromARGB(
+                    157, 0, 0, 0), // Fills the container with black color
               ),
             ),
+
+            // Main Content
             Container(
               padding: EdgeInsets.symmetric(
                 horizontal: isMobile ? 20 : 30,
@@ -158,7 +153,7 @@ void initState() {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title and description section.
+                  // Title & Description
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: isMobile ? 10 : 20,
@@ -168,15 +163,18 @@ void initState() {
                       children: [
                         Text(
                           "Embedded Systems Engineering Excellence",
-                          style: headlineTextStyle.copyWith(
+                          style: TextStyle(
+                            fontFamily: "Montserrat",
                             color: Colors.white,
-                            fontSize: isMobile
-                                ? 28
-                                : isTablet
-                                    ? 40
-                                    : 48,
-                            fontWeight: FontWeight.w900,
+                            fontSize: isMobile ? 28 : 40,
+                            fontWeight: FontWeight.w600,
                             height: 1.2,
+                            shadows: [
+                              Shadow(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                blurRadius: 10,
+                              )
+                            ],
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -184,6 +182,7 @@ void initState() {
                           "From concept to production-ready embedded solutions. "
                           "We specialize in full-cycle development of mission-critical embedded systems.",
                           style: headlineTextStyleMobile.copyWith(
+                            fontFamily: "Montserrat",
                             color: Colors.white70,
                             fontSize: isMobile ? 15 : 18,
                             height: 1.6,
@@ -193,11 +192,15 @@ void initState() {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  // Sliding images (carousel) section.
+                  // Image Slider (Carousel)
                   Center(
                     child: Container(
                       width: double.infinity,
-                      height: isMobile ? 200 : isTablet ? 300 : 400,
+                      height: isMobile
+                          ? 200
+                          : isTablet
+                              ? 300
+                              : 400,
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
@@ -208,54 +211,53 @@ void initState() {
                         ],
                       ),
                       child: ClipRRect(
-                        child:Stack(
-  children: [
-    PageView.builder(
-      controller: _pageController,
-      itemCount: sliderImages.length,
-      itemBuilder: (context, index) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              sliderImages[index],
-              fit: BoxFit.cover,
-              width: double.infinity,
-            ),
-            // Black overlay
-            Positioned.fill(
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-              ),
-            ),
-          ],
-        );
-      },
-    ),
-    // Gradient overlay for a stylish finish
-    Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.transparent,
-              Colors.black.withOpacity(0.3),
-            ],
-            stops: const [0.6, 1],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-      ),
-    ),
-  ],
-),
-
+                        child: Stack(
+                          children: [
+                            PageView.builder(
+                              controller: _pageController,
+                              itemCount: sliderImages.length,
+                              itemBuilder: (context, index) {
+                                return Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Image.asset(
+                                      sliderImages[index],
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
+                                    // Black Overlay
+                                    Positioned.fill(
+                                      child: Container(
+                                        color: Colors.black.withOpacity(0.5),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                            // Gradient Overlay
+                            Positioned.fill(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withOpacity(0.3),
+                                    ],
+                                    stops: const [0.6, 1],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 50),
-                  // Services Grid.
+                  // Services Grid
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: isMobile ? 10 : 20,
@@ -292,7 +294,7 @@ void initState() {
                     ),
                   ),
                   const SizedBox(height: 50),
-                  // Core Technologies & Tools section.
+                  // Core Technologies & Tools Section
                   Container(
                     margin: EdgeInsets.symmetric(
                       horizontal: isMobile ? 10 : 20,
@@ -301,8 +303,7 @@ void initState() {
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(0),
-                      border:
-                          Border.all(color: Colors.white.withOpacity(0.1)),
+                      border: Border.all(color: Colors.white.withOpacity(0.1)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,14 +311,16 @@ void initState() {
                         Text(
                           "Core Technologies & Tools",
                           style: headlineTextStyle.copyWith(
+                            fontFamily: "Montserrat",
                             color: Colors.white,
                             fontSize: isMobile ? 24 : 28,
                           ),
                         ),
                         SizedBox(height: isMobile ? 15 : 25),
                         Text(
-                          "We work with industry-standard tools and platforms:",
+                          "We leverage cutting-edge technologies to build future-proof solutions:",
                           style: TextStyle(
+                            fontFamily: "Montserrat",
                             color: Colors.white70,
                             fontSize: isMobile ? 14 : 16,
                             height: 1.5,
@@ -363,9 +366,11 @@ void initState() {
                     ),
                   ),
                   const SizedBox(height: 50),
+                  // Call-to-Action Button
                   Center(
                     child: PrimaryGradientButton(
-                       onPressed: () => _showDetailsPopup(context,"Embedded System"),
+                      onPressed: () =>
+                          _showDetailsPopup(context, "Embedded System"),
                       text: "Request Technical Consultation →",
                       padding: isMobile
                           ? const EdgeInsets.symmetric(
@@ -435,6 +440,7 @@ void initState() {
             Text(
               service['title'],
               style: TextStyle(
+                fontFamily: "Montserrat",
                 color: Colors.white,
                 fontSize: isMobile ? 20 : 22,
                 fontWeight: FontWeight.w700,
@@ -444,13 +450,14 @@ void initState() {
             SizedBox(height: isMobile ? 10 : 15),
             RichText(
               text: TextSpan(
-                children:
-                    _processContent(service['content'], isMobile: isMobile),
                 style: TextStyle(
+                  fontFamily: "Montserrat",
                   color: Colors.white70,
                   fontSize: isMobile ? 14 : 16,
                   height: isMobile ? 1.7 : 1.9,
                 ),
+                children:
+                    _processContent(service['content'], isMobile: isMobile),
               ),
             ),
           ],
@@ -468,6 +475,7 @@ void initState() {
         spans.add(TextSpan(
           text: '▹ ',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
             fontSize: isMobile ? 14 : 16,
@@ -476,6 +484,7 @@ void initState() {
         spans.add(TextSpan(
           text: line.replaceFirst('-', '') + '\n',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: Colors.white70,
             fontSize: isMobile ? 14 : 16,
           ),
@@ -484,6 +493,7 @@ void initState() {
         spans.add(TextSpan(
           text: line + '\n',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: Colors.white,
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.w500,
@@ -498,15 +508,20 @@ void initState() {
   Widget _buildTechItem(String name, String iconPath, bool isMobile) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.2),
+          color: Colors.white.withOpacity(0.1),
           width: 1,
+        ),
+        gradient: LinearGradient(
+          colors: [
+            Colors.black.withOpacity(0.4),
+            Colors.black.withOpacity(0.2),
+          ],
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
           Container(
@@ -526,16 +541,17 @@ void initState() {
           ),
           Expanded(
             child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: isMobile ? 10 : 15),
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 10 : 15),
               child: Text(
                 name,
                 style: TextStyle(
+                  fontFamily: "Montserrat",
                   color: Colors.white,
                   fontSize: isMobile ? 14 : 16,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ),
@@ -543,7 +559,20 @@ void initState() {
       ),
     );
   }
+
+  Widget _buildContactSection(bool isMobile) {
+    return Center(
+      child: PrimaryGradientButton(
+        onPressed: () => _showDetailsPopup(context, "Embedded System"),
+        text: "Schedule Free Consultation →",
+        padding: isMobile
+            ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)
+            : const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      ),
+    );
+  }
 }
+
 void _showDetailsPopup(BuildContext context, String dropdownValue) {
   showDialog(
     context: context,

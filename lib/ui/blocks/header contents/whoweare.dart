@@ -130,7 +130,7 @@ class _WhoWeAreContentState extends State<WhoWeAreContent> {
                   widget.onItemPressed();
                   Provider.of<NavigationProvider>(context, listen: false).active =
                       'whoweare';
-                  Navigator.pushReplacementNamed(context, Routes.about);
+                  Navigator.pushReplacementNamed(context, Routes.whoweare);
                 },
               ),
             ),
@@ -235,7 +235,7 @@ class _WhoWeAreContentState extends State<WhoWeAreContent> {
                                 onTap: (){widget.onItemPressed();
                   Provider.of<NavigationProvider>(context, listen: false).active =
                       'whoweare';
-                  Navigator.pushReplacementNamed(context, Routes.about);},
+                  Navigator.pushReplacementNamed(context, Routes.whoweare);},
                                 onParentTap: widget.onItemPressed,
                                 onHover: (isHovered) =>
                                     setState(() => _hoveredIndex = isHovered ? 0 : _hoveredIndex),
@@ -248,7 +248,7 @@ class _WhoWeAreContentState extends State<WhoWeAreContent> {
                                 onTap: (){widget.onItemPressed();
                   Provider.of<NavigationProvider>(context, listen: false).active =
                       'whoweare';
-                  Navigator.pushReplacementNamed(context, Routes.about);},
+                  Navigator.pushReplacementNamed(context, Routes.whoweare);},
                                 onParentTap: widget.onItemPressed,
                                 onHover: (isHovered) =>
                                     setState(() => _hoveredIndex = isHovered ? 1 : _hoveredIndex),
@@ -261,7 +261,7 @@ class _WhoWeAreContentState extends State<WhoWeAreContent> {
                                 onTap: (){widget.onItemPressed();
                   Provider.of<NavigationProvider>(context, listen: false).active =
                       'whoweare';
-                  Navigator.pushReplacementNamed(context, Routes.about);},
+                  Navigator.pushReplacementNamed(context, Routes.whoweare);},
                                 onParentTap: widget.onItemPressed,
                                 onHover: (isHovered) =>
                                     setState(() => _hoveredIndex = isHovered ? 2 : _hoveredIndex),

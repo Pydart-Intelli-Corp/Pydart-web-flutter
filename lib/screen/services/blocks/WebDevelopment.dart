@@ -20,11 +20,11 @@ class _WebDevelopmentBlockState extends State<WebDevelopmentBlock> {
   late VideoPlayerController _controller;
   bool _isVideoPlaying = true;
 
-final List<Map<String, dynamic>> services = [
-  {
-    'title': 'Custom Web Development',
-    'icon': Icons.code,
-    'content': '''Building tailored solutions that scale:
+  final List<Map<String, dynamic>> services = [
+    {
+      'title': 'Custom Web Development',
+      'icon': Icons.code,
+      'content': '''Building tailored solutions that scale:
 - Enterprise-grade applications
 - CMS development (WordPress, Strapi)
 - E-commerce platforms (Shopify, WooCommerce)
@@ -32,12 +32,12 @@ final List<Map<String, dynamic>> services = [
 - Responsive design & mobile-first development
 - SEO optimization & analytics integration
 - Custom plugin & module developments''',
-    'color': Colors.blueAccent
-  },
-  {
-    'title': 'UI/UX Design',
-    'icon': Icons.design_services,
-    'content': '''Creating immersive digital experiences:
+      'color': Colors.blueAccent
+    },
+    {
+      'title': 'UI/UX Design',
+      'icon': Icons.design_services,
+      'content': '''Creating immersive digital experiences:
 - User research & persona development
 - Interactive prototyping
 - Design systems development
@@ -45,12 +45,12 @@ final List<Map<String, dynamic>> services = [
 - Information architecture & wireframing
 - Brand identity & visual storytelling
 - Responsive design & adaptive layouts''',
-    'color': Colors.greenAccent
-  },
-  {
-    'title': 'Cloud Solutions',
-    'icon': Icons.cloud,
-    'content': '''Scalable infrastructure solutions:
+      'color': Colors.greenAccent
+    },
+    {
+      'title': 'Cloud Solutions',
+      'icon': Icons.cloud,
+      'content': '''Scalable infrastructure solutions:
 - AWS & Google Cloud integration
 - Serverless architecture
 - DevOps & CI/CD pipelines
@@ -58,10 +58,9 @@ final List<Map<String, dynamic>> services = [
 - Cost optimization & resource scaling
 - Multi-cloud strategy & hybrid deployment
 - Infrastructure as Code (Terraform, CloudFormation)''',
-    'color': Colors.orangeAccent
-  },
-];
-
+      'color': Colors.orangeAccent
+    },
+  ];
 
   @override
   void initState() {
@@ -111,7 +110,7 @@ final List<Map<String, dynamic>> services = [
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: const AssetImage('assets/images/webdev.jpg'),
+                    image: const AssetImage('assets/images/services/webdev.jpg'),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.9),
@@ -129,6 +128,7 @@ final List<Map<String, dynamic>> services = [
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header Section
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: isMobile ? 10 : 20,
@@ -138,15 +138,18 @@ final List<Map<String, dynamic>> services = [
                       children: [
                         Text(
                           "Enterprise Web Development Solutions",
-                          style: headlineTextStyle.copyWith(
+                         style: TextStyle(
+                            fontFamily: "Montserrat",
                             color: Colors.white,
-                            fontSize: isMobile
-                                ? 28
-                                : isTablet
-                                    ? 40
-                                    : 48,
-                            fontWeight: FontWeight.w900,
+                            fontSize: isMobile ? 28 : 40,
+                            fontWeight: FontWeight.w600,
                             height: 1.2,
+                            shadows: [
+                              Shadow(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                blurRadius: 10,
+                              )
+                            ],
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -154,6 +157,7 @@ final List<Map<String, dynamic>> services = [
                           "Transform your digital presence with our full-stack development expertise. "
                           "We deliver high-performance web solutions powered by modern technologies.",
                           style: headlineTextStyleMobile.copyWith(
+                            fontFamily: "Montserrat",
                             color: Colors.white70,
                             fontSize: isMobile ? 15 : 18,
                             height: 1.6,
@@ -163,6 +167,7 @@ final List<Map<String, dynamic>> services = [
                     ),
                   ),
                   const SizedBox(height: 40),
+                  // Video Section
                   Center(
                     child: Container(
                       width: isMobile
@@ -249,6 +254,7 @@ final List<Map<String, dynamic>> services = [
                     ),
                   ),
                   const SizedBox(height: 50),
+                  // Service Cards Section
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: isMobile ? 10 : 20,
@@ -285,6 +291,7 @@ final List<Map<String, dynamic>> services = [
                     ),
                   ),
                   const SizedBox(height: 50),
+                  // Technology Ecosystem Section
                   Container(
                     margin: EdgeInsets.symmetric(
                       horizontal: isMobile ? 10 : 20,
@@ -301,6 +308,7 @@ final List<Map<String, dynamic>> services = [
                         Text(
                           "Our Technology Ecosystem",
                           style: headlineTextStyle.copyWith(
+                            fontFamily: "Montserrat",
                             color: Colors.white,
                             fontSize: isMobile ? 24 : 28,
                           ),
@@ -309,45 +317,61 @@ final List<Map<String, dynamic>> services = [
                         Text(
                           "We leverage cutting-edge technologies to build future-proof solutions:",
                           style: TextStyle(
+                            fontFamily: "Montserrat",
                             color: Colors.white70,
                             fontSize: isMobile ? 14 : 16,
                             height: 1.5,
                           ),
                         ),
                         SizedBox(height: isMobile ? 20 : 30),
-                      GridView.builder(
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: isMobile ? 2 : 4,
-    crossAxisSpacing: isMobile ? 12 : 20,
-    mainAxisSpacing: isMobile ? 12 : 20,
-    childAspectRatio: isMobile ? 2.5 : 3,
-  ),
-  itemCount: 8, // Update this with actual item count
-  itemBuilder: (context, index) => _buildTechItem(
-    ["React/Next.js", "Flutter Web", "Node.js", "GraphQL", 
-     "AWS", "Azure", "Docker", "Firebase"][index],
-    ["assets/logos/react.png", "assets/logos/flutter.png", 
-     "assets/logos/nodejs.png", "assets/logos/graphql.png",
-     "assets/logos/aws.png", "assets/logos/azure.png",
-     "assets/logos/docker.png", "assets/logos/firebase.png"][index],
-    isMobile,
-  ),
-),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: isMobile ? 2 : 4,
+                            crossAxisSpacing: isMobile ? 12 : 20,
+                            mainAxisSpacing: isMobile ? 12 : 20,
+                            childAspectRatio: isMobile ? 2.5 : 3,
+                          ),
+                          itemCount: 8,
+                          itemBuilder: (context, index) => _buildTechItem(
+                            [
+                              "React/Next.js",
+                              "Flutter Web",
+                              "Node.js",
+                              "GraphQL",
+                              "AWS",
+                              "Azure",
+                              "Docker",
+                              "Firebase"
+                            ][index],
+                            [
+                              "assets/logos/react.png",
+                              "assets/logos/flutter.png",
+                              "assets/logos/nodejs.png",
+                              "assets/logos/graphql.png",
+                              "assets/logos/aws.png",
+                              "assets/logos/azure.png",
+                              "assets/logos/docker.png",
+                              "assets/logos/firebase.png"
+                            ][index],
+                            isMobile,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 50),
+                  // Call-to-Action Button
                   Center(
                     child: PrimaryGradientButton(
-                        onPressed: () => _showDetailsPopup(context,"Website"),
-                      text: "Schedule Free Consultation →",
-                      padding: isMobile
-                          ? const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 14)
-                          : const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 16),
+                        onPressed: () => _showDetailsPopup(context, "Website"),
+                        text: "Schedule Free Consultation →",
+                        padding: isMobile
+                            ? const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 14)
+                            : const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 16),
                     ),
                   )
                 ],
@@ -358,87 +382,90 @@ final List<Map<String, dynamic>> services = [
       ),
     );
   }
-Widget _buildServiceCard(Map<String, dynamic> service, {required bool isMobile}) {
-  return MouseRegion(
-    cursor: SystemMouseCursors.click,
-    child: AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      // Add a fixed height for mobile devices; adjust the value as needed.
-      height: isMobile ? 300 : null,
-      padding: EdgeInsets.all(isMobile ? 15 : 25),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            service['color'].withOpacity(0.2),
-            service['color'].withOpacity(0.05),
+
+  Widget _buildServiceCard(Map<String, dynamic> service, {required bool isMobile}) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        height: isMobile ? 300 : null,
+        padding: EdgeInsets.all(isMobile ? 15 : 25),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              service['color'].withOpacity(0.2),
+              service['color'].withOpacity(0.05),
+            ],
+          ),
+          border: Border.all(
+            color: service['color'].withOpacity(0.2),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: service['color'].withOpacity(0.1),
+              blurRadius: 20,
+              spreadRadius: 2,
+            )
           ],
         ),
-        border: Border.all(
-          color: service['color'].withOpacity(0.2),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: service['color'].withOpacity(0.1),
-            blurRadius: 20,
-            spreadRadius: 2,
-          )
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // Adjust height based on content if height is not set.
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              service['icon'],
-              color: service['color'].withOpacity(0.5),
-            ),
-          ),
-          SizedBox(height: isMobile ? 15 : 20),
-          Text(
-            service['title'],
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: isMobile ? 20 : 22,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
-            ),
-          ),
-          SizedBox(height: isMobile ? 10 : 15),
-          RichText(
-            text: TextSpan(
-              children: _processContent(service['content'], isMobile: isMobile),
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: isMobile ? 14 : 16,
-                height: isMobile ? 1.7 : 1.9,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                service['icon'],
+                color: service['color'].withOpacity(0.5),
               ),
             ),
-          ),
-        ],
+            SizedBox(height: isMobile ? 15 : 20),
+            Text(
+              service['title'],
+              style: TextStyle(
+                fontFamily: "Montserrat",
+                color: Colors.white,
+                fontSize: isMobile ? 20 : 22,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
+            SizedBox(height: isMobile ? 10 : 15),
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontFamily: "Montserrat",
+                  color: Colors.white70,
+                  fontSize: isMobile ? 14 : 16,
+                  height: isMobile ? 1.7 : 1.9,
+                ),
+                children: _processContent(service['content'], isMobile: isMobile),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   List<TextSpan> _processContent(String content, {required bool isMobile}) {
     List<TextSpan> spans = [];
     final lines = content.split('\n');
-    
+
     for (var line in lines) {
       if (line.startsWith('-')) {
         spans.add(TextSpan(
           text: '• ',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
             fontSize: isMobile ? 16 : 18,
@@ -447,14 +474,16 @@ Widget _buildServiceCard(Map<String, dynamic> service, {required bool isMobile})
         spans.add(TextSpan(
           text: line.replaceFirst('-', '') + '\n',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: Colors.white70,
-            fontSize: isMobile ? 14 : 16,
+            fontSize: isMobile ? 15 : 16,
           ),
         ));
       } else {
         spans.add(TextSpan(
           text: line + '\n',
           style: TextStyle(
+            fontFamily: "Montserrat",
             color: Colors.white,
             fontSize: isMobile ? 16 : 18,
             fontWeight: FontWeight.w500,
@@ -466,52 +495,72 @@ Widget _buildServiceCard(Map<String, dynamic> service, {required bool isMobile})
     return spans;
   }
 
-  
-Widget _buildTechItem(String name, String iconPath, bool isMobile) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.black.withOpacity(0.3),
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: Colors.white.withOpacity(0.1)),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(isMobile ? 10 : 12),
-          child: Image.asset(
-            iconPath, 
-            width: isMobile ? 24 : 30, 
-            height: isMobile ? 24 : 30
-          ),
+  Widget _buildTechItem(String name, String iconPath, bool isMobile) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
         ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(right: isMobile ? 10 : 15),
-            child: Text(
-              name,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: isMobile ? 14 : 16,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+        gradient: LinearGradient(
+          colors: [
+            Colors.black.withOpacity(0.4),
+            Colors.black.withOpacity(0.2),
+          ],
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(isMobile ? 10 : 12),
+            child: Image.asset(
+              iconPath,
+              width: isMobile ? 24 : 30,
+              height: isMobile ? 24 : 30,
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
- 
-void _showDetailsPopup(BuildContext context, String dropdownValue) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return ResponsiveDialog(dropdownValue: dropdownValue);
-    },
-  );
-}
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: isMobile ? 10 : 15),
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontFamily: "Montserrat",
+                  color: Colors.white,
+                  fontSize: isMobile ? 14 : 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContactSection(bool isMobile) {
+    return Center(
+      child: PrimaryGradientButton(
+        onPressed: () => _showDetailsPopup(context, "Website"),
+        text: "Schedule Free Consultation →",
+        padding: isMobile
+            ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)
+            : const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      ),
+    );
+  }
+
+  void _showDetailsPopup(BuildContext context, String dropdownValue) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ResponsiveDialog(dropdownValue: dropdownValue);
+      },
+    );
+  }
 }

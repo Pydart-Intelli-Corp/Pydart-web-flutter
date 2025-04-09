@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TextHoverButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
+  final VoidCallback? onDoubleTap; // Added double click callback
   final Color color;
   final bool showArrow;
   final bool isActive;
@@ -11,6 +12,7 @@ class TextHoverButton extends StatefulWidget {
     Key? key,
     required this.label,
     this.onPressed,
+    this.onDoubleTap, // Added double click callback
     this.color = Colors.white,
     this.showArrow = false,
     this.isActive = false,
@@ -42,11 +44,12 @@ class _TextHoverButtonState extends State<TextHoverButton> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      cursor: widget.onPressed != null
+      cursor: (widget.onPressed != null || widget.onDoubleTap != null)
           ? SystemMouseCursors.click
           : MouseCursor.defer,
       child: GestureDetector(
         onTap: widget.onPressed,
+        onDoubleTap: widget.onDoubleTap, // Listen for double taps
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -63,14 +66,17 @@ class _TextHoverButtonState extends State<TextHoverButton> {
                     fontWeight: FontWeight.w200,
                   ),
                 ),
-                if (widget.showArrow) ...[
-                  const SizedBox(width: 4),
-                  Icon(
-                    Icons.keyboard_arrow_down_sharp,
-                    color: widget.color,
-                    size: 20,
-                  ),
-                ],
+             if (widget.showArrow) ...[
+  const SizedBox(width: 4),
+  Icon(
+    widget.isActive
+        ? Icons.keyboard_arrow_up_sharp
+        : Icons.keyboard_arrow_down_sharp,
+    color: widget.color,
+    size: 20,
+  ),
+],
+
               ],
             ),
             const SizedBox(height: 2),

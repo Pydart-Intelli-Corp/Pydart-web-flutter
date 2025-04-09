@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "pydart-connect"
-  }
+    "default": "pydart-connect",
+    "pydart-india": "pydart-connect"
+  },
+  "targets": {},
+  "etags": {}
 }

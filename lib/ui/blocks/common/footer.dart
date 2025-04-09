@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_website/widgets/buttons/icon_hover_button.dart';
 
 
@@ -89,16 +90,24 @@ class Footer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Image.asset(
-              "assets/logos/logo.png",
-              height: 80,
-              fit: BoxFit.contain,
-            ),
+            child: SizedBox(
+  width: 200, // desired width
+  height: 100, // desired height
+ child: SvgPicture.asset(
+  "assets/logos/pydart-logo.svg",
+  semanticsLabel: 'Pydart Logo',
+  fit: BoxFit.scaleDown,
+  allowDrawingOutsideViewBox: true,
+  color: null, // Ensures the original colors from the SVG are used.
+),
+
+),
+
           ),
           const SizedBox(height: 20),
           const Center(
             child: Text(
-              "Innovating Tomorrow's Solutions Today",
+              "Innovate. Integrate. Inspire.",
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 14,

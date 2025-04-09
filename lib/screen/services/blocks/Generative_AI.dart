@@ -1,421 +1,425 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/components/typography.dart';
 import 'package:flutter_website/core/extensions/color_extensions.dart';
+import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
 
-class GenerativeAIBlock extends StatelessWidget {
-  const GenerativeAIBlock({Key? key}) : super(key: key);
+import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class AIBlock extends StatefulWidget {
+  const AIBlock({super.key});
+
+  @override
+  State<AIBlock> createState() => _AIBlockState();
+}
+
+class _AIBlockState extends State<AIBlock> {
+  final List<Map<String, dynamic>> services = [
+    {
+      'title': 'Machine Learning Models',
+      'icon': Icons.memory,
+      'content': '''Develop robust ML models:
+- Data preprocessing
+- Model training
+- Hyperparameter tuning
+- Scalable deployment
+- Continuous monitoring''',
+      'color': Colors.blueAccent,
+    },
+    {
+      'title': 'Chatbot Solutions',
+      'icon': Icons.chat,
+      'content': '''Intelligent conversation:
+- Natural Language Processing
+- Multi-platform integration
+- Context-aware responses
+- Self-learning algorithms
+- Seamless user experience''',
+      'color': Colors.greenAccent,
+    },
+    {
+      'title': 'Predictive Analytics',
+      'icon': Icons.insights,
+      'content': '''Data-driven insights:
+- Trend analysis
+- Real-time predictions
+- Data visualization
+- Business intelligence
+- Custom analytics solutions''',
+      'color': Colors.orangeAccent,
+    },
+    {
+      'title': 'Generative AI Solutions',
+      'icon': Icons.auto_awesome,
+      'content': '''Creative content generation:
+- Image synthesis
+- Text generation
+- Music and video creation
+- Code assistance
+- Personalized content creation''',
+      'color': Colors.purpleAccent,
+    },
+    {
+      'title': 'Robotics & Automation',
+      'icon': Icons.precision_manufacturing,
+      'content': '''Innovative robotics solutions:
+- Automated manufacturing
+- IoT integration
+- Process automation
+- Real-time control systems
+- Smart robotics''',
+      'color': Colors.redAccent,
+    },
+    {
+      'title': 'AI Integration Services',
+      'icon': Icons.integration_instructions,
+      'content': '''Seamless integration:
+- API development
+- Software embedding
+- Website & mobile app integration
+- Cross-platform support
+- Scalable architecture''',
+      'color': Colors.tealAccent,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final isTablet = screenWidth >= 600 && screenWidth < 1024;
+
     return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(
+        top: isMobile ? 40 : 60,
+        bottom: isMobile ? 40 : 60,
+      ),
       decoration: BoxDecoration(
-        // Use a radial gradient with colors from AppColors
-        gradient: RadialGradient(
-          center: Alignment.topLeft,
-          radius: 1.5,
-          colors: [
-            AppColors.darkNavy,
-            AppColors.background,
-          ],
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildCyberHeader(context),
-            _buildNeonGridSection(),
-            _buildFloatingFeatures(),
-            _buildTechSphere(),
-            _buildCTASection(),
-            const SizedBox(height: 80),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCyberHeader(BuildContext context) {
-    return SizedBox(
-      height: 600,
-      child: Stack(
-        children: [
-          // Background image with opacity
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.2,
-              child: Image.asset(
-                'assets/images/ai.jpg',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Title with a shader mask for subtle gradient effect
-                ShaderMask(
-                  shaderCallback: (bounds) => LinearGradient(
-                    colors: [Colors.white, Colors.white],
-                    stops: [0.3, 0.7],
-                  ).createShader(bounds),
-                  child: const Text(
-                    'Next-Gen AI Solutions',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // Gradient line under the title
-                Container(
-                  width: 200,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.secondary,
-                        AppColors.accent,
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
-                // Subheader container with a gentle gradient border effect
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    border: Border.all(
-                      color: AppColors.accentBlue.withOpacity(0.3),
-                      width: 2,
-                    ),
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.accentBlue.withOpacity(0.1),
-                        AppColors.secondary.withOpacity(0.1),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: const Text(
-                    'Transform your business with\nadaptive AI systems',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNeonGridSection() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      color: Colors.transparent,
-      child: Column(
-        children: [
-          Wrap(
-            spacing: 30,
-            runSpacing: 30,
-            alignment: WrapAlignment.center,
-            children: [
-              _buildNeonCard('Natural Language\nProcessing', Icons.chat),
-              _buildNeonCard('Computer\nVision', Icons.remove_red_eye),
-              _buildNeonCard('Predictive\nAnalytics', Icons.trending_up),
-              _buildNeonCard('Generative\nModels', Icons.auto_awesome),
-            ],
-          ),
-          const SizedBox(height: 60),
-          Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  AppColors.accent.withOpacity(0.3),
-                  Colors.transparent,
-                ],
-              ),
-            ),
-            child: Image.asset('assets/images/ai1.jpg'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNeonCard(String text, IconData icon) {
-    return Container(
-      width: 200,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: AppColors.accentBlue.withOpacity(0.3),
-          width: 2,
-        ),
+        borderRadius: BorderRadius.circular(0),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.secondary.withOpacity(0.1),
-            AppColors.primary.withOpacity(0.1),
+            Colors.black.withOpacity(0.9),
+            const Color.fromARGB(255, 10, 5, 29).withOpacity(0.7),
           ],
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 50, color: AppColors.accent),
-          const SizedBox(height: 20),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: Colors.white70,
-            ),
-          ),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.3),
+              blurRadius: 30,
+              spreadRadius: 5)
         ],
       ),
-    );
-  }
-
-  Widget _buildFloatingFeatures() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      child: Column(
-        children: [
-          // AI Capabilities card
-          Transform.rotate(
-            angle: -0.1,
-            child: Container(
-              padding: const EdgeInsets.all(30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.secondary.withOpacity(0.2),
-                    AppColors.primary.withOpacity(0.2),
-                  ],
-                ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(0),
+        child: Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 20 : 30,
+                vertical: isMobile ? 40 : 60,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'AI Capabilities',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
+                  // Header
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 10 : 20,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Next-Gen AI Solutions",
+                           style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: Colors.white,
+                            fontSize: isMobile ? 28 : 40,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                            shadows: [
+                              Shadow(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                blurRadius: 10,
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Transform ideas into intelligent solutions with our full-cycle AI development process. From concept to deployment - we handle it all.",
+                          style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: Colors.white70,
+                            fontSize: isMobile ? 15 : 18,
+                            height: 1.6,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  Wrap(
-                    spacing: 40,
-                    runSpacing: 40,
-                    children: [
-                      _buildFeatureTile('Real-time Processing', '⚡'),
-                      _buildFeatureTile('Multi-modal AI', '🌐'),
-                      _buildFeatureTile('Ethical Framework', '⚖️'),
-                      _buildFeatureTile('Continuous Learning', '🔄'),
-                    ],
+                  const SizedBox(height: 50),
+                  // Service Cards
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 10 : 20,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: isMobile ? 1 : isTablet ? 2 : 3,
+                          crossAxisSpacing: isMobile ? 15 : 25,
+                          mainAxisSpacing: isMobile ? 15 : 25,
+                          childAspectRatio: isMobile ? 1.1 : 0.9,
+                        );
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: gridDelegate,
+                          itemCount: services.length,
+                          itemBuilder: (context, index) =>
+                              _buildServiceCard(services[index], isMobile: isMobile),
+                        );
+                      },
+                    ),
                   ),
+                  const SizedBox(height: 50),
+                  // AI Tech Stack Section
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 10 : 20,
+                    ),
+                    padding: EdgeInsets.all(isMobile ? 15 : 25),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(0),
+                      border: Border.all(
+                        color: Colors.deepPurple.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Our AI Tech Stack",
+                          style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: Colors.white,
+                            fontSize: isMobile ? 24 : 28,
+                          ),
+                        ),
+                        SizedBox(height: isMobile ? 15 : 25),
+                        Text(
+                          "We use modern tools to build intelligent solutions:",
+                          style: TextStyle(
+                            fontFamily: "Montserrat",
+                            color: Colors.white70,
+                            fontSize: isMobile ? 14 : 16,
+                            height: 1.5,
+                          ),
+                        ),
+                        SizedBox(height: isMobile ? 20 : 30),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: isMobile ? 2 : 4,
+                            crossAxisSpacing: isMobile ? 12 : 20,
+                            mainAxisSpacing: isMobile ? 12 : 20,
+                            childAspectRatio: isMobile ? 2.2 : 3,
+                          ),
+                          itemCount: 8,
+                          itemBuilder: (context, index) => _buildTechItem(
+                            [
+                              "TensorFlow",
+                              "PyTorch",
+                              "scikit-learn",
+                              "Keras",
+                              "OpenAI GPT",
+                              "Hugging Face",
+                              "NumPy",
+                              "Pandas"
+                            ][index],
+                            [
+                              "assets/logos/tensorflow.png",
+                              "assets/logos/pytorch.png",
+                              "assets/logos/scikit-learn.png",
+                              "assets/logos/keras.png",
+                              "assets/logos/open-ai.png",
+                              "assets/logos/huggingface.png",
+                              "assets/logos/numpy.png",
+                              "assets/logos/pandas.png"
+                            ][index],
+                            isMobile,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  // Call to Action Button
+                  Center(
+                    child: PrimaryGradientButton(
+                      onPressed: () => _showDetailsPopup(context, "AI Services"),
+                      text: "Start Your AI Journey →",
+                      padding: isMobile
+                          ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)
+                          : const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    ),
+                  )
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 60),
-          // Technical Edge card
-          Transform.rotate(
-            angle: 0.1,
-            child: Container(
-              padding: const EdgeInsets.all(30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.accentBlue.withOpacity(0.2),
-                    AppColors.secondary.withOpacity(0.2),
-                  ],
-                ),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'Technical Edge',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Wrap(
-                    spacing: 40,
-                    runSpacing: 40,
-                    children: [
-                      _buildFeatureTile('Neural Architecture', '🧠'),
-                      _buildFeatureTile('Quantum ML', '🌀'),
-                      _buildFeatureTile('Edge AI', '📱'),
-                      _buildFeatureTile('Federated Learning', '🔐'),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureTile(String title, String emoji) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-        gradient: LinearGradient(
-          colors: [
-            Colors.white.withOpacity(0.05),
-            Colors.white.withOpacity(0.02),
           ],
         ),
       ),
-      child: Column(
-        children: [
-          Text(emoji, style: const TextStyle(fontSize: 40)),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white70,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _buildTechSphere() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      child: Column(
-        children: [
-          const Text(
-            'Supported Technologies',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 40),
-          Wrap(
-            spacing: 20,
-            runSpacing: 20,
-            children: [
-              _buildTechBubble('TensorFlow'),
-              _buildTechBubble('PyTorch'),
-              _buildTechBubble('HuggingFace'),
-              _buildTechBubble('Keras'),
-              _buildTechBubble('ONNX'),
-              _buildTechBubble('OpenVINO'),
-              _buildTechBubble('CUDA'),
-              _buildTechBubble('CoreML'),
+  Widget _buildServiceCard(Map<String, dynamic> service, {required bool isMobile}) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        height: isMobile ? 300 : null,
+        padding: EdgeInsets.all(isMobile ? 15 : 25),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              service['color'].withOpacity(0.2),
+              service['color'].withOpacity(0.05),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTechBubble(String tech) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        gradient: LinearGradient(
-          colors: [
-            AppColors.accent.withOpacity(0.3),
-            AppColors.accentBlue.withOpacity(0.3),
+          border: Border.all(
+            color: service['color'].withOpacity(0.2),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: service['color'].withOpacity(0.1),
+              blurRadius: 20,
+              spreadRadius: 2,
+            )
           ],
         ),
-      ),
-      child: Text(
-        tech,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCTASection() {
-    return Container(
-      padding: const EdgeInsets.all(40),
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40),
-        gradient: LinearGradient(
-          colors: [
-            AppColors.accent.withOpacity(0.2),
-            AppColors.lightTeal.withOpacity(0.2),
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Ready for AI Transformation?',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Start your journey with our expert AI team',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white70,
-            ),
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
               ),
-              backgroundColor: AppColors.accent,
+              child: Icon(
+                service['icon'],
+                color: service['color'].withOpacity(0.5),
+              ),
             ),
-            onPressed: () {},
-            child: const Text(
-              'Schedule Consultation',
+            SizedBox(height: isMobile ? 15 : 20),
+            Text(
+              service['title'],
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontFamily: "Montserrat",
+                color: Colors.white,
+                fontSize: isMobile ? 20 : 22,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
+            SizedBox(height: isMobile ? 10 : 15),
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontFamily: "Montserrat",
+                  color: Colors.white70,
+                  fontSize: isMobile ? 14 : 16,
+                  height: isMobile ? 1.4 : 1.8,
+                ),
+                children: _processContent(service['content'], isMobile: isMobile),
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<TextSpan> _processContent(String content, {required bool isMobile}) {
+    List<TextSpan> spans = [];
+    final lines = content.split('\n');
+    for (var line in lines) {
+      if (line.startsWith('-')) {
+        spans.add(TextSpan(
+          text: '▹ ',
+          style: TextStyle(
+            fontFamily: "Montserrat",
+            color: Colors.blueAccent,
+            fontSize: isMobile ? 16 : 18,
+          ),
+        ));
+        spans.add(TextSpan(
+          text: line.replaceFirst('-', '').trim() + '\n',
+          style: TextStyle(
+            fontFamily: "Montserrat",
+            color: Colors.white70,
+            fontSize: isMobile ? 14 : 16,
+          ),
+        ));
+      } else {
+        spans.add(TextSpan(
+          text: line + '\n',
+          style: TextStyle(
+            fontFamily: "Montserrat",
+            color: Colors.white,
+            fontSize: isMobile ? 16 : 18,
+            fontWeight: FontWeight.w500,
+            height: 1.8,
+          ),
+        ));
+      }
+    }
+    return spans;
+  }
+
+  Widget _buildTechItem(String name, String iconPath, bool isMobile) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(isMobile ? 10 : 12),
+            child: Image.asset(
+              iconPath,
+              width: isMobile ? 28 : 34,
+              height: isMobile ? 28 : 34,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: isMobile ? 10 : 15),
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontFamily: "Montserrat",
+                  color: Colors.white,
+                  fontSize: isMobile ? 14 : 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
             ),
           ),
@@ -423,4 +427,13 @@ class GenerativeAIBlock extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showDetailsPopup(BuildContext context, String dropdownValue) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ResponsiveDialog(dropdownValue: dropdownValue);
+    },
+  );
 }
