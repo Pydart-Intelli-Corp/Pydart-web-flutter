@@ -5,7 +5,12 @@ import 'package:flutter_website/components/icons.dart';
 import 'package:flutter_website/components/spacing.dart';
 import 'package:flutter_website/core/extensions/color_extensions.dart'
     show AppColors;
+import 'package:flutter_website/router.dart';
+import 'package:flutter_website/ui/blocks/common/header.dart' show NavigationProvider;
 import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
 
 class Service {
   final IconData icon;
@@ -256,7 +261,11 @@ class WhatWeDoBlock extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 600;
 
     return PrimaryGradientButton(
-      onPressed: () {},
+      onPressed: () {                Provider.of<NavigationProvider>(context, listen: false)
+                    .hovered = 'ourservices';
+                Provider.of<NavigationProvider>(context, listen: false).active =
+                    'ourservices';
+                Get.toNamed(Routes.services);},
       text: "Discover Our Services →",
       padding: isMobile
           ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)

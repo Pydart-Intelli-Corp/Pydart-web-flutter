@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
 import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:flutter_website/widgets/notifications/snackbar.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
@@ -409,7 +410,7 @@ class _HeaderState extends State<Header> {
           const Spacer(),
           // "About" Button (non-dropdown).
           SecondaryGradientButton(
-            onPressed: () => openUrl('https://www.tcs.com/services'),
+            onPressed: (){  CustomSnackbar.info(context, "Coming soon ");},
             text: "Pystore",
           ),
           const SizedBox(width: 32),

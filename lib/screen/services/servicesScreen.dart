@@ -123,14 +123,14 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 child: widget,
               ),
             ),
-            children: const [
-              ServicesHead(),
-              Features(),
-              AIBlock(),
-              MobileAppDevelopmentBlock(),
-              WebDevelopmentBlock(),
-              SoftwareDevelopmentBlock(),
-              EmbeddedSystemDevelopmentBlock(),
+            children: [
+              const ServicesHead(),
+              const Features(),
+              const AIBlock(),
+              const MobileAppDevelopmentBlock(),
+              const WebDevelopmentBlock(),
+              const SoftwareDevelopmentBlock(),
+              const EmbeddedSystemDevelopmentBlock(),
               Footer(
                 g1: Color.fromARGB(255, 5, 11, 13),
                 g2: Color.fromARGB(255, 4, 6, 9),

@@ -6,6 +6,7 @@ import 'package:flutter_website/core/extensions/color_extensions.dart';
 import 'package:flutter_website/screen/Career/blocks/CareerBlock.dart';
 import 'package:flutter_website/ui/blocks/common/footer.dart';
 import 'package:flutter_website/ui/blocks/common/header.dart';
+import 'package:provider/provider.dart';
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
@@ -38,6 +39,10 @@ class _CareerScreenState extends State<CareerScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScroll);
+    Provider.of<NavigationProvider>(context, listen: false)
+                    .hovered = 'careers';
+                Provider.of<NavigationProvider>(context, listen: false).active =
+                    'careers';
   }
 
   void _handleScroll() {
@@ -126,7 +131,7 @@ class _CareerScreenState extends State<CareerScreen> {
                 child: widget,
               ),
             ),
-            children: const [
+            children:  [
               CareerBlock(),
               Footer(
                 g1: Color.fromARGB(255, 5, 11, 13),

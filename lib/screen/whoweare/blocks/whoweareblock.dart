@@ -4,7 +4,11 @@ import 'package:flutter_website/components/spacing.dart';
 import 'package:flutter_website/components/typography.dart';
 import 'package:flutter_website/components/colors.dart';
 import 'package:flutter_website/core/extensions/color_extensions.dart';
+import 'package:flutter_website/router.dart';
+import 'package:flutter_website/ui/blocks/common/header.dart';
 import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class IntroBlock extends StatefulWidget {
   const IntroBlock({super.key});
@@ -187,7 +191,14 @@ class _IntroBlockState extends State<IntroBlock> {
                     if (!isMobile) ...[
                       const SizedBox(height: 32),
                       PrimaryGradientButton(
-                        onPressed: () {},
+                        onPressed: () {
+                                 Provider.of<NavigationProvider>(context, listen: false)
+                    .hovered = 'insights';
+                Provider.of<NavigationProvider>(context, listen: false).active =
+                    'insights';
+                          
+                          
+                          Get.toNamed(Routes.insights);},
                         text: "Explore Our Vision →",
                         padding: isMobile
                             ? const EdgeInsets.symmetric(

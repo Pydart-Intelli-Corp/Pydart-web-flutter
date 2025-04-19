@@ -5,6 +5,8 @@ import 'package:flutter_website/widgets/buttons/icon_hover_button.dart';
 
 
 import 'package:flutter_website/api/config.dart';
+import 'package:flutter_website/widgets/notifications/snackbar.dart';
+import 'package:http/http.dart' as http;
 
 
 import 'package:responsive_framework/responsive_framework.dart';
@@ -15,8 +17,8 @@ class Footer extends StatelessWidget {
 
     final Color g1;
   final Color g2;
-  const Footer({super.key, required this.g1, required this.g2});
-
+   Footer({super.key, required this.g1, required this.g2});
+  final TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final bool isMobile =
@@ -58,7 +60,7 @@ class Footer extends StatelessWidget {
               ),
               ResponsiveRowColumnItem(
                 rowFit: FlexFit.tight,
-                child: _buildEcommerceSection(),
+                child: _buildEcommerceSection(context),
               ),
               ResponsiveRowColumnItem(
                 rowFit: FlexFit.tight,
@@ -133,22 +135,22 @@ class Footer extends StatelessWidget {
               children: [
                 IconHoverButton(
                     iconPath: "assets/logos/github-logo.png",
-                    onPressed: () => openUrl('https://twitter.com/flutterdev')),
+                    onPressed: () => openUrl('https://github.com/Pydart-Intelli-Corp')),
                 IconHoverButton(
                     iconPath: "assets/logos/linkedin.png",
-                    onPressed: () => openUrl('https://twitter.com/flutterdev')),
+                    onPressed: () => openUrl('https://www.linkedin.com/company/pydart-intelli-corp/')),
                 IconHoverButton(
                     iconPath: "assets/logos/instagram.png",
-                    onPressed: () => openUrl('https://twitter.com/flutterdev')),
-                IconHoverButton(
-                    iconPath: "assets/logos/facebook.png",
-                    onPressed: () => openUrl('https://twitter.com/flutterdev')),
-                IconHoverButton(
-                    iconPath: "assets/logos/x.png",
-                    onPressed: () => openUrl('https://twitter.com/flutterdev')),
-                IconHoverButton(
-                    iconPath: "assets/logos/youtube.png",
-                    onPressed: () => openUrl('https://twitter.com/flutterdev')),
+                    onPressed: () => openUrl('https://www.instagram.com/pydart.india?igsh=MTVwMWhlMm9qNWRydw==')),
+                // IconHoverButton(
+                //     iconPath: "assets/logos/facebook.png",
+                //     onPressed: () {}),
+                // IconHoverButton(
+                //     iconPath: "assets/logos/x.png",
+                //     onPressed: (){}),
+                // IconHoverButton(
+                //     iconPath: "assets/logos/youtube.png",
+                //     onPressed: (){}),
               ],
             ),
           ),
@@ -163,13 +165,13 @@ class Footer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionTitle("Our Services"),
-          _buildFooterLink("Custom Software Development", Icons.code, () {}),
+          _buildFooterLink("Website Development", Icons.code, () { openUrl("$domainurl/services");}),
           _buildFooterLink(
-              "IoT & Hardware Solutions", Icons.settings_input_antenna, () {}),
-          _buildFooterLink("AI/ML Integration", Icons.smart_toy, () {}),
-          _buildFooterLink("Cloud Solutions", Icons.cloud, () {}),
-          _buildFooterLink("E-commerce Platforms", Icons.shopping_cart, () {}),
-          _buildFooterLink("Mobile Applications", Icons.phone_android, () {}),
+              "IOS & Android Development", Icons.mobile_friendly, () { openUrl("$domainurl/services");}),
+          _buildFooterLink("Embedded System Development", Icons.cast_for_education_outlined, () { openUrl("$domainurl/services");}),
+          _buildFooterLink("Cloud Solutions", Icons.cloud, () { openUrl("$domainurl/services");}),
+          _buildFooterLink("IOT", Icons.broadcast_on_home_outlined, () { openUrl("$domainurl/services");}),
+          _buildFooterLink("AI Integration", Icons.add_to_home_screen_sharp, () { openUrl("$domainurl/services");}),
         ],
       ),
     );
@@ -185,13 +187,13 @@ class Footer extends StatelessWidget {
             openUrl("$domainurl/career"); // Navigate to CareerScreen
           }),
           _buildFooterLink("Internship Programs", Icons.school, () {
-            openUrl("$domainurl/career");
+          CustomSnackbar.info(context, "Coming soon ");
           }),
           _buildFooterLink("Employee Benefits", Icons.card_giftcard, () {
             openUrl("$domainurl/career");
           }),
           _buildFooterLink("Tech Stack", Icons.memory, () {
-            openUrl("$domainurl/career");
+          CustomSnackbar.info(context, "Coming soon ");
           }),
           const SizedBox(height: 30),
           ElevatedButton(
@@ -202,7 +204,7 @@ class Footer extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              openUrl("$apiUrl/career");
+             openUrl("$domainurl/career");
             },
             child: const Text(
               "Join Our Team",
@@ -243,21 +245,58 @@ class Footer extends StatelessWidget {
       ),
     );
   }
+Future<bool> sendEnquiryEmail({
+  required String recipientEmail,
+ 
+  required BuildContext context,
+}) async {
+  // Build the URI with query parameters
+  final Uri uri = Uri.parse("$apiUrl/Email/EnquiryMail").replace(
+    queryParameters: {
+      'recipientEmail': recipientEmail,
+      'recipientName': 'Sir/Madam',
+      'mobile': 'NA',
+      'selectedService': 'your interest in Pydart Intelli Corp ',
+      'purpose': 'Interested in Pydart Intelli Corp',
+    },
+  );
+ CustomSnackbar.info(context, "Please wait...");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+    );
 
-  ResponsiveRowColumnItem _buildEcommerceSection() {
+    final success = response.statusCode == 200;
+    if (context.mounted) {
+      success
+          ? CustomSnackbar.success(context, "Your inquiry has been received successfully")
+          : CustomSnackbar.error(context, "Submission failed. Please try again later.");
+    }
+    return success;
+  } catch (e) {
+    if (context.mounted) {
+      CustomSnackbar.error(context, "Server error occurred. Please try again later.");
+    }
+    return false;
+  }
+}
+
+
+  ResponsiveRowColumnItem _buildEcommerceSection(BuildContext context) {
     return ResponsiveRowColumnItem(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionTitle("Our Store"),
           _buildFooterLink("Tech Gadgets", Icons.devices, () {
-            openUrl("$apiUrl/pystore");
+           CustomSnackbar.info(context, "Coming soon ");
           }),
           _buildFooterLink("Development Kits", Icons.build, () {
-            openUrl("$apiUrl/pystore");
+          CustomSnackbar.info(context, "Coming soon ");
           }),
           _buildFooterLink("Latest Product", Icons.support_agent, () {
-            openUrl("$apiUrl/pystore");
+          CustomSnackbar.info(context, "Coming soon ");
           }),
           const SizedBox(height: 15),
           const Text(
@@ -267,9 +306,12 @@ class Footer extends StatelessWidget {
           const SizedBox(height: 20),
           SizedBox(
             width: 200,
+            
             child: TextField(
+                controller:emailController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
+              
                 hintText: "Enter your email",
                 hintStyle: const TextStyle(color: Colors.white54),
                 border: OutlineInputBorder(
@@ -282,8 +324,12 @@ class Footer extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.send, color: Colors.white),
-                  onPressed: () {
-                    // Add email subscription functionality here
+                  onPressed: () async{
+                     await sendEnquiryEmail(
+                                      recipientEmail: emailController.text,
+                                  
+                                      context: context,
+                                    );
                   },
                 ),
               ),
@@ -306,9 +352,9 @@ class Footer extends StatelessWidget {
           _buildFooterLink("+91 73567-65056", Icons.phone, () {
             openUrl("tel:+917356765036");
           }),
-          _buildFooterLink("Kakkanad, Kochi", Icons.location_on, () {
+          _buildFooterLink("Palarivattom, Kochi", Icons.location_on, () {
             openUrl(
-                "https://www.google.com/maps?q=10.0159,76.3419"); // Replace with desired coordinates
+                "https://www.google.com/maps?q=10.001321532145445,76.30230229063729"); // Replace with desired coordinates
           }),
           _buildFooterLink("Mon-Fri: 9AM - 6PM", Icons.access_time, () {}),
           const SizedBox(height: 5),
@@ -320,7 +366,7 @@ class Footer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            onPressed: () {},
+            onPressed: () { openUrl("mailto:founder@pydart.in");},
             child: const Text(
               "Investment Enquiry",
               style: TextStyle(color: Color.fromARGB(181, 255, 255, 255)),

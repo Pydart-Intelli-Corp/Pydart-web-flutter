@@ -353,18 +353,18 @@ class _IndustryTrendsBlockState extends State<IndustryTrendsBlock> {
                   ),
                   const SizedBox(height: 50),
                   // Call-to-Action Button
-                  Center(
-                    child: PrimaryGradientButton(
-                      onPressed: () =>
-                          _showDetailsPopup(context, "Industry Trends"),
-                      text: "Discover Our Insights →",
-                      padding: isMobile
-                          ? const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 14)
-                          : const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 16),
-                    ),
-                  )
+                  // Center(
+                  //   child: PrimaryGradientButton(
+                  //     onPressed: () =>
+                  //         _showDetailsPopup(context, "Industry Trends"),
+                  //     text: "Discover Our Insights →",
+                  //     padding: isMobile
+                  //         ? const EdgeInsets.symmetric(
+                  //             horizontal: 24, vertical: 14)
+                  //         : const EdgeInsets.symmetric(
+                  //             horizontal: 32, vertical: 16),
+                  //   ),
+                  // )
                 ],
               ),
             ),

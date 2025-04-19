@@ -120,11 +120,11 @@ class _InsightScreenState extends State<InsightScreen> {
                 child: widget,
               ),
             ),
-            children: const [
-              InsightsHead(),
-              IndustryTrendsBlock(),
-            MissionBlock(),
-              VisionBlock(),
+            children: [
+              const InsightsHead(),
+              const IndustryTrendsBlock(),
+            const MissionBlock(),
+              const VisionBlock(),
               Footer(
                 g1: Color.fromARGB(255, 5, 11, 13),
                 g2: Color.fromARGB(255, 4, 6, 9),
