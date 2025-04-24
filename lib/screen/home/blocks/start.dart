@@ -4,10 +4,16 @@ import 'package:flutter_website/components/spacing.dart';
 import 'package:flutter_website/components/typography.dart';
 import 'package:flutter_website/components/colors.dart';
 
-import 'package:flutter_website/widgets/buttons/gradient_button.dart'; // Ensure this is imported for PrimaryGradientButton
+import 'package:flutter_website/widgets/buttons/gradient_button.dart';
 
 class HomeHead extends StatefulWidget {
-  const HomeHead({super.key});
+  // Add a callback function for when the "Explore Now" button is clicked
+final VoidCallback onExploreNowPressed;
+
+  const HomeHead({
+    super.key, 
+  required this.onExploreNowPressed
+  });
 
   @override
   State<HomeHead> createState() => _HomeHeadState();
@@ -16,12 +22,6 @@ class HomeHead extends StatefulWidget {
 class _HomeHeadState extends State<HomeHead> {
   bool isMobile(BuildContext context) {
     return MediaQuery.of(context).size.width < 600;
-  }
-
-  void _scrollToJobOpenings() {
-    // Define the logic to scroll to job openings section
-    // e.g., using ScrollController or context jump/navigation
-    print("Scrolling to job openings...");
   }
 
   Widget _buildServiceHeader(bool isMobile) {
@@ -56,8 +56,8 @@ class _HomeHeadState extends State<HomeHead> {
               ),
               const SizedBox(height: 40),
               PrimaryGradientButton(
-                onPressed: _scrollToJobOpenings,
-                text: "Explore →",
+                onPressed: widget.onExploreNowPressed,
+                text: "Explore Now →",
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               )
             ],

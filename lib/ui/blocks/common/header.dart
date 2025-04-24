@@ -453,14 +453,14 @@ class _HeaderState extends State<Header> {
       title: const Text(''),
       actions: [
         TextButton(
-          onPressed: () => openUrl('https://www.tcs.com/services'),
+          onPressed: () => openUrl('https://www.pydart.in/services'),
           child: const Text(
             'About',
             style: TextStyle(color: Colors.white),
           ),
         ),
         TextButton(
-          onPressed: () => openUrl('https://www.tcs.com/services'),
+          onPressed: () => openUrl("tel:+917356765036"),
           child: const Text(
             'Contact Us',
             style: TextStyle(color: Colors.white),
@@ -508,7 +508,7 @@ class _HeaderState extends State<Header> {
               Provider.of<NavigationProvider>(context, listen: false).active =
                   'ourservices';
               Navigator.pop(context);
-              openUrl('https://www.tcs.com/services');
+              openUrl('https://www.pydart.in/services');
             },
           ),
           ListTile(
@@ -518,7 +518,7 @@ class _HeaderState extends State<Header> {
               Provider.of<NavigationProvider>(context, listen: false).active =
                   'insights';
               Navigator.pop(context);
-              openUrl('https://www.tcs.com/services');
+              openUrl('https://www.pydart.in/insights');
             },
           ),
           ListTile(
@@ -528,21 +528,21 @@ class _HeaderState extends State<Header> {
               Provider.of<NavigationProvider>(context, listen: false).active =
                   'careers';
               Navigator.pop(context);
-              openUrl('https://www.tcs.com/services');
+              openUrl('https://www.pydart.in/career');
             },
           ),
           ListTile(
             title: const Text('About'),
             onTap: () {
               Navigator.pop(context);
-              openUrl('https://www.tcs.com/services');
+              openUrl('https://www.pydart.in/whoweare');
             },
           ),
           ListTile(
             title: const Text('Contact Us'),
             onTap: () {
               Navigator.pop(context);
-              openUrl('https://www.tcs.com/services');
+             openUrl("tel:+917356765036");
             },
           ),
         ],
