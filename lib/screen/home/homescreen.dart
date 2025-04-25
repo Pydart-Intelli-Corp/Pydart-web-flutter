@@ -242,13 +242,13 @@ class AnimatedImageSlider extends StatefulWidget {
 
 class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   final List<String> _images = [
-    'https://images.unsplash.com/photo-1510519138101-570d1dca3d66',
-    'https://images.unsplash.com/photo-1634746419780-464e7ffcbb34',
-    'https://images.unsplash.com/photo-1576400883215-7083980b6193',
-    'https://images.unsplash.com/photo-1581092921461-eab62e97a780',
-    'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e',
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c',
-    'https://images.unsplash.com/photo-1650530415027-dc9199f473ec'
+    'https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=2047&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1634746419780-464e7ffcbb34?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1576400883215-7083980b6193?q=80&w=2013&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?q=80&w=1933&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   ];
 
   final Random _random = Random();
@@ -302,7 +302,6 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
       }
     });
   }
-
   void _nextImage() {
     if (_currentIndex < _images.length - 1) {
       setState(() {
@@ -310,8 +309,8 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
         _currentIndex++;
         widget.onIndexChanged?.call(_currentIndex);
       });
+      _resetInactivityTimer();  // Moved inside setState callback
     }
-    _resetInactivityTimer();
   }
 
   void _previousImage() {
@@ -321,9 +320,10 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
         _currentIndex--;
         widget.onIndexChanged?.call(_currentIndex);
       });
+      _resetInactivityTimer();  // Moved inside setState callback
     }
-    _resetInactivityTimer();
   }
+
 
   Widget _buildTransition(Widget child, Animation<double> animation) {
     switch (_transitionType) {
@@ -362,14 +362,12 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
     _inactivityTimer?.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity! < 0) _nextImage();
         if (details.primaryVelocity! > 0) _previousImage();
-        _resetInactivityTimer();
       },
       child: Stack(
         children: [
@@ -377,7 +375,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
             duration: const Duration(milliseconds: 800),
             transitionBuilder: _buildTransition,
             child: Container(
-              key: ValueKey<int>(_currentIndex),
+              key: ValueKey<int>(_currentIndex),  // Ensure unique key
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(_images[_currentIndex]),
@@ -394,7 +392,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
               ),
             ),
           ),
-          Positioned.fill(
+             Positioned.fill(
             child: IgnorePointer(
               ignoring: !_showArrows,
               child: AnimatedOpacity(
@@ -404,12 +402,12 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.chevron_left, color: Colors.white),
-                      onPressed: _previousImage,
+                      icon: const Icon(Icons.chevron_left, size: 40),
+                      onPressed: () => _previousImage(),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.chevron_right, color: Colors.white),
-                      onPressed: _nextImage,
+                      icon: const Icon(Icons.chevron_right, size: 40),
+                      onPressed: () => _nextImage(),
                     ),
                   ],
                 ),
