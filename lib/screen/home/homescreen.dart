@@ -11,6 +11,20 @@ import 'package:flutter_website/screen/services/blocks/features.dart';
 import 'package:flutter_website/ui/blocks/common/footer.dart';
 import 'package:flutter_website/ui/blocks/common/header.dart';
 
+
+
+  final List<String> _images = [
+    'https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=2047&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1542315192-1f61a1792f33?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1661347561213-21aad3b49b61?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1615746363486-92cd8c5e0a90?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1603566234966-63aff3736a36?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ];
+
+
+
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
   Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
@@ -32,6 +46,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   late double _imageHideThreshold;
  final GlobalKey _aiBlockKey = GlobalKey();
   int _currentContentIndex = 0;
+ void _handleSwipeLeft() => _sliderKey.currentState?.nextImage();
+  void _handleSwipeRight() => _sliderKey.currentState?.previousImage();
+    final GlobalKey<_AnimatedImageSliderState> _sliderKey = GlobalKey();
 
 final List<String> _contentTitles = [
   "WELCOME TO PYDART INTELLI CORP",
@@ -148,6 +165,7 @@ void _scrollToAIBlock() {
                     SizedBox(
                       height: constraints.maxHeight / 2,
                     child: AnimatedImageSlider(
+                       key: _sliderKey, // Pass the key
                         onIndexChanged: (index) => setState(() => _currentContentIndex = index),
                       ),
                     ),
@@ -205,10 +223,14 @@ void _scrollToAIBlock() {
             children: [
              // In _buildContentLayer method:
  HomeHead(
-                onExploreNowPressed: _scrollToAIBlock,
-                title: _contentTitles[_currentContentIndex],
-                subtitle: _contentSubtitles[_currentContentIndex],
-              ),
+            onExploreNowPressed: _scrollToAIBlock,
+            title: _contentTitles[_currentContentIndex],
+            subtitle: _contentSubtitles[_currentContentIndex],
+            currentIndex: _currentContentIndex,
+            totalItems: _images.length,
+            onSwipeLeft: () => _sliderKey.currentState?.nextImage(),
+            onSwipeRight: () => _sliderKey.currentState?.previousImage(),
+          ),
               const Features(),
               ServicesBlock(key: _aiBlockKey),
         
@@ -259,66 +281,97 @@ void _scrollToAIBlock() {
 }
 
 class AnimatedImageSlider extends StatefulWidget {
-  final ValueChanged<int>? onIndexChanged;
+  // Add these
+  final VoidCallback? onSwipeLeft;
+  final VoidCallback? onSwipeRight;
+   final ValueChanged<int>? onIndexChanged;
 
-  const AnimatedImageSlider({Key? key, this.onIndexChanged}) : super(key: key);
+  const AnimatedImageSlider({
+    super.key,
+    this.onIndexChanged,
+    this.onSwipeLeft,
+    this.onSwipeRight,
+  });
 
   @override
   _AnimatedImageSliderState createState() => _AnimatedImageSliderState();
 }
 
-class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
-  final List<String> _images = [
-    'https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=2047&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1634746419780-464e7ffcbb34?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1576400883215-7083980b6193?q=80&w=2013&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1650530415027-dc9199f473ec?q=80&w=1933&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-  ];
 
+class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
+
+Timer? _userInteractionTimer;
+bool _cycleCompleted = false;
+bool _showSwipePrompt = false;
   final Random _random = Random();
   late Timer _timer;
   int _currentIndex = 0;
   int _transitionType = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    // Auto-cycle once: go through all images and wrap back to the first, then stop
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        _transitionType = _random.nextInt(5);
-        _currentIndex = (_currentIndex + 1) % _images.length;
-        widget.onIndexChanged?.call(_currentIndex);
-      });
-      // After wrapping back to first image, stop the cycle
-      if (_currentIndex == 0) {
-        timer.cancel();
-      }
+@override
+void initState() {
+  super.initState();
+  _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    setState(() {
+      _transitionType = _random.nextInt(5);
+      _currentIndex = (_currentIndex + 1) % _images.length;
+      widget.onIndexChanged?.call(_currentIndex);
     });
+    
+    if (_currentIndex == 0) {
+      timer.cancel();
+      setState(() {
+        _cycleCompleted = true;
+        _showSwipePrompt = true;
+      });
+      // Show prompt for 3 seconds
+      Future.delayed(const Duration(seconds: 3), () {
+        setState(() => _showSwipePrompt = false);
+      });
+    }
+  });
+}
+void nextImage() {
+    if (!_cycleCompleted) return;
+    setState(() {
+      _transitionType = _random.nextInt(5);
+      _currentIndex = (_currentIndex + 1) % _images.length;
+      widget.onIndexChanged?.call(_currentIndex);
+    });
+    _handleManualInteraction();
   }
 
-  void _nextImage() {
-    if (_currentIndex < _images.length - 1) {
+  void previousImage() {
+    if (!_cycleCompleted) return;
+    setState(() {
+      _transitionType = _random.nextInt(5);
+      _currentIndex = (_currentIndex - 1) % _images.length;
+      widget.onIndexChanged?.call(_currentIndex);
+    });
+    _handleManualInteraction();
+  }
+void _startReturnTimer() {
+  _userInteractionTimer?.cancel();
+  _userInteractionTimer = Timer(const Duration(seconds: 7), () {
+    if (_currentIndex != 0 && mounted) {
       setState(() {
         _transitionType = _random.nextInt(5);
-        _currentIndex++;
+        _currentIndex = 0;
         widget.onIndexChanged?.call(_currentIndex);
       });
     }
-  }
-
-  void _previousImage() {
-    if (_currentIndex > 0) {
-      setState(() {
-        _transitionType = _random.nextInt(5);
-        _currentIndex--;
-        widget.onIndexChanged?.call(_currentIndex);
-      });
-    }
-  }
+  });
+}
+@override
+void dispose() {
+  _userInteractionTimer?.cancel();
+   _timer.cancel();
+  super.dispose();
+}
+void _handleManualInteraction() {
+  _startReturnTimer();
+  setState(() => _showSwipePrompt = false);
+}
 
   Widget _buildTransition(Widget child, Animation<double> animation) {
     switch (_transitionType) {
@@ -356,19 +409,17 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
     }
   }
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity! < 0) _nextImage();
-        if (details.primaryVelocity! > 0) _previousImage();
-      },
+      final isMobile = MediaQuery.of(context).size.width < 600;
+  
+     return GestureDetector(
+    onHorizontalDragEnd: (details) {
+      if (details.primaryVelocity! < 0) nextImage();
+      if (details.primaryVelocity! > 0) previousImage();
+    },
       child: Stack(
         children: [
           AnimatedSwitcher(
@@ -392,19 +443,47 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
               ),
             ),
           ),
-          Positioned(
-            bottom: 20,
-            left: 0,
-            right: 0,
+           Positioned(
+          bottom: 100,
+          left: 0,
+          right: 0,
+          child: AnimatedOpacity(
+            opacity: _showSwipePrompt ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 500),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_images.length, _buildIndicator),
+              children: [
+                if (isMobile)
+                  const Text(
+                    "Swipe to view more",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      shadows: [Shadow(color: Colors.black54, blurRadius: 10)],
+                    ),
+                  ),
+                if (!isMobile)
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 40),
+                        onPressed: previousImage,
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_forward, color: Colors.white, size: 40),
+                        onPressed: nextImage,
+                      ),
+                    ],
+                  ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildIndicator(int index) {
     return AnimatedContainer(
