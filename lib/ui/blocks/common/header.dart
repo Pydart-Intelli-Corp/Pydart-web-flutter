@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
@@ -71,12 +72,6 @@ class _HeaderState extends State<Header> {
     _navProvider = Provider.of<NavigationProvider>(context, listen: false);
   }
 
-  void openUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
-  }
 
   /// Shows the dropdown for the given [dropdown] key.
   /// If another dropdown is open, it is first closed without restoring the hovered state.
@@ -426,7 +421,232 @@ class _HeaderState extends State<Header> {
     );
   }
 
-  void _showDetailsPopup(BuildContext context, String dropdownValue) {
+
+  // --- Mobile Header ---
+ // Replace the existing _buildMobileHeader() and _buildMobileMenu() methods with these:
+
+Widget _buildMobileHeader() {
+  return AppBar(
+    backgroundColor: const Color.fromARGB(255, 3, 10, 14),
+    leadingWidth: 150,
+    leading: SizedBox(
+      width: 130,
+      height: 60,
+      child: SvgPicture.asset(
+        "assets/logos/pydart-logo.svg",
+        semanticsLabel: 'Pydart Logo',
+        fit: BoxFit.fill,
+        allowDrawingOutsideViewBox: true,
+      ),
+    ),
+    title: const Text(''),
+    actions: [
+      IconButton(
+        icon: const Icon(Icons.menu, color: Colors.white),
+        onPressed: () => _showRightSlideMenu(context),
+      ),
+    ],
+  );
+}
+
+}
+void _showRightSlideMenu(BuildContext context) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const RightSlideMenu(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+      opaque: false, // This is crucial
+      barrierColor: Colors.transparent, // Remove default barrier
+    ),
+  );
+}
+class RightSlideMenu extends StatelessWidget {
+  const RightSlideMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          // Transparent click layer
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+          
+          // Menu content with shadow-only styling
+          Transform.translate(
+            offset: Offset(width * 0.2, 0),
+            child: Container(
+              width: width * 0.8,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.close,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black,
+                                    blurRadius: 6,
+                                    offset: Offset(1, 1),
+                                  )
+                                ]),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          _buildGhostMenuItem(
+                            icon: Icons.home,
+                            title: 'Home',
+                            onTap: () => _handleNavigation(context, Routes.home, 'home'),
+                          ),
+                          // Repeat for other menu items
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                            child: _buildGhostButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                _showDetailsPopup(context, 'Mobile Application');
+                              },
+                              text: "Enquire Now",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGhostMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        splashColor: Colors.white.withOpacity(0.2),
+        highlightColor: Colors.white.withOpacity(0.1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          child: Row(
+            children: [
+              Icon(icon,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      blurRadius: 6,
+                      offset: const Offset(1, 1),
+          )]),
+              const SizedBox(width: 16),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      blurRadius: 6,
+                      offset: const Offset(1, 1),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGhostButton({
+    required VoidCallback onPressed,
+    required String text,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(8),
+        splashColor: Colors.white.withOpacity(0.2),
+        highlightColor: Colors.white.withOpacity(0.1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black,
+                  blurRadius: 6,
+                  offset: const Offset(1, 1),
+             ) ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+  void _handleNavigation(BuildContext context, String route, String active) {
+    Navigator.pop(context);
+    Provider.of<NavigationProvider>(context, listen: false).active = active;
+    Get.toNamed(route);
+  }
+
+ void _showDetailsPopup(BuildContext context, String dropdownValue) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -434,119 +654,9 @@ class _HeaderState extends State<Header> {
       },
     );
   }
-
-  // --- Mobile Header ---
-  Widget _buildMobileHeader() {
-    return AppBar(
-      backgroundColor: const Color.fromARGB(255, 3, 10, 14),
-      leadingWidth: 150,
-      leading: SizedBox(
-        width: 130,
-        height: 60,
-        child: SvgPicture.asset(
-          "assets/logos/pydart-logo.svg",
-          semanticsLabel: 'Pydart Logo',
-          fit: BoxFit.fill,
-          allowDrawingOutsideViewBox: true,
-        ),
-      ),
-      title: const Text(''),
-      actions: [
-        TextButton(
-          onPressed: () => openUrl('https://www.pydart.in/services'),
-          child: const Text(
-            'About',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        TextButton(
-          onPressed: () => openUrl("tel:+917356765036"),
-          child: const Text(
-            'Contact Us',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) => _buildMobileMenu(),
-            );
-          },
-        ),
-      ],
-    );
+  void openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
   }
-
-  Widget _buildMobileMenu() {
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Provider.of<NavigationProvider>(context, listen: false).active =
-                  'home';
-              Navigator.pushReplacementNamed(context, Routes.home);
-            },
-          ),
-          ListTile(
-            title: const Text('Who we are'),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () {
-              Provider.of<NavigationProvider>(context, listen: false).active =
-                  'whoweare';
-              Get.toNamed(Routes.whoweare);
-            },
-          ),
-          ListTile(
-            title: const Text('Our services'),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () {
-              Provider.of<NavigationProvider>(context, listen: false).active =
-                  'ourservices';
-              Navigator.pop(context);
-              openUrl('https://www.pydart.in/services');
-            },
-          ),
-          ListTile(
-            title: const Text('Insights'),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () {
-              Provider.of<NavigationProvider>(context, listen: false).active =
-                  'insights';
-              Navigator.pop(context);
-              openUrl('https://www.pydart.in/insights');
-            },
-          ),
-          ListTile(
-            title: const Text('Careers'),
-            trailing: const Icon(Icons.arrow_forward),
-            onTap: () {
-              Provider.of<NavigationProvider>(context, listen: false).active =
-                  'careers';
-              Navigator.pop(context);
-              openUrl('https://www.pydart.in/career');
-            },
-          ),
-          ListTile(
-            title: const Text('About'),
-            onTap: () {
-              Navigator.pop(context);
-              openUrl('https://www.pydart.in/whoweare');
-            },
-          ),
-          ListTile(
-            title: const Text('Contact Us'),
-            onTap: () {
-              Navigator.pop(context);
-             openUrl("tel:+917356765036");
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
