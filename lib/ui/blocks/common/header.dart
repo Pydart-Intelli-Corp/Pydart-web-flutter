@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_website/components/colors.dart' as AppColors;
 import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
 import 'package:flutter_website/widgets/buttons/gradient_button.dart';
 import 'package:flutter_website/widgets/notifications/snackbar.dart';
@@ -473,87 +474,105 @@ void _showRightSlideMenu(BuildContext context) {
     ),
   );
 }
-class RightSlideMenu extends StatelessWidget {
+class RightSlideMenu extends StatefulWidget {
   const RightSlideMenu({super.key});
+
+  @override
+  State<RightSlideMenu> createState() => _RightSlideMenuState();
+}
+
+class _RightSlideMenuState extends State<RightSlideMenu> 
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<Offset> _slideAnimation;
+  final List<bool> _itemVisibility = List.generate(6, (index) => false);
+  final List<double> _itemScale = List.generate(6, (index) => 1.0);
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutExpo));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(1, 0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOutBack,
+    ));
+
+    _controller.forward().then((_) {
+      for (int i = 0; i < _itemVisibility.length; i++) {
+        Future.delayed(Duration(milliseconds: 100 * i), () {
+          setState(() => _itemVisibility[i] = true);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
+    
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Transparent click layer
+          // Blurred background
           GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              color: Colors.transparent,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
             ),
           ),
           
-          // Menu content with shadow-only styling
-          Transform.translate(
-            offset: Offset(width * 0.2, 0),
-            child: Container(
-              width: width * 0.8,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 20,
-                    spreadRadius: 5,
+          // Menu content
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Container(
+                width: width * 0.8,
+                decoration: BoxDecoration(
+                  color: AppColors.pydart.withOpacity(0.1),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
                   ),
-                ],
-              ),
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.close,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black,
-                                    blurRadius: 6,
-                                    offset: Offset(1, 1),
-                                  )
-                                ]),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView(
-                        padding: EdgeInsets.zero,
-                        children: [
-                          _buildGhostMenuItem(
-                            icon: Icons.home,
-                            title: 'Home',
-                            onTap: () => _handleNavigation(context, Routes.home, 'home'),
-                          ),
-                          // Repeat for other menu items
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                            child: _buildGhostButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _showDetailsPopup(context, 'Mobile Application');
-                              },
-                              text: "Enquire Now",
-                            ),
-                          ),
-                        ],
-                      ),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.1),
+                    width: 1.5
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 40,
+                      spreadRadius: 10,
                     ),
                   ],
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: _buildMenuContent(context),
                 ),
               ),
             ),
@@ -563,83 +582,188 @@ class RightSlideMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildGhostMenuItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        splashColor: Colors.white.withOpacity(0.2),
-        highlightColor: Colors.white.withOpacity(0.1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-          child: Row(
-            children: [
-              Icon(icon,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 6,
-                      offset: const Offset(1, 1),
-          )]),
-              const SizedBox(width: 16),
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 6,
-                      offset: const Offset(1, 1),
-                    )
-                  ],
+  Widget _buildMenuContent(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildMenuHeader(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              children: [
+                _buildAnimatedMenuItem(
+                  index: 0,
+                  icon: Icons.home_filled,
+                  title: 'Home',
+                  onTap: () => _handleNavigation(context, Routes.home, 'home'),
                 ),
-              ),
-            ],
+                _buildAnimatedMenuItem(
+                  index: 1,
+                  icon: Icons.people_alt_rounded,
+                  title: 'Who We Are',
+                  onTap: () => _handleNavigation(context, Routes.whoweare, 'whoweare'),
+                ),
+                _buildAnimatedMenuItem(
+                  index: 2,
+                  icon: Icons.design_services_rounded,
+                  title: 'Our Services',
+                  onTap: () => _handleNavigation(context, Routes.services, 'ourservices'),
+                ),
+                _buildAnimatedMenuItem(
+                  index: 3,
+                  icon: Icons.insights_rounded,
+                  title: 'Insights',
+                  onTap: () => _handleNavigation(context, Routes.insights, 'insights'),
+                ),
+                _buildAnimatedMenuItem(
+                  index: 4,
+                  icon: Icons.work_history_rounded,
+                  title: 'Careers',
+                  onTap: () => _handleNavigation(context, Routes.career, 'careers'),
+                ),
+                const SizedBox(height: 32),
+                _buildAnimatedButton(
+                  index: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: PrimaryGradientButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _showDetailsPopup(context, 'Mobile Application');
+                      },
+                      text: "Enquire Now",
+                   
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildGhostButton({
-    required VoidCallback onPressed,
-    required String text,
+  Widget _buildAnimatedMenuItem({
+    required int index,
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
   }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(8),
-        splashColor: Colors.white.withOpacity(0.2),
-        highlightColor: Colors.white.withOpacity(0.1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: Colors.black,
-                  blurRadius: 6,
-                  offset: const Offset(1, 1),
-             ) ],
+    return MouseRegion(
+      onEnter: (_) => setState(() => _itemScale[index] = 1.05),
+      onExit: (_) => setState(() => _itemScale[index] = 1.0),
+      child: AnimatedOpacity(
+        opacity: _itemVisibility[index] ? 1 : 0,
+        duration: Duration(milliseconds: 300 + (index * 50)),
+        curve: Curves.easeOutQuint,
+        child: AnimatedSlide(
+          duration: Duration(milliseconds: 400 + (index * 50)),
+          offset: _itemVisibility[index] 
+              ? Offset.zero 
+              : const Offset(0.5, 0),
+          child: ScaleTransition(
+            scale: Tween(begin: 0.7, end: _itemScale[index].toDouble())
+              .animate(CurvedAnimation(
+                parent: _controller,
+                curve: Interval(
+                  0.3 + (index * 0.1),
+                  1.0,
+                  curve: Curves.elasticOut,
+                ),
+              )),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Card(
+                margin: EdgeInsets.zero,
+                color: Colors.transparent,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  side: BorderSide(
+                    color: Colors.white.withOpacity(0.1),
+                    width: 1
+                  ),
+                ),
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(15),
+                  splashColor: AppColors.pydart.withOpacity(0.2),
+                  highlightColor: AppColors.pydart.withOpacity(0.1),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(icon, color: Colors.white70, size: 24),
+                        const SizedBox(width: 20),
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(Icons.arrow_forward_ios_rounded,
+                          color: AppColors.pydart, size: 16),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
   }
-}
 
+  Widget _buildMenuHeader() {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Menu',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.2,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.white70, size: 28),
+            onPressed: () => Navigator.pop(context),
+            splashRadius: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildAnimatedButton({
+    required int index,
+    required Widget child,
+  }) {
+    return AnimatedOpacity(
+      opacity: _itemVisibility[index] ? 1 : 0,
+      duration: Duration(milliseconds: 300 + (index * 50)),
+      curve: Curves.easeOutQuad,
+      child: AnimatedSlide(
+        duration: Duration(milliseconds: 300 + (index * 50)),
+        offset: _itemVisibility[index] ? Offset.zero : const Offset(0, 0.5),
+        child: child,
+      ),
+    );
+  }
+}
+ 
   void _handleNavigation(BuildContext context, String route, String active) {
     Navigator.pop(context);
     Provider.of<NavigationProvider>(context, listen: false).active = active;
