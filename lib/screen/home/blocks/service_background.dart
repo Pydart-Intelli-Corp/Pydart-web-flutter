@@ -86,7 +86,7 @@ class _ServicesBlockState extends State<ServicesBlock> {
               "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2944&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-              const Color.fromARGB(255, 11, 11, 11).withOpacity(0.85), BlendMode.darken),
+              const Color.fromARGB(255, 11, 11, 11).withOpacity(0.86), BlendMode.darken),
         ),
       ),
       child: Column(
