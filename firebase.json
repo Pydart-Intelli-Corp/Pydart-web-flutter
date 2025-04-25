@@ -11,6 +11,11 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+  
+    "predeploy": [
+      "flutter pub get",
+      "flutter build web --release"
     ]
   }
 }
