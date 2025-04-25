@@ -2,33 +2,36 @@ name: Build & Deploy Flutter Web to Firebase
 
 on:
   push:
-    branches:
-      - main     # or whichever branch you want to deploy from
+    branches: [ main ]
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      - name: Install dependencies
+      # 1) Install Dart packages
+      - name: flutter pub get
         run: flutter pub get
 
+      # 2) Build your web app
       - name: Build Web Release
         run: flutter build web --release
 
       - name: Install Firebase CLI
-        run: |
-          curl -sL https://firebase.tools | bash
+        run: curl -sL https://firebase.tools | bash
 
+      # ← 3) Deploy (build is guaranteed fresh)
       - name: Deploy to Firebase Hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          firebase deploy -P pydart-india
+          firebase deploy \
+            --only hosting \
+            --project pydart-india \
+            --token "$FIREBASE_TOKEN"
