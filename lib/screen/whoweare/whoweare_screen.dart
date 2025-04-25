@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_website/components/colors.dart';
+import 'package:flutter_website/core/extensions/color_extensions.dart';
 import 'package:flutter_website/screen/services/servicesScreen.dart';
 import 'package:flutter_website/screen/whoweare/blocks/about.dart';
 import 'package:flutter_website/screen/whoweare/blocks/people.dart';
@@ -144,7 +145,7 @@ class _WhoweareScreenState extends State<WhoweareScreen> {
             ),
             child: FloatingActionButton(
               onPressed: _scrollToTop,
-              backgroundColor: Colors.blueGrey.withOpacity(0.8),
+                  backgroundColor: AppColors.scroll,
               child: const Icon(Icons.arrow_upward, color: Colors.white),
             ),
           ),
@@ -156,7 +157,7 @@ class _WhoweareScreenState extends State<WhoweareScreen> {
             ),
             child: FloatingActionButton(
               onPressed: _scrollToBottom,
-              backgroundColor: Colors.blueGrey.withOpacity(0.8),
+                  backgroundColor: AppColors.scroll,
               child: const Icon(Icons.arrow_downward, color: Colors.white),
             ),
           ),

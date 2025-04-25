@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_website/components/colors.dart';
+import 'package:flutter_website/core/extensions/color_extensions.dart';
 import 'package:flutter_website/screen/home/blocks/service_background.dart';
 import 'package:flutter_website/screen/home/blocks/start.dart';
 
@@ -207,7 +208,7 @@ HomeHead(onExploreNowPressed: _scrollToAIBlock),
             ),
             child: FloatingActionButton(
               onPressed: _scrollToTop,
-              backgroundColor: Colors.blueGrey.withOpacity(0.8),
+             backgroundColor: AppColors.scroll,
               child: const Icon(Icons.arrow_upward, color: Colors.white),
             ),
           ),
@@ -219,7 +220,7 @@ HomeHead(onExploreNowPressed: _scrollToAIBlock),
             ),
             child: FloatingActionButton(
               onPressed: _scrollToBottom,
-              backgroundColor: Colors.blueGrey.withOpacity(0.8),
+                  backgroundColor: AppColors.scroll,
               child: const Icon(Icons.arrow_downward, color: Colors.white),
             ),
           ),
@@ -239,9 +240,14 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   // Directly reference the three Unsplash images you provided:
   final List<String> _images = [
     'https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=2047&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2098&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1634746419780-464e7ffcbb34?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     'https://images.unsplash.com/photo-1576400883215-7083980b6193?q=80&w=2013&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  ];
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  'https://images.unsplash.com/photo-1733506260573-2ddbf1db9b1a?q=80&w=2096&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ,'https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ,'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+
+   ];
 
   final Random _random = Random();
   int _currentIndex = 0;
