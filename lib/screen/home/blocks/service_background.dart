@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/screen/home/blocks/ai_service.dart';
-import 'package:flutter_website/screen/home/blocks/app_dev.dart';
-import 'package:flutter_website/screen/home/blocks/digital_marketing.dart';
-import 'package:flutter_website/screen/home/blocks/project_solution.dart';
-import 'package:flutter_website/screen/home/blocks/web_dev.dart';
-
+import 'package:flutter_website/components/colors.dart' as AppColors;
+import 'package:flutter_website/components/spacing.dart';
+import 'package:flutter_website/components/typography.dart';
+import 'package:flutter_website/components/colors.dart';
 
 class ServicesBlock extends StatefulWidget {
   const ServicesBlock({super.key});
@@ -14,44 +12,128 @@ class ServicesBlock extends StatefulWidget {
 }
 
 class _ServicesBlockState extends State<ServicesBlock> {
-  final ScrollController _scrollController = ScrollController();
-  final List<GlobalKey> _serviceKeys = List.generate(5, (index) => GlobalKey());
+  final List<Service> services = [
+    Service(
+      title: "Web & Cloud Solutions",
+      icon: Icons.cloud,
+      color: AppColors.pydart,
+      subtitle: "Build fast, secure, and search-friendly applications",
+      features: [
+        "Next.js/React/Angular/Flutter/.NET Core",
+        "AI Integration (TensorFlow.js, Hugging Face)",
+        "SEO-optimized SSR Experiences",
+        "Progressive Web Apps (PWA)",
+        "DevOps & Containerization (Docker/K8s)",
+        "OWASP-hardened Security"
+      ],
+    ),
+    Service(
+      title: "Mobile & Embedded Apps",
+      icon: Icons.phone_iphone,
+      color: Colors.blueAccent,
+      subtitle: "High-performance cross-platform experiences",
+      features: [
+        "Flutter & React Native",
+        "Native iOS/Android Development",
+        "AR/VR & IoT Integrations",
+        "Wearable Tech Support",
+        "App Store Deployment",
+        "Automated Testing"
+      ],
+    ),
+    Service(
+      title: "Hardware & Automation",
+      icon: Icons.settings,
+      color: Colors.greenAccent,
+      subtitle: "Embedded intelligence solutions",
+      features: [
+        "Custom PCB Design",
+        "Firmware Development",
+        "Industrial CAD & Robotics",
+        "Qt/PyQt GUIs",
+        "OTA Firmware Updates",
+        "Diagnostic Tools"
+      ],
+    ),
+    Service(
+      title: "Digital Marketing",
+      icon: Icons.campaign,
+      color: Colors.orangeAccent,
+      subtitle: "Brand elevation & audience growth",
+      features: [
+        "SEO & Content Strategy",
+        "Social Media Management",
+        "PPC & Programmatic Ads",
+        "Video Production",
+        "Motion Graphics",
+        "Analytics & A/B Testing"
+      ],
+    ),
+  ];
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+  int? hoveredIndex;
+  int? expandedIndex;
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 768;
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: isMobile ? 40 : 100),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.black,
-            Colors.blueGrey.shade900,
-          ],
+        image: DecorationImage(
+          image: NetworkImage(
+              "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2944&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.85), BlendMode.darken),
         ),
       ),
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40),
+            padding: EdgeInsets.symmetric(vertical: 80, horizontal: isMobile ? 20 : 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionHeader(isMobile),
-                const SizedBox(height: 40),
-                _buildServiceGrid(isMobile),
+                Text(
+                  "Full-Spectrum Digital Solutions",
+                  style: TextStyle(
+                    fontSize: isMobile ? 32 : 48,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    fontFamily: "Montserrat",
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "From concept to deployment - we deliver end-to-end technology solutions",
+                  style: TextStyle(
+                    fontSize: isMobile ? 18 : 22,
+                    color: AppColors.textPrimary,
+                    fontFamily: "Montserrat",
+                  ),
+                ),
                 const SizedBox(height: 60),
-                _buildCTASection(),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isMobile ? 1 : 2,
+                    crossAxisSpacing: 30,
+                    mainAxisSpacing: 30,
+                    childAspectRatio: 1.1,
+                  ),
+                  itemCount: services.length,
+                  itemBuilder: (context, index) => _ServiceCard(
+                    service: services[index],
+                    isExpanded: expandedIndex == index,
+                    isHovered: hoveredIndex == index,
+                    onTap: () => setState(() => expandedIndex = expandedIndex == index ? null : index),
+                    onHover: (value) => setState(() => hoveredIndex = value ? index : null),
+                  ),
+                ),
               ],
             ),
           ),
@@ -59,153 +141,153 @@ class _ServicesBlockState extends State<ServicesBlock> {
       ),
     );
   }
-
-  Widget _buildSectionHeader(bool isMobile) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "🚀 What We Do",
-          style: TextStyle(
-            fontSize: isMobile ? 34 : 52,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
-            fontFamily: 'Inter',
-            letterSpacing: -1.5,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          "Full-cycle digital product development with cutting-edge technologies and data-driven approach",
-          style: TextStyle(
-            fontSize: isMobile ? 18 : 22,
-            color: Colors.white70,
-            height: 1.5,
-            fontFamily: 'Inter',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceGrid(bool isMobile) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isMobile ? 1 : 2,
-        mainAxisSpacing: 24,
-        crossAxisSpacing: 24,
-        childAspectRatio: isMobile ? 1 : 1.2,
-      ),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return WebDevelopmentService(key: _serviceKeys[index], isMobile: isMobile);
-          case 1:
-            return AppDevelopmentService(key: _serviceKeys[index], isMobile: isMobile);
-          case 2:
-            return Project_Solution(key: _serviceKeys[index], isMobile: isMobile);
-          case 3:
-            return DigitalMarketing_Designs(key: _serviceKeys[index], isMobile: isMobile);
-          case 4:
-            return AIService(key: _serviceKeys[index], isMobile: isMobile);
-          default:
-            return const SizedBox();
-        }
-      },
-    );
-  }
-
-  Widget _buildCTASection() {
-    return Column(
-      children: [
-        const Divider(color: Colors.white24),
-        const SizedBox(height: 40),
-        AnimatedButton(
-          onPressed: () => _handleScrollToContact(),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Start Innovation Journey",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  fontFamily: 'Inter',
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 24),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _handleScrollToContact() {
-    // Add scroll logic here
-  }
 }
 
-class AnimatedButton extends StatefulWidget {
-  final VoidCallback onPressed;
-  final Widget child;
+class _ServiceCard extends StatefulWidget {
+  final Service service;
+  final bool isExpanded;
+  final bool isHovered;
+  final Function() onTap;
+  final Function(bool) onHover;
 
-  const AnimatedButton({super.key, required this.onPressed, required this.child});
+  const _ServiceCard({
+    required this.service,
+    required this.isExpanded,
+    required this.isHovered,
+    required this.onTap,
+    required this.onHover,
+  });
 
   @override
-  State<AnimatedButton> createState() => _AnimatedButtonState();
+  State<_ServiceCard> createState() => _ServiceCardState();
 }
 
-class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-  }
-
+class _ServiceCardState extends State<_ServiceCard> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => _controller.forward(),
-      onExit: (_) => _controller.reverse(),
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: TextButton(
-          onPressed: widget.onPressed,
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 32),
-            backgroundColor: Colors.blueAccent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.blue.shade400, width: 2),
+      onEnter: (_) => widget.onHover(true),
+      onExit: (_) => widget.onHover(false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          transform: Matrix4.identity()..scale(widget.isHovered ? 1.02 : 1.0),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(widget.isExpanded ? 0.95 : 0.7),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: widget.service.color.withOpacity(widget.isHovered ? 0.6 : 0.3),
+              width: 1.5,
             ),
-            elevation: 4,
-            shadowColor: Colors.blueAccent.withOpacity(0.3),
+            boxShadow: [
+              BoxShadow(
+                color: widget.service.color.withOpacity(widget.isHovered ? 0.2 : 0.1),
+                blurRadius: 20,
+                spreadRadius: 2,
+              )
+            ],
           ),
-          child: DefaultTextStyle.merge(
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.5,
+          padding: const EdgeInsets.all(25),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: widget.service.color.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(widget.service.icon, 
+                          color: widget.service.color, size: 28),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Text(
+                        widget.service.title,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  widget.service.subtitle,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                    fontFamily: "Montserrat",
+                    height: 1.4,
+                  ),
+                ),
+                if (widget.isExpanded) ...[
+                  const SizedBox(height: 25),
+                  ...widget.service.features.map((feature) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.arrow_forward, 
+                            color: widget.service.color, size: 16),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            feature,
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 15,
+                              fontFamily: "Montserrat",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+                ],
+                const SizedBox(height: 15),
+                AnimatedOpacity(
+                  opacity: widget.isExpanded ? 0 : 1,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    "Tap to expand →",
+                    style: TextStyle(
+                      color: widget.service.color,
+                      fontSize: 14,
+                      fontFamily: "Montserrat",
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: widget.child,
           ),
         ),
       ),
     );
   }
 }
+
+class Service {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final String subtitle;
+  final List<String> features;
+
+  Service({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.subtitle,
+    required this.features,
+  });
+}
+

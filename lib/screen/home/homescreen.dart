@@ -228,7 +228,6 @@ HomeHead(onExploreNowPressed: _scrollToAIBlock),
     );
   }
 }
-
 class AnimatedImageSlider extends StatefulWidget {
   const AnimatedImageSlider({Key? key}) : super(key: key);
 
@@ -237,11 +236,13 @@ class AnimatedImageSlider extends StatefulWidget {
 }
 
 class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
+  // Directly reference the three Unsplash images you provided:
   final List<String> _images = [
-    'assets/images/home/1.png',
-    'assets/images/home/2.png',
-    'assets/images/home/3.png',
+    'https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=2047&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2098&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1576400883215-7083980b6193?q=80&w=2013&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   ];
+
   final Random _random = Random();
   int _currentIndex = 0;
   int _transitionType = 0;
@@ -250,76 +251,60 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    // Cycle every 3s
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _nextImage());
   }
 
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      _nextImage();
+  void _nextImage() {
+    setState(() {
+      _transitionType = _random.nextInt(5);
+      _currentIndex = (_currentIndex + 1) % _images.length;
     });
   }
 
-void _nextImage() {
-  setState(() {
-    _transitionType = _random.nextInt(5); // Changed from 4 to 5
-    _currentIndex = (_currentIndex + 1) % _images.length;
-  });
-}
-
-void _previousImage() {
-  setState(() {
-    _transitionType = _random.nextInt(5); // Changed from 4 to 5
-    _currentIndex = (_currentIndex - 1 + _images.length) % _images.length;
-  });
-}
-Widget _buildTransition(Widget child, Animation<double> animation) {
-  switch (_transitionType) {
-    case 0:
-      // Fade-in effect
-      return FadeTransition(
-        opacity: animation,
-        child: child,
-      );
-    case 1:
-      // Previous case 0 - slide from right
-      return SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(1.0, 0.0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-        child: child,
-      );
-    case 2:
-      // Previous case 1 - fade with scale
-      return FadeTransition(
-        opacity: animation,
-        child: ScaleTransition(
-          scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutBack)),
-          child: child,
-        ),
-      );
-    case 3:
-      // Previous case 2 - rotation
-      return RotationTransition(
-        turns: Tween<double>(begin: -0.1, end: 0.0).animate(
-          CurvedAnimation(parent: animation, curve: Curves.easeInOutSine)),
-        child: FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      );
-    default:
-      // Previous default - slide from bottom
-      return SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0.0, 1.0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeInQuad)),
-        child: child,
-      );
+  void _previousImage() {
+    setState(() {
+      _transitionType = _random.nextInt(5);
+      _currentIndex = (_currentIndex - 1 + _images.length) % _images.length;
+    });
   }
-}
+
+  Widget _buildTransition(Widget child, Animation<double> animation) {
+    switch (_transitionType) {
+      case 0:
+        return FadeTransition(opacity: animation, child: child);
+      case 1:
+        return SlideTransition(
+          position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+              .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+          child: child,
+        );
+      case 2:
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+            ),
+            child: child,
+          ),
+        );
+      case 3:
+        return RotationTransition(
+          turns: Tween<double>(begin: -0.1, end: 0).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeInOutSine),
+          ),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      default:
+        return SlideTransition(
+          position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+              .animate(CurvedAnimation(parent: animation, curve: Curves.easeInQuad)),
+          child: child,
+        );
+    }
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -339,10 +324,10 @@ Widget _buildTransition(Widget child, Animation<double> animation) {
             duration: const Duration(milliseconds: 800),
             transitionBuilder: _buildTransition,
             child: Container(
-              key: ValueKey(_images[_currentIndex]),
+              key: ValueKey(_currentIndex),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(_images[_currentIndex]),
+                  image: NetworkImage(_images[_currentIndex]),
                   fit: BoxFit.cover,
                 ),
                 gradient: LinearGradient(
@@ -362,7 +347,7 @@ Widget _buildTransition(Widget child, Animation<double> animation) {
             right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_images.length, (index) => _buildIndicator(index)),
+              children: List.generate(_images.length, _buildIndicator),
             ),
           ),
         ],
@@ -377,9 +362,12 @@ Widget _buildTransition(Widget child, Animation<double> animation) {
       width: _currentIndex == index ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: _currentIndex == index ? Colors.blueAccent : Colors.white.withOpacity(0.5),
+        color: _currentIndex == index
+            ? Colors.blueAccent
+            : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(4),
       ),
     );
   }
 }
+
