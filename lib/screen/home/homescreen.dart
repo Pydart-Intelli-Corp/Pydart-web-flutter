@@ -6,6 +6,7 @@ import 'package:flutter_website/components/colors.dart';
 import 'package:flutter_website/core/extensions/color_extensions.dart';
 import 'package:flutter_website/screen/home/blocks/service_background.dart';
 import 'package:flutter_website/screen/home/blocks/start.dart';
+
 import 'package:flutter_website/screen/services/blocks/features.dart';
 import 'package:flutter_website/ui/blocks/common/footer.dart';
 import 'package:flutter_website/ui/blocks/common/header.dart';
@@ -23,35 +24,35 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   bool _isLoaded = false;
   bool _showScrollButtons = false;
   final ScrollController _scrollController = ScrollController();
   late AnimationController _imageVisibilityController;
   late double _imageHideThreshold;
-  final GlobalKey _aiBlockKey = GlobalKey();
+ final GlobalKey _aiBlockKey = GlobalKey();
   int _currentContentIndex = 0;
 
-  final List<String> _contentTitles = [
-    "WELCOME TO PYDART INTELLI CORP",
-    "CUSTOM SOFTWARE SOLUTIONS",
-    "SMART HARDWARE INNOVATIONS",
-    "PRECISION MECHANICAL DESIGNS",
-    "IMPACTFUL CREATIVE DESIGNS",
-    "STRATEGIC DIGITAL MARKETING",
-    "SCHEDULE YOUR CONSULTATION"
-  ];
+final List<String> _contentTitles = [
+  "WELCOME TO PYDART INTELLI CORP",
+  "CUSTOM SOFTWARE SOLUTIONS",
+  "SMART HARDWARE INNOVATIONS",
+  "PRECISION MECHANICAL DESIGNS",
+  "IMPACTFUL CREATIVE DESIGNS",
+  "STRATEGIC DIGITAL MARKETING",
+  "SCHEDULE YOUR CONSULTATION"
+];
 
-  final List<String> _contentSubtitles = [
-    "Innovate. Integrate. Inspire.",
-    "Tailored Web, Mobile & Enterprise Applications",
-    "IoT, Embedded Systems & Intelligent Devices",
-    "CAD, 3D Printing & Product Engineering",
-    "UI/UX, Branding & Visual Identity",
-    "Growth-Driven SEO, SMM & Campaigns",
-    "Expert Guidance to Elevate Your Business"
-  ];
+final List<String> _contentSubtitles = [
+  "Innovate. Integrate. Inspire.",
+  "Tailored Web, Mobile & Enterprise Applications",
+  "IoT, Embedded Systems & Intelligent Devices",
+  "CAD, 3D Printing & Product Engineering",
+  "UI/UX, Branding & Visual Identity",
+  "Growth-Driven SEO, SMM & Campaigns",
+  "Expert Guidance to Elevate Your Business"
+];
+
 
   @override
   void initState() {
@@ -60,37 +61,62 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _imageVisibilityController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
-      value: 1.0,
+      value: 1.0, // Start visible
     );
   }
 
   void _handleScroll() {
-    final bool isAtBottom = _scrollController.position.pixels == _scrollController.position.maxScrollExtent;
+    final bool isAtBottom =
+        _scrollController.position.pixels == _scrollController.position.maxScrollExtent;
     final bool isAtTop = _scrollController.position.pixels == 0;
     setState(() {
       _showScrollButtons = !isAtBottom && !isAtTop;
     });
 
+    // Handle image visibility based on scroll position
     if (_scrollController.position.pixels >= _imageHideThreshold) {
-      _imageVisibilityController.reverse();
+      _imageVisibilityController.reverse(); // Hide image
     } else {
-      _imageVisibilityController.forward();
+      _imageVisibilityController.forward(); // Show image
     }
   }
-
-  void _scrollToAIBlock() {
-    bool isMobile = MediaQuery.of(context).size.width < 600;
-    double estimatedPosition = isMobile ? 1200 : 1000;
-    _scrollController.animateTo(
-      estimatedPosition,
-      duration: const Duration(milliseconds: 800),
-      curve: Curves.easeInOutQuart,
-    );
+void _scrollToAIBlock() {
+  // For mobile devices, use a more robust approach with estimated positions
+  bool isMobile = MediaQuery.of(context).size.width < 600;
+  
+  // Get all children before AI block (HomeHead and Features)
+  double estimatedPosition = 0;
+  
+  if (isMobile) {
+    // On mobile, use coarser estimates since layouts might be different
+    estimatedPosition = 1200; // Adjust based on your mobile layout
+  } else {
+    // On desktop, we can be more precise
+    final context = _aiBlockKey.currentContext;
+    if (context != null) {
+      final RenderBox renderBox = context.findRenderObject() as RenderBox;
+      final position = renderBox.localToGlobal(Offset.zero);
+      estimatedPosition = position.dy - 66.0; // Subtract app bar height
+    } else {
+      estimatedPosition = 1000; // Fallback estimate for desktop
+    }
   }
+  
+  // Animate scroll with a bit of offset for better visibility
+  _scrollController.animateTo(
+    estimatedPosition,
+    duration: const Duration(milliseconds: 800),
+    curve: Curves.easeInOutQuart,
+  );
+  
+  print('Scrolling to position: $estimatedPosition');
+}
+  // Other methods remain the same...
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Calculate the threshold (1/4 of screen height) after the layout is complete
     _imageHideThreshold = MediaQuery.of(context).size.height / 4;
     if (!_isLoaded) _precacheAssets();
   }
@@ -114,13 +140,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         builder: (context, constraints) {
           return Stack(
             children: [
+              // Background with animated visibility
               FadeTransition(
                 opacity: _imageVisibilityController,
                 child: Column(
                   children: [
                     SizedBox(
                       height: constraints.maxHeight / 2,
-                      child: AnimatedImageSlider(
+                    child: AnimatedImageSlider(
                         onIndexChanged: (index) => setState(() => _currentContentIndex = index),
                       ),
                     ),
@@ -136,7 +163,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
     );
   }
-
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
@@ -158,7 +184,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     await precacheImage(const AssetImage('assets/icons/whoweare.png'), context);
     setState(() => _isLoaded = true);
   }
-
   Widget _buildContentLayer() {
     return ScrollConfiguration(
       behavior: NoGlowScrollBehavior(),
@@ -178,13 +203,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ),
             children: [
-              HomeHead(
+             // In _buildContentLayer method:
+ HomeHead(
                 onExploreNowPressed: _scrollToAIBlock,
                 title: _contentTitles[_currentContentIndex],
                 subtitle: _contentSubtitles[_currentContentIndex],
               ),
               const Features(),
               ServicesBlock(key: _aiBlockKey),
+        
               Footer(
                 g1: const Color.fromARGB(255, 5, 11, 13),
                 g2: const Color.fromARGB(255, 4, 6, 9),
@@ -209,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
             child: FloatingActionButton(
               onPressed: _scrollToTop,
-              backgroundColor: AppColors.scroll,
+             backgroundColor: AppColors.scroll,
               child: const Icon(Icons.arrow_upward, color: Colors.white),
             ),
           ),
@@ -221,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
             child: FloatingActionButton(
               onPressed: _scrollToBottom,
-              backgroundColor: AppColors.scroll,
+                  backgroundColor: AppColors.scroll,
               child: const Icon(Icons.arrow_downward, color: Colors.white),
             ),
           ),
@@ -252,56 +279,27 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   ];
 
   final Random _random = Random();
-  late Timer _cycleTimer;
+  late Timer _timer;
   int _currentIndex = 0;
   int _transitionType = 0;
-  bool _autoCycleDone = false;
-  Timer? _inactivityTimer;
-  bool _showArrows = false;
 
   @override
   void initState() {
     super.initState();
-    _startAutoCycle();
-  }
-
-  void _startAutoCycle() {
-    _cycleTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    // Auto-cycle once: go through all images and wrap back to the first, then stop
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       setState(() {
         _transitionType = _random.nextInt(5);
         _currentIndex = (_currentIndex + 1) % _images.length;
         widget.onIndexChanged?.call(_currentIndex);
       });
-      
-      if (_currentIndex == _images.length - 1) {
+      // After wrapping back to first image, stop the cycle
+      if (_currentIndex == 0) {
         timer.cancel();
-        _cycleTimer = Timer(const Duration(seconds: 5), () {
-          setState(() {
-            _transitionType = _random.nextInt(5);
-            _currentIndex = 0;
-            widget.onIndexChanged?.call(_currentIndex);
-            _autoCycleDone = true;
-            _showArrows = true;
-          });
-        });
       }
     });
   }
 
-  void _resetInactivityTimer() {
-    _inactivityTimer?.cancel();
-    _inactivityTimer = Timer(const Duration(seconds: 7), () {
-      if (_currentIndex != 0) {
-        setState(() {
-          _transitionType = _random.nextInt(5);
-          _currentIndex = 0;
-          widget.onIndexChanged?.call(_currentIndex);
-          _showArrows = false;
-        });
-        _startAutoCycle();
-      }
-    });
-  }
   void _nextImage() {
     if (_currentIndex < _images.length - 1) {
       setState(() {
@@ -309,7 +307,6 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
         _currentIndex++;
         widget.onIndexChanged?.call(_currentIndex);
       });
-      _resetInactivityTimer();  // Moved inside setState callback
     }
   }
 
@@ -320,48 +317,51 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
         _currentIndex--;
         widget.onIndexChanged?.call(_currentIndex);
       });
-      _resetInactivityTimer();  // Moved inside setState callback
     }
   }
 
-
   Widget _buildTransition(Widget child, Animation<double> animation) {
     switch (_transitionType) {
-      case 0: return FadeTransition(opacity: animation, child: child);
-      case 1: return SlideTransition(
-        position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
-            .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-        child: child,
-      );
-      case 2: return FadeTransition(
-        opacity: animation,
-        child: ScaleTransition(
-          scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-          ),
+      case 0:
+        return FadeTransition(opacity: animation, child: child);
+      case 1:
+        return SlideTransition(
+          position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
+              .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
           child: child,
-        ),
-      );
-      case 3: return RotationTransition(
-        turns: Tween<double>(begin: -0.1, end: 0).animate(
-          CurvedAnimation(parent: animation, curve: Curves.easeInOutSine),
-        ),
-        child: FadeTransition(opacity: animation, child: child),
-      );
-      default: return SlideTransition(
-        position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
-            .animate(CurvedAnimation(parent: animation, curve: Curves.easeInQuad)),
-        child: child,
-      );
+        );
+      case 2:
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+            ),
+            child: child,
+          ),
+        );
+      case 3:
+        return RotationTransition(
+          turns: Tween<double>(begin: -0.1, end: 0).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeInOutSine),
+          ),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      default:
+        return SlideTransition(
+          position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+              .animate(CurvedAnimation(parent: animation, curve: Curves.easeInQuad)),
+          child: child,
+        );
     }
   }
 
   @override
   void dispose() {
-    _cycleTimer.cancel();
-    _inactivityTimer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -375,7 +375,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
             duration: const Duration(milliseconds: 800),
             transitionBuilder: _buildTransition,
             child: Container(
-              key: ValueKey<int>(_currentIndex),  // Ensure unique key
+              key: ValueKey<int>(_currentIndex),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(_images[_currentIndex]),
@@ -387,28 +387,6 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
                   colors: [
                     Colors.black.withOpacity(0.7),
                     Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          ),
-             Positioned.fill(
-            child: IgnorePointer(
-              ignoring: !_showArrows,
-              child: AnimatedOpacity(
-                opacity: _showArrows ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 500),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.chevron_left, size: 40),
-                      onPressed: () => _previousImage(),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.chevron_right, size: 40),
-                      onPressed: () => _nextImage(),
-                    ),
                   ],
                 ),
               ),
