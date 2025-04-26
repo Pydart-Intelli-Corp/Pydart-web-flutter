@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  shimmer: ^3.0.0
   animations: ^2.0.11
   url_launcher: ^6.3.0
   video_player: ^2.9.1
@@ -48,6 +49,8 @@ dependencies:
   flutter_animate: ^4.5.2
   visibility_detector: ^0.4.0+2
   flutter_staggered_animations: ^1.1.1
+  cached_network_image: ^3.4.1
+  phosphor_flutter: ^2.1.0
 #  responsive_framework:
 #    path: responsive_framework/
 

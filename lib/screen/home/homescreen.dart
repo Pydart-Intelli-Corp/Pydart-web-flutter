@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_website/components/colors.dart';
 import 'package:flutter_website/core/extensions/color_extensions.dart';
+import 'package:flutter_website/screen/home/blocks/breif.dart';
 import 'package:flutter_website/screen/home/blocks/service_background.dart';
 import 'package:flutter_website/screen/home/blocks/start.dart';
 
@@ -46,18 +47,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   late double _imageHideThreshold;
  final GlobalKey _aiBlockKey = GlobalKey();
   int _currentContentIndex = 0;
- void _handleSwipeLeft() => _sliderKey.currentState?.nextImage();
-  void _handleSwipeRight() => _sliderKey.currentState?.previousImage();
+
     final GlobalKey<_AnimatedImageSliderState> _sliderKey = GlobalKey();
 
 final List<String> _contentTitles = [
   "WELCOME TO PYDART INTELLI CORP",
   "CUSTOM SOFTWARE SOLUTIONS",
   "SMART HARDWARE INNOVATIONS",
-  "PRECISION MECHANICAL DESIGNS",
+  "PRECISION MECHANICAL WORKS",
   "IMPACTFUL CREATIVE DESIGNS",
   "STRATEGIC DIGITAL MARKETING",
-  "SCHEDULE YOUR CONSULTATION"
+  "SCHEDULE A FREE CONSULTATION!"
 ];
 
 final List<String> _contentSubtitles = [
@@ -70,7 +70,15 @@ final List<String> _contentSubtitles = [
   "Expert Guidance to Elevate Your Business"
 ];
 
-
+ late final List<String> _mobileSubtitles = [
+    "Innovate. Integrate. Inspire.\n",
+    "Tailored Web, Mobile & Enterprise Applications",      // unchanged
+    "IoT, Embedded Systems & Intelligent Devices",         // unchanged
+    "CAD, 3D Printing & Product Engineering\n",
+    "UI/UX, Branding & Visual Identity\n",
+    "Growth-Driven SEO, SMM & Campaigns\n",
+    "Expert Guidance to Elevate Your Business\n"
+  ];
   @override
   void initState() {
     super.initState();
@@ -135,7 +143,7 @@ void _scrollToAIBlock() {
     super.didChangeDependencies();
     // Calculate the threshold (1/4 of screen height) after the layout is complete
     _imageHideThreshold = MediaQuery.of(context).size.height / 4;
-    if (!_isLoaded) _precacheAssets();
+   
   }
 
   @override
@@ -147,6 +155,8 @@ void _scrollToAIBlock() {
 
   @override
   Widget build(BuildContext context) {
+      final bool isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       backgroundColor: background,
       appBar: const PreferredSize(
@@ -163,7 +173,7 @@ void _scrollToAIBlock() {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: constraints.maxHeight / 2,
+                      height: constraints.maxHeight / 1.5,
                     child: AnimatedImageSlider(
                        key: _sliderKey, // Pass the key
                         onIndexChanged: (index) => setState(() => _currentContentIndex = index),
@@ -173,7 +183,7 @@ void _scrollToAIBlock() {
                   ],
                 ),
               ),
-              _buildContentLayer(),
+_buildContentLayer(isMobile),
               if (_showScrollButtons) _buildScrollButtons(),
             ],
           );
@@ -197,12 +207,7 @@ void _scrollToAIBlock() {
     );
   }
 
-  Future<void> _precacheAssets() async {
-    await precacheImage(const AssetImage('assets/images/others/whoweare.png'), context);
-    await precacheImage(const AssetImage('assets/icons/whoweare.png'), context);
-    setState(() => _isLoaded = true);
-  }
-  Widget _buildContentLayer() {
+  Widget _buildContentLayer(bool isMobile) {
     return ScrollConfiguration(
       behavior: NoGlowScrollBehavior(),
       child: AnimationLimiter(
@@ -221,19 +226,20 @@ void _scrollToAIBlock() {
               ),
             ),
             children: [
-             // In _buildContentLayer method:
- HomeHead(
-            onExploreNowPressed: _scrollToAIBlock,
-            title: _contentTitles[_currentContentIndex],
-            subtitle: _contentSubtitles[_currentContentIndex],
-            currentIndex: _currentContentIndex,
-            totalItems: _images.length,
-            onSwipeLeft: () => _sliderKey.currentState?.nextImage(),
-            onSwipeRight: () => _sliderKey.currentState?.previousImage(),
-          ),
-              const Features(),
+              HomeHead(
+                onExploreNowPressed: _scrollToAIBlock,
+                title: _contentTitles[_currentContentIndex],
+                // 3) pick the right subtitle list:
+                subtitle: isMobile
+                    ? _mobileSubtitles[_currentContentIndex]
+                    : _contentSubtitles[_currentContentIndex],
+                currentIndex: _currentContentIndex,
+                totalItems: _images.length,
+                onSwipeLeft: () => _sliderKey.currentState?.nextImage(),
+                onSwipeRight: () => _sliderKey.currentState?.previousImage(),
+              ),
+              const Brief(),
               ServicesBlock(key: _aiBlockKey),
-        
               Footer(
                 g1: const Color.fromARGB(255, 5, 11, 13),
                 g2: const Color.fromARGB(255, 4, 6, 9),
@@ -244,7 +250,6 @@ void _scrollToAIBlock() {
       ),
     );
   }
-
   Widget _buildScrollButtons() {
     return Positioned(
       bottom: 30,
@@ -462,20 +467,7 @@ void _handleManualInteraction() {
                       shadows: [Shadow(color: Colors.black54, blurRadius: 10)],
                     ),
                   ),
-                if (!isMobile)
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 40),
-                        onPressed: previousImage,
-                      ),
-                      const SizedBox(width: 20),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_forward, color: Colors.white, size: 40),
-                        onPressed: nextImage,
-                      ),
-                    ],
-                  ),
+             
               ],
             ),
           ),
