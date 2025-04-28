@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_website/components/typography.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -62,20 +59,19 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
           duration: 500.ms,
           transform: Matrix4.translationValues(0, _isVisible ? 0 : 50, 0),
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: const NetworkImage(
+            image:  DecorationImage(
+              image: NetworkImage(
                 "https://images.unsplash.com/photo-1716436329476-fd6cbaa1fc71?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8MA%3D%3D"),
               fit: BoxFit.cover,
               opacity: 0.2,
               colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.4), BlendMode.darken),
-            ),
+                Colors.black.withOpacity(0.4), BlendMode.darken)),
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [Color(0xFF111111), Color(0xFF1A1A1A)],
             ),
-            borderRadius: BorderRadius.circular(0),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.4),
@@ -87,14 +83,22 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
           ),
           margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(0),
+            borderRadius: BorderRadius.circular(20),
             child: Stack(
               children: [
                 _buildAnimatedBackground(),
-                // Overlay a translucent black screen over the background
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.5),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.black.withOpacity(0.7),
+                          Colors.black.withOpacity(0.4)
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 ResponsiveRowColumn(
@@ -108,38 +112,38 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                   columnPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 50),
                   columnSpacing: 50,
                   rowSpacing: 40,
-                  children: [
-                    ResponsiveRowColumnItem(child: _buildAnimatedCard(
-                      icon: Icons.location_on_outlined,
-                      title: "Where Are You Now?",
-                      description: "Welcome to Pydart Intelli Corp's digital headquarters - "
+               children: [
+    ResponsiveRowColumnItem(child: _buildAnimatedCard(
+     iconAsset: "assets/icons/LOC.png",
+      title: "Where Are You Now?",
+  description: "Welcome to Pydart Intelli Corp's digital headquarters - "
                         "where innovation meets implementation. As a forward-thinking tech startup, "
                         "we create intelligent solutions that enhance human productivity through "
                         "AI-driven automation and IoT integration. Explore our cutting-edge services "
                         "designed to future-proof businesses and transform operational efficiency.\n",
                       delay: 0,
-                    )),
-                    ResponsiveRowColumnItem(child: _buildAnimatedCard(
-                      icon: Icons.auto_awesome_mosaic_outlined,
-                      title: "Future-Ready Products",
+    )),
+    ResponsiveRowColumnItem(child: _buildAnimatedCard(
+        iconAsset: "assets/icons/FUT.png",
+      title: "Future-Ready Products",
                       description: "Our development pipeline features AI-powered tools that redefine "
                         "business automation and human-machine collaboration. Currently evolving: "
                         "adaptive workflow optimizers, smart IoT ecosystems, and intelligent "
                         "analytics platforms. By bridging technology gaps, we create solutions "
                         "that learn, adapt, and grow with your organization's evolving needs.\n",
                       delay: 300,
-                    )),
-                    ResponsiveRowColumnItem(child: _buildAnimatedCard(
-                      icon: Icons.engineering_outlined,
-                      title: "Comprehensive Services",
-                      description: "We deliver integrated technology solutions combining AI development, "
+    )),
+    ResponsiveRowColumnItem(child: _buildAnimatedCard(
+       iconAsset: "assets/icons/PRO.png",
+      title: "Comprehensive Services",
+                description: "We deliver integrated technology solutions combining AI development, "
                         "IoT systems, and strategic business automation. Our full-cycle services "
                         "range from intelligent web/app development to embedded systems design "
                         "and digital transformation consulting. From concept to market-ready "
                         "deployment, we implement adaptive solutions that drive sustainable growth.",
                       delay: 600,
-                    )),
-                  ],
+    )),
+  ],
                 ),
               ],
             ),
@@ -148,115 +152,7 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
       ),
     );
   }
-
-  Widget _buildAnimatedCard({
-    required IconData icon,
-    required String title,
-    required String description,
-    required int delay,
-  }) {
-    return ResponsiveRowColumnItem(
-      rowFlex: 1,
-      child: MouseRegion(
-        onEnter: (_) => _hoverController.forward(),
-        onExit: (_) => _hoverController.reverse(),
-        child: AnimatedBuilder(
-          animation: _hoverController,
-          builder: (context, child) {
-            return Transform(
-              transform: Matrix4.identity()
-                ..translate(
-                  0.0,
-                  -10 * _hoverController.value,
-                  0.0,
-                )
-                ..scale(1.0 + 0.05 * _hoverController.value),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(0),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.primaryDark.withOpacity(0.1 * _hoverController.value),
-                      AppColors.secondary.withOpacity(0.05 * _hoverController.value),
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryDark.withOpacity(0.3 * _hoverController.value),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Card(
-                  elevation: 0,
-                  color: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0),
-                    side: BorderSide(
-                      color: AppColors.primaryDark.withOpacity(0.2 * _hoverController.value),
-                      width: 2,
-                    ),
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(0),
-                    onTap: () {},
-                    hoverColor: Colors.transparent,
-                    splashColor: AppColors.primaryDark.withOpacity(0.1),
-                    highlightColor: AppColors.primaryDark.withOpacity(0.05),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        children: [
-                          _buildHoverIcon(icon, delay),
-                          const SizedBox(height: 24),
-                          Text(
-                            title,
-                            style: headlineSecondaryTextStyle.copyWith(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              shadows: [
-                                Shadow(
-                                  color: const Color.fromARGB(255, 1, 36, 34).withOpacity(0.3 * _hoverController.value),
-                                  blurRadius: 15,
-                                  offset: Offset.zero),
-                              ],
-                            ),
-                          )
-                          .animate()
-                          .fadeIn(delay: (delay + 200).ms, duration: 800.ms)
-                          .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
-                          const SizedBox(height: 16),
-                          Text(
-                            description,
-                            textAlign: TextAlign.justify,
-                            style: bodyTextStyle.copyWith(
-                              color: AppColors.whitegrey,
-                              fontSize: 15,
-                              height: 1.7,
-                              
-                            ),
-                          )
-                          .animate()
-                          .fadeIn(delay: (delay + 400).ms, duration: 800.ms)
-                          .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHoverIcon(IconData icon, int delay) {
+ Widget _buildHoverIcon(String assetPath, int delay) {
     return SizedBox(
       width: 100,
       height: 100,
@@ -271,12 +167,18 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                 height: 80 + 20 * _hoverController.value,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryDark.withOpacity(0.05 * _hoverController.value),
+                  gradient: RadialGradient(
+                    colors: [
+                      const Color(0xFF00FFE0).withOpacity(0.1 * _hoverController.value),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               );
             },
           ),
-          Container(
+          AnimatedContainer(
+            duration: 300.ms,
             width: 80,
             height: 80,
             decoration: BoxDecoration(
@@ -284,44 +186,130 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryDark.withOpacity(0.3 * _hoverController.value),
+                  color: const Color(0xFF00FFE0).withOpacity(0.3 * _hoverController.value),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
               ],
             ),
-            child: Icon(icon, size: 36, color: AppColors.primaryDark),
+            child: ClipOval(
+              child: Image.asset(
+                assetPath,
+                width: 36,
+                height: 36,
+                fit: BoxFit.contain,
+                color: const Color(0xFF00FFE0),
+              ),
+            ),
           )
           .animate(autoPlay: false)
           .fadeIn(delay: delay.ms, duration: 800.ms)
           .slideY(begin: 0.2, end: 0)
-          .shake(
+          .scale(
             delay: 1500.ms,
-            hz: 0.5,
-            offset: const Offset(8, 0),
             duration: 1000.ms,
-          ),
-          AnimatedBuilder(
-            animation: _hoverController,
-            builder: (context, child) {
-              return Positioned(
-                top: 20 * _hoverController.value,
-                left: 20 * _hoverController.value,
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primaryDark.withOpacity(0.1 - 0.1 * _hoverController.value),
-                  ),
-                ),
-              );
-            },
+            curve: Curves.elasticOut,
           ),
         ],
       ),
     );
   }
+  Widget _buildAnimatedCard({
+     required String iconAsset,
+    required String title,
+    required String description,
+    required int delay,
+  }) {
+    return ResponsiveRowColumnItem(
+      rowFlex: 1,
+      child: MouseRegion(
+        onEnter: (_) => _hoverController.forward(),
+        onExit: (_) => _hoverController.reverse(),
+        child: AnimatedBuilder(
+          animation: _hoverController,
+          builder: (context, child) {
+            return Transform(
+              transform: Matrix4.identity()
+                ..translate(0.0, -10 * _hoverController.value, 0.0)
+                ..scale(1.0 + 0.05 * _hoverController.value),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFF2A2A2A).withOpacity(0.1 * _hoverController.value),
+                      const Color(0xFF00FFE0).withOpacity(0.15 * _hoverController.value),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF00FFE0).withOpacity(0.3 * _hoverController.value),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Card(
+                  elevation: 0,
+                  color: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: Color.lerp(const Color(0xFF2A2A2A), const Color(0xFF00FFE0), _hoverController.value)!,
+                      width: 2 + 2 * _hoverController.value,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                          _buildHoverIcon(iconAsset, delay),
+                        const SizedBox(height: 24),
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Color(0xFF00FFE0),
+                                blurRadius: 15,
+                                offset: Offset.zero),
+                            ],
+                          ),
+                        )
+                        .animate()
+                        .fadeIn(delay: (delay + 200).ms, duration: 800.ms)
+                        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
+                        const SizedBox(height: 16),
+                        Text(
+                          description,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color(0xFFCCCCCC),
+                            fontSize: 15,
+                            height: 1.7,
+                          ),
+                        )
+                        .animate()
+                        .fadeIn(delay: (delay + 400).ms, duration: 800.ms)
+                        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildAnimatedBackground() {
     return Positioned.fill(
@@ -330,13 +318,13 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
           ScaleEffect(
             duration: 15000.ms,
             curve: Curves.easeInOut,
-            begin: Offset(1, 1),
-            end: Offset(1.3, 1.3),
+            begin: const Offset(1, 1),
+            end: const Offset(1.3, 1.3),
           ),
         ],
         child: Container(
-          decoration: BoxDecoration(
-            image: const DecorationImage(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
               image: NetworkImage(
                   "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
               fit: BoxFit.cover,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_website/components/colors.dart' as AppColors;
-import 'package:flutter_website/components/spacing.dart';
 import 'package:flutter_website/components/typography.dart';
-import 'package:flutter_website/components/colors.dart';
 
 class ServicesBlock extends StatefulWidget {
   const ServicesBlock({super.key});
@@ -11,131 +9,274 @@ class ServicesBlock extends StatefulWidget {
   State<ServicesBlock> createState() => _ServicesBlockState();
 }
 
-class _ServicesBlockState extends State<ServicesBlock> {
-  final List<Service> services = [
+class _ServicesBlockState extends State<ServicesBlock> 
+    with SingleTickerProviderStateMixin {
+  late final PageController _pageController;
+  late final AnimationController _animController;
+  final ValueNotifier<double> _pageNotifier = ValueNotifier(0.0);
+  final List<Service> _services = [
     Service(
-      title: "Web & Cloud Solutions",
-      icon: Icons.cloud,
-      color: AppColors.pydart,
-      subtitle: "Build fast, secure, and search-friendly applications",
-      features: [
-        "Next.js/React/Angular/Flutter/.NET Core",
-        "AI Integration (TensorFlow.js, Hugging Face)",
-        "SEO-optimized SSR Experiences",
-        "Progressive Web Apps (PWA)",
-        "DevOps & Containerization (Docker/K8s)",
-        "OWASP-hardened Security"
-      ],
+      title: "Digital Innovation",
+      color: AppColors.buttonPrimaryPressedOutline,
+      image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f",
+      content: '''
+Transformative technology solutions that redefine industry standards. Our full-stack expertise spans:
+
+• AI-driven web platforms with real-time analytics
+• Cloud-native microservices architecture
+• Cross-platform mobile experiences with Flutter
+• IoT integration for smart ecosystems
+• Blockchain-powered enterprise solutions
+• AR/VR immersive interfaces''',
     ),
     Service(
-      title: "Mobile & Embedded Apps",
-      icon: Icons.phone_iphone,
-      color: Colors.blueAccent,
-      subtitle: "High-performance cross-platform experiences",
-      features: [
-        "Flutter & React Native",
-        "Native iOS/Android Development",
-        "AR/VR & IoT Integrations",
-        "Wearable Tech Support",
-        "App Store Deployment",
-        "Automated Testing"
-      ],
+      title: "Experience Design",
+      color: AppColors.primaryDark,
+      image: "https://images.unsplash.com/photo-1535223289827-42f1e9919769",
+      content: '''
+Human-centered digital experiences that engage and convert:
+
+• UX research & usability testing
+• Motion design systems implementation
+• Voice interface development
+• Accessibility-first design principles
+• Multi-modal interaction patterns
+• Brand identity ecosystems''',
     ),
     Service(
-      title: "Hardware & Automation",
-      icon: Icons.settings,
-      color: Colors.greenAccent,
-      subtitle: "Embedded intelligence solutions",
-      features: [
-        "Custom PCB Design",
-        "Firmware Development",
-        "Industrial CAD & Robotics",
-        "Qt/PyQt GUIs",
-        "OTA Firmware Updates",
-        "Diagnostic Tools"
-      ],
-    ),
-    Service(
-      title: "Digital Marketing",
-      icon: Icons.campaign,
-      color: Colors.orangeAccent,
-      subtitle: "Brand elevation & audience growth",
-      features: [
-        "SEO & Content Strategy",
-        "Social Media Management",
-        "PPC & Programmatic Ads",
-        "Video Production",
-        "Motion Graphics",
-        "Analytics & A/B Testing"
-      ],
+      title: "Intelligent Systems",
+      color: AppColors.border,
+      image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12",
+      content: '''
+Next-generation automation powered by AI/ML:
+
+• Predictive analytics engines
+• Computer vision solutions
+• Natural language processing
+• Robotic process automation
+• Smart manufacturing systems
+• Digital twin implementations''',
     ),
   ];
 
-  int? hoveredIndex;
-  int? expandedIndex;
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.8);
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..forward();
+    _pageController.addListener(() => _pageNotifier.value = _pageController.page!);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _animController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
+    final size = MediaQuery.of(context).size;
+    final isMobile = size.width < 600;
 
     return Container(
-      width: double.infinity,
+      height: size.height * 0.8,
       decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(
-              "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2944&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-              const Color.fromARGB(255, 11, 11, 11).withOpacity(0.86), BlendMode.darken),
+        gradient: RadialGradient(
+          center: Alignment.topLeft,
+          radius: 1.2,
+          colors: [
+            AppColors.pydart,
+            AppColors.backgroundDark,
+          ],
         ),
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 80, horizontal: isMobile ? 20 : 100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Full-Spectrum Digital Solutions",
-                  style: TextStyle(
-                    fontSize: isMobile ? 32 : 48,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    fontFamily: "Montserrat",
-                    height: 1.2,
+          // Background Elements
+          Positioned.fill(
+            child: ValueListenableBuilder<double>(
+              valueListenable: _pageNotifier,
+              builder: (context, page, _) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 800),
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment(0, -0.5 + page * 0.1),
+                      radius: 1.5,
+                      colors: [
+                        _services[page.round() % _services.length].color.withOpacity(0.1),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "From concept to deployment - we deliver end-to-end technology solutions",
-                  style: TextStyle(
-                    fontSize: isMobile ? 18 : 22,
-                    color: AppColors.textPrimary,
-                    fontFamily: "Montserrat",
-                  ),
-                ),
-                const SizedBox(height: 60),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: isMobile ? 1 : 2,
-                    crossAxisSpacing: 30,
-                    mainAxisSpacing: 30,
-                    childAspectRatio: 1.1,
-                  ),
-                  itemCount: services.length,
-                  itemBuilder: (context, index) => _ServiceCard(
-                    service: services[index],
-                    isExpanded: expandedIndex == index,
-                    isHovered: hoveredIndex == index,
-                    onTap: () => setState(() => expandedIndex = expandedIndex == index ? null : index),
-                    onHover: (value) => setState(() => hoveredIndex = value ? index : null),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
+          ),
+
+          // Content
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 80,
+                  left: isMobile ? 30 : 100,
+                  right: isMobile ? 30 : 100,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FadeTransition(
+                      opacity: _animController,
+                      child: Text(
+                        "Next-Gen Solutions",
+                        style: TextStyle(
+                          fontSize: isMobile ? 36 : 64,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          fontFamily: "SpaceGrotesk",
+                          height: 0.9,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    FadeTransition(
+                      opacity: _animController,
+                      child: Text(
+                        "Integrated technology services for the digital frontier",
+                        style: TextStyle(
+                          fontSize: isMobile ? 18 : 24,
+                          color: Colors.white70,
+                          fontFamily: "SpaceGrotesk",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: _services.length,
+                  itemBuilder: (context, index) {
+                    final service = _services[index];
+                    final page = _pageNotifier.value;
+                    final diff = (page - index).abs();
+                    final scale = 1 - diff * 0.2;
+                    
+                    return ValueListenableBuilder<double>(
+                      valueListenable: _pageNotifier,
+                      builder: (context, page, _) {
+                        final isActive = page.round() == index;
+                        return AnimatedScale(
+                          duration: const Duration(milliseconds: 400),
+                          scale: isActive ? 1 : 0.9,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: isActive ? 20 : 40,
+                              horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: service.color.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10)),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Stack(
+                                children: [
+                                  // Background Image
+                                  Positioned.fill(
+                                    child: Image.network(
+                                      service.image,
+                                      fit: BoxFit.cover,
+                                      color: Colors.black.withOpacity(0.4),
+                                      colorBlendMode: BlendMode.multiply,
+                                    ),
+                                  ),
+
+                                  // Content Overlay
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          service.color.withOpacity(0.1),
+                                          Colors.black.withOpacity(0.8),
+                                        ],
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.all(40),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          service.title,
+                                          style: TextStyle(
+                                            fontSize: isMobile ? 32 : 48,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                            fontFamily: "SpaceGrotesk",
+                                            letterSpacing: -1.5,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 30),
+                                        Expanded(
+                                          child: Text(
+                                            service.content,
+                                            style: TextStyle(
+                                              fontSize: isMobile ? 16 : 18,
+                                              color: Colors.white70,
+                                              fontFamily: "Inter",
+                                              height: 1.6,
+                                            ),
+                                          ),
+                                        ),
+                                        if (!isMobile)
+                                          OutlinedButton.icon(
+                                            icon: Icon(Icons.arrow_forward,
+                                                color: service.color),
+                                            label: Text(
+                                              "Explore Capabilities",
+                                              style: TextStyle(
+                                                color: service.color,
+                                                fontFamily: "SpaceGrotesk",
+                                              ),
+                                            ),
+                                            onPressed: () {},
+                                            style: OutlinedButton.styleFrom(
+                                              side: BorderSide(
+                                                  color: service.color),
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 30, vertical: 20),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20)),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -143,151 +284,16 @@ class _ServicesBlockState extends State<ServicesBlock> {
   }
 }
 
-class _ServiceCard extends StatefulWidget {
-  final Service service;
-  final bool isExpanded;
-  final bool isHovered;
-  final Function() onTap;
-  final Function(bool) onHover;
-
-  const _ServiceCard({
-    required this.service,
-    required this.isExpanded,
-    required this.isHovered,
-    required this.onTap,
-    required this.onHover,
-  });
-
-  @override
-  State<_ServiceCard> createState() => _ServiceCardState();
-}
-
-class _ServiceCardState extends State<_ServiceCard> {
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => widget.onHover(true),
-      onExit: (_) => widget.onHover(false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          transform: Matrix4.identity()..scale(widget.isHovered ? 1.02 : 1.0),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(widget.isExpanded ? 0.95 : 0.7),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: widget.service.color.withOpacity(widget.isHovered ? 0.6 : 0.3),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: widget.service.color.withOpacity(widget.isHovered ? 0.2 : 0.1),
-                blurRadius: 20,
-                spreadRadius: 2,
-              )
-            ],
-          ),
-          padding: const EdgeInsets.all(25),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: widget.service.color.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(widget.service.icon, 
-                          color: widget.service.color, size: 28),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Text(
-                        widget.service.title,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontFamily: "Montserrat",
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  widget.service.subtitle,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
-                    fontFamily: "Montserrat",
-                    height: 1.4,
-                  ),
-                ),
-                if (widget.isExpanded) ...[
-                  const SizedBox(height: 25),
-                  ...widget.service.features.map((feature) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.arrow_forward, 
-                            color: widget.service.color, size: 16),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            feature,
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 15,
-                              fontFamily: "Montserrat",
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
-                ],
-                const SizedBox(height: 15),
-                AnimatedOpacity(
-                  opacity: widget.isExpanded ? 0 : 1,
-                  duration: const Duration(milliseconds: 200),
-                  child: Text(
-                    "Tap to expand →",
-                    style: TextStyle(
-                      color: widget.service.color,
-                      fontSize: 14,
-                      fontFamily: "Montserrat",
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class Service {
   final String title;
-  final IconData icon;
   final Color color;
-  final String subtitle;
-  final List<String> features;
+  final String image;
+  final String content;
 
   Service({
     required this.title,
-    required this.icon,
     required this.color,
-    required this.subtitle,
-    required this.features,
+    required this.image,
+    required this.content,
   });
 }
-

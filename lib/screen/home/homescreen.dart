@@ -240,6 +240,7 @@ _buildContentLayer(isMobile),
               ),
               const Brief(),
               ServicesBlock(key: _aiBlockKey),
+              
               Footer(
                 g1: const Color.fromARGB(255, 5, 11, 13),
                 g2: const Color.fromARGB(255, 4, 6, 9),
