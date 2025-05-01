@@ -6,6 +6,7 @@ import 'package:flutter_website/components/typography.dart';
 import 'package:flutter_website/widgets/buttons/gradient_button.dart';
 
 class HomeHead extends StatefulWidget {
+  final ValueChanged<int>? onIndicatorTapped;
   final int currentIndex;
   final int totalItems;
   final VoidCallback onSwipeLeft;
@@ -23,6 +24,7 @@ class HomeHead extends StatefulWidget {
     required this.totalItems,
     required this.onSwipeLeft,
     required this.onSwipeRight,
+     this.onIndicatorTapped,
   });
 
   @override
@@ -81,8 +83,10 @@ class _HomeHeadState extends State<HomeHead> {
     );
   }
 
-  Widget _buildIndicator(int index) {
-    return AnimatedContainer(
+Widget _buildIndicator(int index) {
+  return GestureDetector(
+    onTap: () => widget.onIndicatorTapped?.call(index),
+    child: AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(horizontal: 4),
       width: widget.currentIndex == index ? 24 : 8,
@@ -93,8 +97,9 @@ class _HomeHeadState extends State<HomeHead> {
             : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(4),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildServiceHeader(bool isMobile) {
     return Container(
