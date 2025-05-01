@@ -14,7 +14,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen>
   late AnimationController _scaleController;
   late AnimationController _shineController;
   late AnimationController _particleController;
-  final DateTime _launchDate = DateTime(2025, 4, 15, 22, 0, 0);
+  final DateTime _launchDate = DateTime(2025, 5, 29, 22, 0, 0);
   late Timer _timer;
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();

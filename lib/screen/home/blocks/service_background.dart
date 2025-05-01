@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_website/components/colors.dart' as AppColors;
 
 class ServicesBlock extends StatefulWidget {
@@ -197,7 +196,6 @@ class _ServicesBlockState extends State<ServicesBlock>
                   itemCount: _services.length,
                   itemBuilder: (context, index) {
                     return _ServiceCard(
-                      key: ValueKey(_services[index].title),
                       service: _services[index],
                       pageNotifier: _pageNotifier,
                       index: index,
@@ -221,7 +219,6 @@ class _ServiceCard extends StatefulWidget {
   final bool isMobile;
 
   const _ServiceCard({
-    required super.key,
     required this.service,
     required this.pageNotifier,
     required this.index,
@@ -255,9 +252,9 @@ class _ServiceCardState extends State<_ServiceCard>
 
   void _updateAnimation() {
     final isActive = widget.pageNotifier.value.round() == widget.index;
-    if (isActive && !_featureController.isAnimating) {
-      _featureController.forward(from: 0);
-    } else if (!isActive && _featureController.isCompleted) {
+    if (isActive) {
+      _featureController.forward();
+    } else {
       _featureController.reset();
     }
   }
@@ -272,19 +269,20 @@ class _ServiceCardState extends State<_ServiceCard>
   Widget build(BuildContext context) {
     final page = widget.pageNotifier.value;
     final active = page.round() == widget.index;
+    final scale = 1 - (page - widget.index).abs() * 0.2;
 
     return ValueListenableBuilder<double>(
       valueListenable: widget.pageNotifier,
       builder: (context, page, _) {
         _updateAnimation();
-        return MouseRegion(
-          onEnter: (e) => _updatePosition(e.localPosition),
-          onHover: (e) => _updatePosition(e.localPosition),
-          onExit: (PointerExitEvent event) => setState(() {
-            tiltX = 0;
-            tiltY = 0;
-          }),
-          child: AnimatedScale(
+   return MouseRegion(
+        onEnter: (e) => _updatePosition(e.localPosition),
+        onHover: (e) => _updatePosition(e.localPosition),
+        onExit: (event) => setState(() {  // Add event parameter here
+          tiltX = 0;
+          tiltY = 0;
+        }),
+        child: AnimatedScale(
             scale: active ? 1 : 0.9,
             duration: const Duration(milliseconds: 400),
             child: Transform(
@@ -353,7 +351,7 @@ class _ServiceCardState extends State<_ServiceCard>
 
   Widget _buildContentOverlay() {
     return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -380,41 +378,122 @@ class _ServiceCardState extends State<_ServiceCard>
               ),
             ),
             const SizedBox(height: 30),
-            Expanded(
-              child: ShrinkWrappingViewport(
-                offset: ViewportOffset.zero(),
-                slivers: [
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: widget.isMobile ? 2 : 3,
-                      childAspectRatio: 2.5,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => FeatureItem(
-                        key: ValueKey(widget.service.features[index].title),
-                        feature: widget.service.features[index],
-                        serviceColor: widget.service.color,
-                        animation: CurvedAnimation(
-                          parent: _featureController,
-                          curve: Interval(
-                            index * 0.15,
-                            min(0.8 + index * 0.15, 1.0),
-                          ),
-                        ),
-                      ),
-                      childCount: widget.service.features.length,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+// In _buildContentOverlay's GridView
+Expanded(
+  child: ShrinkWrappingViewport(  // Add Viewport wrapper
+    offset: ViewportOffset.zero(),
+    slivers: [
+      SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: widget.isMobile ? 2 : 3,
+          childAspectRatio: 2.5,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => _buildFeature(
+            index, 
+            widget.service.features[index]
+          ),
+          childCount: widget.service.features.length,
+        ),
+      ),
+    ],
+  ),
+),
             if (!widget.isMobile)
               _buildDiscoverButton(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFeature(int index, Feature feature) {
+    return AnimatedBuilder(
+      animation: _featureController,
+      builder: (context, _) {
+        final animation = CurvedAnimation(
+          parent: _featureController,
+curve: Interval(
+  index * 0.15, // Reduced from 0.1
+  min(0.8 + index * 0.15, 1.0), // Ensure end <= 1
+),
+        );
+
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 0.5),
+              end: Offset.zero,
+            ).animate(animation),
+            
+            child: MouseRegion(
+              onEnter: (_) => setState(() => feature.isHovered = true),
+              onExit: (_) => setState(() => feature.isHovered = false),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: feature.isHovered
+                      ? widget.service.color.withOpacity(0.1)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: feature.isHovered
+                        ? widget.service.color
+                        : Colors.white.withOpacity(0.1),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: feature.isHovered
+                            ? widget.service.color
+                            : Colors.white.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        feature.icon,
+                        color: feature.isHovered ? Colors.white : widget.service.color,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            feature.title,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            feature.description,
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -491,92 +570,4 @@ class Feature {
   bool isHovered;
 
   Feature(this.icon, this.title, this.description, {this.isHovered = false});
-}
-
-class FeatureItem extends StatelessWidget {
-  final Feature feature;
-  final Color serviceColor;
-  final Animation<double> animation;
-
-  const FeatureItem({
-    super.key,
-    required this.feature,
-    required this.serviceColor,
-    required this.animation,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: animation,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.5),
-          end: Offset.zero,
-        ).animate(animation),
-        child: MouseRegion(
-          onEnter: (_) => feature.isHovered = true,
-          onExit: (_) => feature.isHovered = false,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: feature.isHovered
-                  ? serviceColor.withOpacity(0.1)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: feature.isHovered
-                    ? serviceColor
-                    : Colors.white.withOpacity(0.1),
-              ),
-            ),
-            child: Row(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: feature.isHovered
-                        ? serviceColor
-                        : Colors.white.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    feature.icon,
-                    color: feature.isHovered ? Colors.white : serviceColor,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        feature.title,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        feature.description,
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

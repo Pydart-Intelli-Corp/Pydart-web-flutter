@@ -64,7 +64,7 @@ class Routes {
   static final List<GetPage> pages = [
     GetPage(
       name: home,
-      page: () => HomeScreen(),
+      page: () => ComingSoonScreen(),
       customTransition: CustomSlideTransition(),
       transitionDuration: const Duration(milliseconds: 500),
     ),
