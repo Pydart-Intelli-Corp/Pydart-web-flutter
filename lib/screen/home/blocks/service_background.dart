@@ -11,11 +11,13 @@ class ServicesBlock extends StatefulWidget {
   State<ServicesBlock> createState() => _ServicesBlockState();
 }
 
-class _ServicesBlockState extends State<ServicesBlock> 
+class _ServicesBlockState extends State<ServicesBlock>
     with SingleTickerProviderStateMixin {
-  late final PageController _pageController;
+  late PageController _pageController;
   late final AnimationController _particleAnimController;
   final ValueNotifier<double> _pageNotifier = ValueNotifier(0.0);
+  bool _controllerInitialized = false;
+
   final List<Service> _services = [
     Service(
       title: "Web Development",
@@ -74,12 +76,23 @@ class _ServicesBlockState extends State<ServicesBlock>
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.8);
     _particleAnimController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 10),
     )..repeat();
-    _pageController.addListener(() => _pageNotifier.value = _pageController.page!);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_controllerInitialized) {
+      final isMobile = MediaQuery.of(context).size.width < 600;
+      _pageController = PageController(
+        viewportFraction: isMobile ? 0.92 : 0.8,
+      );
+      _pageController.addListener(() => _pageNotifier.value = _pageController.page!);
+      _controllerInitialized = true;
+    }
   }
 
   @override
@@ -137,22 +150,49 @@ class _ServicesBlockState extends State<ServicesBlock>
     );
   }
 
+  Widget _buildMobileIndicator() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: ValueListenableBuilder<double>(
+        valueListenable: _pageNotifier,
+        builder: (context, value, _) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(_services.length, (index) {
+              final isActive = (value % _services.length).round() == index;
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: isActive ? 24 : 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: isActive ? Colors.white : Colors.white38,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              );
+            }),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isMobile = size.width < 600;
 
     return SizedBox(
-      height: size.height * 0.9,
+      height: isMobile ? size.height * 0.8 : size.height * 0.9,
       child: Stack(
         children: [
-          _buildBackgroundParticles(),
+          if (!isMobile) _buildBackgroundParticles(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: EdgeInsets.only(
-                  top: 80,
+                  top: isMobile ? 40 : 80,
                   left: isMobile ? 20 : 100,
                   right: isMobile ? 20 : 100,
                 ),
@@ -163,7 +203,8 @@ class _ServicesBlockState extends State<ServicesBlock>
                       duration: const Duration(milliseconds: 500),
                       child: Text(
                         "Our Expertise",
-                        key: ValueKey(_pageNotifier.value.round()),
+                        key: ValueKey(
+                            'title_${_services[_pageNotifier.value.round() % _services.length].title}'),
                         style: TextStyle(
                           fontSize: isMobile ? 36 : 64,
                           fontWeight: FontWeight.w800,
@@ -179,9 +220,10 @@ class _ServicesBlockState extends State<ServicesBlock>
                       duration: const Duration(milliseconds: 500),
                       child: Text(
                         _services[_pageNotifier.value.round() % _services.length].subtitle,
-                        key: ValueKey(_pageNotifier.value.round()),
+                        key: ValueKey(
+                            'subtitle_${_services[_pageNotifier.value.round() % _services.length].title}'),
                         style: TextStyle(
-                          fontSize: isMobile ? 16 : 20,
+                          fontSize: isMobile ? 14 : 20,
                           color: Colors.white70,
                           fontFamily: "Inter",
                         ),
@@ -194,8 +236,12 @@ class _ServicesBlockState extends State<ServicesBlock>
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: _services.length,
+                  physics: isMobile
+                      ? const PageScrollPhysics(parent: BouncingScrollPhysics())
+                      : const PageScrollPhysics(),
                   itemBuilder: (context, index) {
                     return _ServiceCard(
+                      key: ValueKey(_services[index].title), // Unique key
                       service: _services[index],
                       pageNotifier: _pageNotifier,
                       index: index,
@@ -204,6 +250,7 @@ class _ServicesBlockState extends State<ServicesBlock>
                   },
                 ),
               ),
+              if (isMobile) _buildMobileIndicator(),
             ],
           ),
         ],
@@ -219,6 +266,7 @@ class _ServiceCard extends StatefulWidget {
   final bool isMobile;
 
   const _ServiceCard({
+    required super.key,
     required this.service,
     required this.pageNotifier,
     required this.index,
@@ -229,7 +277,7 @@ class _ServiceCard extends StatefulWidget {
   State<_ServiceCard> createState() => _ServiceCardState();
 }
 
-class _ServiceCardState extends State<_ServiceCard> 
+class _ServiceCardState extends State<_ServiceCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _featureController;
   double tiltX = 0;
@@ -269,54 +317,189 @@ class _ServiceCardState extends State<_ServiceCard>
   Widget build(BuildContext context) {
     final page = widget.pageNotifier.value;
     final active = page.round() == widget.index;
-    final scale = 1 - (page - widget.index).abs() * 0.2;
 
     return ValueListenableBuilder<double>(
       valueListenable: widget.pageNotifier,
       builder: (context, page, _) {
         _updateAnimation();
-   return MouseRegion(
-        onEnter: (e) => _updatePosition(e.localPosition),
-        onHover: (e) => _updatePosition(e.localPosition),
-        onExit: (event) => setState(() {  // Add event parameter here
-          tiltX = 0;
-          tiltY = 0;
-        }),
-        child: AnimatedScale(
-            scale: active ? 1 : 0.9,
+        return MouseRegion(
+          onEnter: !widget.isMobile ? (e) => _updatePosition(e.localPosition) : null,
+          onHover: !widget.isMobile ? (e) => _updatePosition(e.localPosition) : null,
+          onExit: !widget.isMobile ? (_) => setState(() {
+                tiltX = 0;
+                tiltY = 0;
+              }) : null,
+          child: AnimatedScale(
+            scale: active ? 1 : widget.isMobile ? 0.95 : 0.9,
             duration: const Duration(milliseconds: 400),
-            child: Transform(
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateX(tiltX * pi / 180)
-                ..rotateY(tiltY * pi / 180),
-              alignment: Alignment.center,
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.service.color.withOpacity(0.3),
-                      blurRadius: 40,
-                      spreadRadius: 10,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(40),
-                  child: Stack(
-                    children: [
-                      _buildParallaxImage(context),
-                      _buildContentOverlay(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            child: widget.isMobile
+                ? _buildMobileCard(context)
+                : _buildDesktopCard(context),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildDesktopCard(BuildContext context) {
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateX(tiltX * pi / 180)
+        ..rotateY(tiltY * pi / 180),
+      alignment: Alignment.center,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+          boxShadow: [
+            BoxShadow(
+              color: widget.service.color.withOpacity(0.3),
+              blurRadius: 40,
+              spreadRadius: 10,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(40),
+          child: Stack(
+            children: [
+              _buildParallaxImage(context),
+              _buildContentOverlay(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileCard(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: widget.service.color.withOpacity(0.2),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: Stack(
+          children: [
+            Image.network(
+              widget.service.image,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.black.withOpacity(0.5),
+              colorBlendMode: BlendMode.multiply,
+            ),
+            _buildMobileContent(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileContent() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.service.title,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              fontFamily: "SpaceGrotesk",
+            ),
+          ),
+          const SizedBox(height: 15),
+          Text(
+            widget.service.subtitle,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white70,
+              fontFamily: "Inter",
+            ),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              childAspectRatio: 1.3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              children: widget.service.features.map((feature) {
+                return _buildMobileFeature(feature);
+              }).toList(),
+            ),
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () {},
+              child: Text(
+                "Learn More",
+                style: TextStyle(
+                  color: widget.service.color,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileFeature(Feature feature) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            feature.icon,
+            color: widget.service.color,
+            size: 24,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            feature.title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            feature.description,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -370,7 +553,7 @@ class _ServiceCardState extends State<_ServiceCard>
             Text(
               widget.service.title,
               style: TextStyle(
-                fontSize: widget.isMobile ? 32 : 48,
+                fontSize: 48,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
                 fontFamily: "SpaceGrotesk",
@@ -378,31 +561,27 @@ class _ServiceCardState extends State<_ServiceCard>
               ),
             ),
             const SizedBox(height: 30),
-// In _buildContentOverlay's GridView
-Expanded(
-  child: ShrinkWrappingViewport(  // Add Viewport wrapper
-    offset: ViewportOffset.zero(),
-    slivers: [
-      SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: widget.isMobile ? 2 : 3,
-          childAspectRatio: 2.5,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => _buildFeature(
-            index, 
-            widget.service.features[index]
-          ),
-          childCount: widget.service.features.length,
-        ),
-      ),
-    ],
-  ),
-),
-            if (!widget.isMobile)
-              _buildDiscoverButton(),
+            Expanded(
+              child: ShrinkWrappingViewport(
+                offset: ViewportOffset.zero(),
+                slivers: [
+                  SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 2.5,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => _buildFeature(
+                          index, widget.service.features[index]),
+                      childCount: widget.service.features.length,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _buildDiscoverButton(),
           ],
         ),
       ),
@@ -415,11 +594,10 @@ Expanded(
       builder: (context, _) {
         final animation = CurvedAnimation(
           parent: _featureController,
-curve: Interval(
-  index * 0.15, // Reduced from 0.1
-  min(0.8 + index * 0.15, 1.0), // Ensure end <= 1
-),
-        );
+          curve: Interval(
+            index * 0.15,
+            min(0.8 + index * 0.15, 1.0),
+        ));
 
         return FadeTransition(
           opacity: animation,
@@ -428,7 +606,6 @@ curve: Interval(
               begin: const Offset(0, 0.5),
               end: Offset.zero,
             ).animate(animation),
-            
             child: MouseRegion(
               onEnter: (_) => setState(() => feature.isHovered = true),
               onExit: (_) => setState(() => feature.isHovered = false),
@@ -443,8 +620,7 @@ curve: Interval(
                   border: Border.all(
                     color: feature.isHovered
                         ? widget.service.color
-                        : Colors.white.withOpacity(0.1),
-                  ),
+                        : Colors.white.withOpacity(0.1)),
                 ),
                 child: Row(
                   children: [
