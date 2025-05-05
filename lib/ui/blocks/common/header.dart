@@ -149,11 +149,11 @@ class _HeaderState extends State<Header> {
           onItemPressed: _hideDropdown,
           openUrl: openUrl,
         );
-      case 'insights':
-        return Insights(
-          onItemPressed: _hideDropdown,
-          openUrl: openUrl,
-        );
+      // case 'insights':
+      //   return Insights(
+      //     onItemPressed: _hideDropdown,
+      //     openUrl: openUrl,
+      //   );
       case 'careers':
         return CareersContent(
           onItemPressed: _hideDropdown,
@@ -331,41 +331,41 @@ class _HeaderState extends State<Header> {
           ),
           const SizedBox(width: 32),
           // "Insights" Button with dropdown.
-          MouseRegion(
-            key: _insightsKey,
-            child: TextHoverButton(
-              label: "Insights",
-              onPressed: () {
-                Provider.of<NavigationProvider>(context, listen: false)
-                    .hovered = 'insights';
-                Provider.of<NavigationProvider>(context, listen: false).active =
-                    'insights';
-                Get.toNamed(Routes.insights);
+          // MouseRegion(
+          //   key: _insightsKey,
+          //   child: TextHoverButton(
+          //     label: "Insights",
+          //     onPressed: () {
+          //       Provider.of<NavigationProvider>(context, listen: false)
+          //           .hovered = 'insights';
+          //       Provider.of<NavigationProvider>(context, listen: false).active =
+          //           'insights';
+          //       Get.toNamed(Routes.insights);
 
-                // if (currentDropdown == 'insights') {
-                //   _hideDropdown();
-                // } else {
-                //   _previousHovered =
-                //       Provider.of<NavigationProvider>(context, listen: false).hovered;
-                //   Provider.of<NavigationProvider>(context, listen: false).hovered = 'insights';
-                //   _showDropdown('insights');
-                //   Provider.of<NavigationProvider>(context, listen: false).active = 'insights';
-                // }
-              },
-              // onDoubleTap: () {
-              //   Provider.of<NavigationProvider>(context, listen: false)
-              //       .hovered = 'insights';
-              //   Provider.of<NavigationProvider>(context, listen: false).active =
-              //       'insights';
-              //   Navigator.pushReplacementNamed(context, Routes.insights);
-              // },
-              isActive: (navProvider.hovered == 'insights') ||
-                  (navProvider.hovered == null &&
-                      navProvider.active == 'insights'),
-              showArrow: true,
-              color: navLinkColor,
-            ),
-          ),
+          //       // if (currentDropdown == 'insights') {
+          //       //   _hideDropdown();
+          //       // } else {
+          //       //   _previousHovered =
+          //       //       Provider.of<NavigationProvider>(context, listen: false).hovered;
+          //       //   Provider.of<NavigationProvider>(context, listen: false).hovered = 'insights';
+          //       //   _showDropdown('insights');
+          //       //   Provider.of<NavigationProvider>(context, listen: false).active = 'insights';
+          //       // }
+          //     },
+          //     // onDoubleTap: () {
+          //     //   Provider.of<NavigationProvider>(context, listen: false)
+          //     //       .hovered = 'insights';
+          //     //   Provider.of<NavigationProvider>(context, listen: false).active =
+          //     //       'insights';
+          //     //   Navigator.pushReplacementNamed(context, Routes.insights);
+          //     // },
+          //     isActive: (navProvider.hovered == 'insights') ||
+          //         (navProvider.hovered == null &&
+          //             navProvider.active == 'insights'),
+          //     showArrow: true,
+          //     color: navLinkColor,
+          //   ),
+          // ),
           const SizedBox(width: 32),
           // "Careers" Button with dropdown.
           MouseRegion(
@@ -610,12 +610,12 @@ class _RightSlideMenuState extends State<RightSlideMenu>
                   title: 'Our Services',
                   onTap: () => _handleNavigation(context, Routes.services, 'ourservices'),
                 ),
-                _buildAnimatedMenuItem(
-                  index: 3,
-                  icon: Icons.insights_rounded,
-                  title: 'Insights',
-                  onTap: () => _handleNavigation(context, Routes.insights, 'insights'),
-                ),
+                // _buildAnimatedMenuItem(
+                //   index: 3,
+                //   icon: Icons.insights_rounded,
+                //   title: 'Insights',
+                //   onTap: () => _handleNavigation(context, Routes.insights, 'insights'),
+                // ),
                 _buildAnimatedMenuItem(
                   index: 4,
                   icon: Icons.work_history_rounded,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -112,38 +114,41 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                   columnPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 50),
                   columnSpacing: 50,
                   rowSpacing: 40,
-               children: [
-    ResponsiveRowColumnItem(child: _buildAnimatedCard(
-     iconAsset: "assets/icons/LOC.png",
-      title: "Where Are You Now?",
-  description: "Welcome to Pydart Intelli Corp's digital headquarters - "
+                  children: [
+                    ResponsiveRowColumnItem(child: _buildAnimatedCard(
+                      iconAsset: "assets/icons/LOC.png",
+                      networkIcon: Icons.language, // Built-in globe icon
+                      title: "Where Are You Now?",
+                      description: "Welcome to Pydart Intelli Corp's digital headquarters - "
                         "where innovation meets implementation. As a forward-thinking tech startup, "
                         "we create intelligent solutions that enhance human productivity through "
                         "AI-driven automation and IoT integration. Explore our cutting-edge services "
                         "designed to future-proof businesses and transform operational efficiency.\n",
                       delay: 0,
-    )),
-    ResponsiveRowColumnItem(child: _buildAnimatedCard(
-        iconAsset: "assets/icons/FUT.png",
-      title: "Future-Ready Products",
+                    )),
+                    ResponsiveRowColumnItem(child: _buildAnimatedCard(
+                      iconAsset: "assets/icons/FUT.png",
+                      networkIcon: Icons.device_hub, // Built-in network icon
+                      title: "Future-Ready Products",
                       description: "Our development pipeline features AI-powered tools that redefine "
                         "business automation and human-machine collaboration. Currently evolving: "
                         "adaptive workflow optimizers, smart IoT ecosystems, and intelligent "
                         "analytics platforms. By bridging technology gaps, we create solutions "
                         "that learn, adapt, and grow with your organization's evolving needs.\n",
                       delay: 300,
-    )),
-    ResponsiveRowColumnItem(child: _buildAnimatedCard(
-       iconAsset: "assets/icons/PRO.png",
-      title: "Comprehensive Services",
-                description: "We deliver integrated technology solutions combining AI development, "
+                    )),
+                    ResponsiveRowColumnItem(child: _buildAnimatedCard(
+                      iconAsset: "assets/icons/PRO.png",
+                      networkIcon: Icons.cloud, // Built-in cloud icon
+                      title: "Comprehensive Services",
+                      description: "We deliver integrated technology solutions combining AI development, "
                         "IoT systems, and strategic business automation. Our full-cycle services "
                         "range from intelligent web/app development to embedded systems design "
                         "and digital transformation consulting. From concept to market-ready "
                         "deployment, we implement adaptive solutions that drive sustainable growth.",
                       delay: 600,
-    )),
-  ],
+                    )),
+                  ],
                 ),
               ],
             ),
@@ -152,7 +157,38 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
       ),
     );
   }
- Widget _buildHoverIcon(String assetPath, int delay) {
+
+  // Modified to add network connectivity lines animation
+  Widget _buildNetworkLines(IconData networkIcon, int delay) {
+    return Positioned.fill(
+      child: CustomPaint(
+        painter: NetworkLinesPainter(
+          animation: _hoverController,
+        ),
+        child: Center(
+          child: Icon(
+            networkIcon,
+            size: 100,
+            color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.15),
+          )
+          .animate(autoPlay: true)
+          .fadeIn(delay: delay.ms, duration: 1200.ms)
+          .scale(begin: const Offset(1.0, 1.0),)
+          .then()
+          .custom(
+            duration: 3000.ms,
+            curve: Curves.easeInOut,
+            builder: (context, value, child) => Opacity(
+              opacity: 0.1 + 0.2 * (0.5 + 0.5 * sin(value * 6.28)),
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHoverIcon(String assetPath, int delay) {
     return SizedBox(
       width: 100,
       height: 100,
@@ -169,7 +205,7 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      const Color(0xFF00FFE0).withOpacity(0.1 * _hoverController.value),
+                      const Color.fromARGB(255, 8, 8, 8).withOpacity(0.1 * _hoverController.value),
                       Colors.transparent,
                     ],
                   ),
@@ -186,7 +222,7 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF00FFE0).withOpacity(0.3 * _hoverController.value),
+                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.3 * _hoverController.value),
                   blurRadius: 20,
                   spreadRadius: 5,
                 ),
@@ -198,7 +234,7 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                 width: 36,
                 height: 36,
                 fit: BoxFit.contain,
-                color: const Color(0xFF00FFE0),
+                color: const Color.fromARGB(255, 0, 0, 0),
               ),
             ),
           )
@@ -214,8 +250,11 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+  // Modified to include the network icon parameter and remove borders
   Widget _buildAnimatedCard({
-     required String iconAsset,
+    required String iconAsset,
+    required IconData networkIcon,
     required String title,
     required String description,
     required int delay,
@@ -240,12 +279,12 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                     end: Alignment.bottomRight,
                     colors: [
                       const Color(0xFF2A2A2A).withOpacity(0.1 * _hoverController.value),
-                      const Color(0xFF00FFE0).withOpacity(0.15 * _hoverController.value),
+                      const Color.fromARGB(6, 35, 38, 51).withOpacity(0 * _hoverController.value),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF00FFE0).withOpacity(0.3 * _hoverController.value),
+                      color: const Color.fromARGB(151, 35, 49, 48).withOpacity(0.3 * _hoverController.value),
                       blurRadius: 30,
                       spreadRadius: 5,
                       offset: const Offset(0, 10),
@@ -257,49 +296,53 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                   color: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(
-                      color: Color.lerp(const Color(0xFF2A2A2A), const Color(0xFF00FFE0), _hoverController.value)!,
-                      width: 2 + 2 * _hoverController.value,
-                    ),
+                    // Border has been removed here
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                          _buildHoverIcon(iconAsset, delay),
-                        const SizedBox(height: 24),
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                color: Color(0xFF00FFE0),
-                                blurRadius: 15,
-                                offset: Offset.zero),
-                            ],
-                          ),
-                        )
-                        .animate()
-                        .fadeIn(delay: (delay + 200).ms, duration: 800.ms)
-                        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
-                        const SizedBox(height: 16),
-                        Text(
-                          description,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Color(0xFFCCCCCC),
-                            fontSize: 15,
-                            height: 1.7,
-                          ),
-                        )
-                        .animate()
-                        .fadeIn(delay: (delay + 400).ms, duration: 800.ms)
-                        .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
-                      ],
-                    ),
+                  child: Stack(
+                    children: [
+                      // Network icon overlay on top of text
+                      _buildNetworkLines(networkIcon, delay),
+                      
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          children: [
+                            _buildHoverIcon(iconAsset, delay),
+                            const SizedBox(height: 24),
+                            Text(
+                              title,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    color: Color(0xFF00FFE0),
+                                    blurRadius: 15,
+                                    offset: Offset.zero),
+                                ],
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: (delay + 200).ms, duration: 800.ms)
+                            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
+                            const SizedBox(height: 16),
+                            Text(
+                              description,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Color(0xFFCCCCCC),
+                                fontSize: 15,
+                                height: 1.7,
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: (delay + 400).ms, duration: 800.ms)
+                            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -310,7 +353,6 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
     );
   }
 
-
   Widget _buildAnimatedBackground() {
     return Positioned.fill(
       child: Animate(
@@ -318,7 +360,7 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
           ScaleEffect(
             duration: 15000.ms,
             curve: Curves.easeInOut,
-            begin: const Offset(1, 1),
+            begin: const Offset(1.0, 1.0),
             end: const Offset(1.3, 1.3),
           ),
         ],
@@ -334,4 +376,62 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
       ),
     );
   }
+}
+
+// Custom painter to draw network-like connection lines
+class NetworkLinesPainter extends CustomPainter {
+  final Animation<double> animation;
+  
+  NetworkLinesPainter({required this.animation}) : super(repaint: animation);
+  
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint linePaint = Paint()
+      ..color = const Color(0xFF00FFE0).withOpacity(0.1 + 0.2 * animation.value)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+      
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width < size.height ? size.width / 4 : size.height / 4;
+    
+    // Draw 8 lines radiating from center
+    for (int i = 0; i < 8; i++) {
+      final angle = i * (3.14159 * 2 / 8);
+      final lineLength = radius * (0.8 + 0.4 * animation.value);
+      final x = center.dx + cos(angle) * lineLength;
+      final y = center.dy + sin(angle) * lineLength;
+      
+      canvas.drawLine(center, Offset(x, y), linePaint);
+      
+      // Draw nodes at the ends of lines
+      final nodePaint = Paint()
+        ..color = const Color(0xFF00FFE0).withOpacity(0.3 + 0.3 * animation.value)
+        ..style = PaintingStyle.fill;
+        
+      canvas.drawCircle(Offset(x, y), 3.0, nodePaint);
+    }
+    
+    // Draw connecting arcs between nodes in a more structured network pattern
+    final arcPaint = Paint()
+      ..color = const Color(0xFF00FFE0).withOpacity(0.05 + 0.1 * animation.value)
+      ..strokeWidth = 0.5
+      ..style = PaintingStyle.stroke;
+      
+    // Create a more structured network pattern
+    for (int i = 0; i < 8; i++) {
+      final angle1 = i * (3.14159 * 2 / 8);
+      final angle2 = ((i + 2) % 8) * (3.14159 * 2 / 8);
+      
+      final x1 = center.dx + cos(angle1) * radius;
+      final y1 = center.dy + sin(angle1) * radius;
+      
+      final x2 = center.dx + cos(angle2) * radius;
+      final y2 = center.dy + sin(angle2) * radius;
+      
+      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), arcPaint);
+    }
+  }
+  
+  @override
+  bool shouldRepaint(NetworkLinesPainter oldDelegate) => true;
 }
