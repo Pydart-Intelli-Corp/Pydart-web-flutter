@@ -313,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     
     _scrollController.animateTo(
       estimatedPosition,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1500),
       curve: Curves.easeInOutQuart,
     );
   }
@@ -389,13 +389,21 @@ class _ScrollAnimatedItemState extends State<ScrollAnimatedItem>
     );
     
     _updateSlideAnimation();
-    _controller.forward();
+    
+    // Only start animation if initially scrolling down
+    if (widget.direction == ScrollDirection.down) {
+      _controller.forward();
+    } else {
+      // Skip animation for other directions
+      _controller.value = 1.0;
+    }
   }
   
   @override
   void didUpdateWidget(ScrollAnimatedItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.direction != widget.direction) {
+    // Only trigger animation reset if changing to scrolling down
+    if (oldWidget.direction != widget.direction && widget.direction == ScrollDirection.down) {
       _controller.reset();
       _updateSlideAnimation();
       _controller.forward();
@@ -406,15 +414,13 @@ class _ScrollAnimatedItemState extends State<ScrollAnimatedItem>
     Offset beginOffset;
     
     switch (widget.direction) {
-      case ScrollDirection.up:
-        beginOffset = const Offset(0.0, -0.2); // Slide from top
-        break;
       case ScrollDirection.down:
         beginOffset = const Offset(0.0, 0.2); // Slide from bottom
         break;
+      case ScrollDirection.up:
       case ScrollDirection.idle:
       default:
-        beginOffset = const Offset(0.0, 0.1); // Default
+        beginOffset = Offset.zero; // No animation for scrolling up
         break;
     }
     
