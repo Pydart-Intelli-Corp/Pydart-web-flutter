@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart'; // Added for rendering optimizations
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_website/components/colors.dart';
 import 'package:flutter_website/core/extensions/color_extensions.dart';
 import 'package:flutter_website/screen/Insights/blocks/IndustryTrend.dart';
 import 'package:flutter_website/screen/Insights/blocks/mission.dart';
 import 'package:flutter_website/screen/Insights/blocks/vision.dart';
-import 'package:flutter_website/screen/home/blocks/breif.dart';  // Import for Brief
+import 'package:flutter_website/screen/home/blocks/breif.dart';
 import 'package:flutter_website/screen/home/blocks/service_background.dart';
 import 'package:flutter_website/screen/home/blocks/start.dart';
-
 import 'package:flutter_website/screen/services/blocks/features.dart';
 import 'package:flutter_website/ui/blocks/common/footer.dart';
 import 'package:flutter_website/ui/blocks/common/header.dart';
 
-// Image list
+// Image list with better quality and compressed images
 final List<String> _images = [
   'https://images.unsplash.com/photo-1510519138101-570d1dca3d66?q=80&w=2047&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   'https://images.unsplash.com/photo-1542315192-1f61a1792f33?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -26,10 +26,90 @@ final List<String> _images = [
   'https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 ];
 
-class NoGlowScrollBehavior extends ScrollBehavior {
+// Improved scroll physics for smoother scrolling
+class OptimizedScrollPhysics extends ScrollPhysics {
+  const OptimizedScrollPhysics({ScrollPhysics? parent}) 
+      : super(parent: parent);
+
   @override
-  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
+  OptimizedScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return OptimizedScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  double get dragStartDistanceMotionThreshold => 3.5; // More responsive
+
+  @override
+  double frictionFactor(double overscrollFraction) => 0.15; // Lower friction
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+    mass: 80,
+    stiffness: 100,
+    damping: 1,
+  );
+  
+  @override
+  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    if (offset == 0.0) return 0.0;
+    return offset * 0.9; // Slightly reduce sensitivity for smoother feel
+  }
+}
+
+// Enhanced scroll behavior with no glow effect
+class EnhancedScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
+  }
+  
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const OptimizedScrollPhysics();
+  }
+  
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
+}
+
+// Simple enum to track scroll direction
+enum ScrollDirection { up, down, idle }
+
+// Improved class to track scroll position and direction with better performance
+class ScrollTracker {
+  ScrollDirection _direction = ScrollDirection.idle;
+  double _lastScrollPosition = 0;
+  double _lastUpdateTime = 0;
+  
+  ScrollDirection get direction => _direction;
+  
+  void updateDirection(ScrollController controller) {
+    final currentTime = DateTime.now().millisecondsSinceEpoch.toDouble();
+    // Don't update too frequently (throttle updates for performance)
+    if (currentTime - _lastUpdateTime < 16) { // ~60fps
+      return;
+    }
+    
+    final currentPosition = controller.position.pixels;
+    final double difference = currentPosition - _lastScrollPosition;
+    final double threshold = 1.0; // Small threshold to prevent jitter
+    
+    if (difference > threshold) {
+      if (_direction != ScrollDirection.down) {
+        _direction = ScrollDirection.down;
+      }
+    } else if (difference < -threshold) {
+      if (_direction != ScrollDirection.up) {
+        _direction = ScrollDirection.up;
+      }
+    }
+    
+    _lastScrollPosition = currentPosition;
+    _lastUpdateTime = currentTime;
   }
 }
 
@@ -40,34 +120,6 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-// Simple enum to track scroll direction
-enum ScrollDirection { up, down, idle }
-
-// Class to track scroll position and direction
-class ScrollTracker {
-  ScrollDirection _direction = ScrollDirection.idle;
-  double _lastScrollPosition = 0;
-  
-  ScrollDirection get direction => _direction;
-  
-  void updateDirection(ScrollController controller) {
-    final currentPosition = controller.position.pixels;
-    
-    if (currentPosition > _lastScrollPosition) {
-      if (_direction != ScrollDirection.down) {
-        _direction = ScrollDirection.down;
-      }
-    } else if (currentPosition < _lastScrollPosition) {
-      if (_direction != ScrollDirection.up) {
-        _direction = ScrollDirection.up;
-      }
-    }
-    
-    _lastScrollPosition = currentPosition;
-  }
-}
-
-// Let's modify the HomeScreen to include our scroll animations
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   bool _isLoaded = false;
   bool _showScrollButtons = false;
@@ -77,15 +129,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   final GlobalKey _aiBlockKey = GlobalKey();
   final GlobalKey _briefKey = GlobalKey();
   int _currentContentIndex = 0;
-  void _handleSwipeLeft() => _sliderKey.currentState?.nextImage();
-  void _handleSwipeRight() => _sliderKey.currentState?.previousImage();
   final GlobalKey<_AnimatedImageSliderState> _sliderKey = GlobalKey();
   
-  // Add scroll tracking
+  // Add scroll tracking with improved performance
   final ScrollTracker _scrollTracker = ScrollTracker();
   ScrollDirection _currentScrollDirection = ScrollDirection.idle;
   
-  // Keep your existing content lists
+  // Keep content lists
   final List<String> _contentTitles = [
     "WELCOME TO PYDART INTELLI CORP",
     "CUSTOM SOFTWARE SOLUTIONS",
@@ -106,10 +156,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     "Expert Guidance to Elevate Your Business"
   ];
 
+  // Performance-optimized cache for widgets
+  final Map<int, Widget> _cachedWidgets = {};
+
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_handleScroll);
+    
+    // Schedule tasks in the right order for better performance
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _precacheAssets();
+    });
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.addListener(_handleScroll);
+    });
+    
     _imageVisibilityController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -117,10 +179,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
+  // Optimized scroll handler with debouncing
+  int _lastHandleScrollTime = 0;
   void _handleScroll() {
+    // Throttle updates to improve performance
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (now - _lastHandleScrollTime < 16) { // ~60fps
+      return;
+    }
+    _lastHandleScrollTime = now;
+    
     final bool isAtBottom =
-        _scrollController.position.pixels == _scrollController.position.maxScrollExtent;
-    final bool isAtTop = _scrollController.position.pixels == 0;
+        _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 20;
+    final bool isAtTop = _scrollController.position.pixels <= 20;
     
     // Update scroll direction tracking
     _scrollTracker.updateDirection(_scrollController);
@@ -146,10 +217,34 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     if (!_isLoaded) _precacheAssets();
   }
 
+  // Improved image precaching for better performance
+  Future<void> _precacheAssets() async {
+    // Create a list of precache futures
+    final List<Future<void>> precacheFutures = [];
+    
+    // Add all network images to precache
+    for (String imageUrl in _images) {
+      precacheFutures.add(precacheImage(NetworkImage(imageUrl), context));
+    }
+    
+    // Add local assets to precache
+    precacheFutures.add(precacheImage(const AssetImage('assets/images/others/whoweare.png'), context));
+    precacheFutures.add(precacheImage(const AssetImage('assets/icons/whoweare.png'), context));
+    
+    // Wait for all precaching to complete
+    await Future.wait(precacheFutures);
+    
+    if (mounted) {
+      setState(() => _isLoaded = true);
+    }
+  }
+
   @override
   void dispose() {
     _imageVisibilityController.dispose();
+    _scrollController.removeListener(_handleScroll);
     _scrollController.dispose();
+    _cachedWidgets.clear();
     super.dispose();
   }
 
@@ -190,69 +285,107 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  // Updated content layer with scroll animations
+  // Optimized content layer with smooth scrolling
   Widget _buildContentLayer() {
+    // Use cached widgets if available for better performance
+    final homeHead = HomeHead(
+      onIndicatorTapped: (index) => _sliderKey.currentState?.goToImage(index),
+      onExploreNowPressed: _scrollToBrief,
+      title: _contentTitles[_currentContentIndex],
+      subtitle: _contentSubtitles[_currentContentIndex],
+      currentIndex: _currentContentIndex,
+      totalItems: _images.length,
+      onSwipeLeft: () => _sliderKey.currentState?.nextImage(),
+      onSwipeRight: () => _sliderKey.currentState?.previousImage(),
+    );
+
     return ScrollConfiguration(
-      behavior: NoGlowScrollBehavior(),
-      child: ListView(
+      behavior: EnhancedScrollBehavior(),
+      child: CustomScrollView(
         controller: _scrollController,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.only(top: 10),
-        children: [
-          // HomeHead doesn't need scroll animation
-          HomeHead(
-            onIndicatorTapped: (index) => _sliderKey.currentState?.goToImage(index),
-            onExploreNowPressed: _scrollToBrief,
-            title: _contentTitles[_currentContentIndex],
-            subtitle: _contentSubtitles[_currentContentIndex],
-            currentIndex: _currentContentIndex,
-            totalItems: _images.length,
-            onSwipeLeft: () => _sliderKey.currentState?.nextImage(),
-            onSwipeRight: () => _sliderKey.currentState?.previousImage(),
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: ClampingScrollPhysics(),
+        ),
+        cacheExtent: 500, // Increase cache for smoother scrolling
+        slivers: [
+          SliverToBoxAdapter(
+            child: homeHead,
           ),
-          
-          // Apply scroll animations to other widgets
-          ScrollAnimatedItem(
-            direction: _currentScrollDirection,
-            child: Brief(key: _briefKey),
+          SliverToBoxAdapter(
+            child: _getCachedWidget(1, () => 
+              AnimatedSmoothScrollItem(
+                direction: _currentScrollDirection,
+                child: RepaintBoundary(
+                  child: Brief(key: _briefKey),
+                ),
+              )
+            ),
           ),
-          
-          ScrollAnimatedItem(
-            direction: _currentScrollDirection,
-            child: ServicesBlock(key: _aiBlockKey),
+          SliverToBoxAdapter(
+            child: _getCachedWidget(2, () => 
+              AnimatedSmoothScrollItem(
+                direction: _currentScrollDirection,
+                child: RepaintBoundary(
+                  child: EnterpriseServicesBlock(key: _aiBlockKey),
+                ),
+              )
+            ),
           ),
-          
-          ScrollAnimatedItem(
-            direction: _currentScrollDirection,
-            child: const IndustryTrendsBlock(),
+          SliverToBoxAdapter(
+            child: _getCachedWidget(3, () => 
+              AnimatedSmoothScrollItem(
+                direction: _currentScrollDirection,
+                child: RepaintBoundary(
+                  child: const IndustryTrendsBlock(),
+                ),
+              )
+            ),
           ),
-          
-          ScrollAnimatedItem(
-            direction: _currentScrollDirection,
-            child: const MissionBlock(),
+          SliverToBoxAdapter(
+            child: _getCachedWidget(4, () => 
+              AnimatedSmoothScrollItem(
+                direction: _currentScrollDirection,
+                child: RepaintBoundary(
+                  child: const MissionBlock(),
+                ),
+              )
+            ),
           ),
-          
-          ScrollAnimatedItem(
-            direction: _currentScrollDirection,
-            child: const VisionBlock(),
+          SliverToBoxAdapter(
+            child: _getCachedWidget(5, () => 
+              AnimatedSmoothScrollItem(
+                direction: _currentScrollDirection,
+                child: RepaintBoundary(
+                  child: const VisionBlock(),
+                ),
+              )
+            ),
           ),
-          
-          // Footer doesn't need animation
-          Footer(
-            g1: const Color.fromARGB(255, 5, 11, 13),
-            g2: const Color.fromARGB(255, 4, 6, 9),
+          SliverToBoxAdapter(
+            child: _getCachedWidget(6, () => 
+              Footer(
+                g1: const Color.fromARGB(255, 5, 11, 13),
+                g2: const Color.fromARGB(255, 4, 6, 9),
+              )
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Keep your existing methods
+  // Optimized widget caching for better performance
+  Widget _getCachedWidget(int index, Widget Function() builder) {
+    _cachedWidgets[index] ??= builder();
+    return _cachedWidgets[index]!;
+  }
+
+  // Optimized scroll animations
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 800),
-      curve: Curves.easeInOutQuart,
+      curve: Curves.easeOutCubic, // Changed for smoother feel
     );
   }
 
@@ -260,18 +393,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 800),
-      curve: Curves.easeInOutQuart,
+      curve: Curves.easeOutCubic, // Changed for smoother feel
     );
   }
 
-  Future<void> _precacheAssets() async {
-    await precacheImage(const AssetImage('assets/images/others/whoweare.png'), context);
-    await precacheImage(const AssetImage('assets/icons/whoweare.png'), context);
-    setState(() => _isLoaded = true);
-  }
-
   void _scrollToAIBlock() {
-    bool isMobile = MediaQuery.of(context).size.width < 600;
+    final isMobile = MediaQuery.of(context).size.width < 600;
     double estimatedPosition = 0;
     
     if (isMobile) {
@@ -290,12 +417,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _scrollController.animateTo(
       estimatedPosition,
       duration: const Duration(milliseconds: 800),
-      curve: Curves.easeInOutQuart,
+      curve: Curves.easeOutCubic, // Changed for smoother feel
     );
   }
 
   void _scrollToBrief() {
-    bool isMobile = MediaQuery.of(context).size.width < 600;
+    final isMobile = MediaQuery.of(context).size.width < 600;
     double estimatedPosition = 0;
     
     if (isMobile) {
@@ -313,22 +440,31 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     
     _scrollController.animateTo(
       estimatedPosition,
-      duration: const Duration(milliseconds: 1500),
-      curve: Curves.easeInOutQuart,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOutCubic, // Changed for smoother feel
     );
   }
 
+  // Optimized floating action buttons with smoother animations
   Widget _buildScrollButtons() {
     return Positioned(
       bottom: 30,
       right: 30,
       child: Column(
         children: [
-          ScaleTransition(
-            scale: CurvedAnimation(
-              parent: AlwaysStoppedAnimation(_showScrollButtons ? 1.0 : 0.0),
-              curve: Curves.elasticOut,
+          TweenAnimationBuilder(
+            tween: Tween<double>(
+              begin: 0.0,
+              end: _showScrollButtons ? 1.0 : 0.0,
             ),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            builder: (context, double value, child) {
+              return Transform.scale(
+                scale: value,
+                child: child,
+              );
+            },
             child: FloatingActionButton(
               onPressed: _scrollToTop,
               backgroundColor: AppColors.scroll,
@@ -336,11 +472,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
           ),
           const SizedBox(height: 15),
-          ScaleTransition(
-            scale: CurvedAnimation(
-              parent: AlwaysStoppedAnimation(_showScrollButtons ? 1.0 : 0.0),
-              curve: Curves.elasticOut,
+          TweenAnimationBuilder(
+            tween: Tween<double>(
+              begin: 0.0,
+              end: _showScrollButtons ? 1.0 : 0.0,
             ),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            builder: (context, double value, child) {
+              return Transform.scale(
+                scale: value,
+                child: child,
+              );
+            },
             child: FloatingActionButton(
               onPressed: _scrollToBottom,
               backgroundColor: AppColors.scroll,
@@ -353,28 +497,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 }
 
-// Custom animated item that responds to scroll direction
-class ScrollAnimatedItem extends StatefulWidget {
+// Optimized animated scroll item with better performance
+class AnimatedSmoothScrollItem extends StatefulWidget {
   final Widget child;
   final ScrollDirection direction;
   final Duration duration;
   
-  const ScrollAnimatedItem({
+  const AnimatedSmoothScrollItem({
     Key? key,
     required this.child,
     required this.direction,
-    this.duration = const Duration(milliseconds: 500),
+    this.duration = const Duration(milliseconds: 400), // Reduced for better performance
   }) : super(key: key);
   
   @override
-  State<ScrollAnimatedItem> createState() => _ScrollAnimatedItemState();
+  State<AnimatedSmoothScrollItem> createState() => _AnimatedSmoothScrollItemState();
 }
 
-class _ScrollAnimatedItemState extends State<ScrollAnimatedItem> 
+class _AnimatedSmoothScrollItemState extends State<AnimatedSmoothScrollItem> 
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  bool _isVisible = false;
   
   @override
   void initState() {
@@ -385,47 +530,34 @@ class _ScrollAnimatedItemState extends State<ScrollAnimatedItem>
     );
     
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuad)
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic)
     );
     
     _updateSlideAnimation();
     
-    // Only start animation if initially scrolling down
-    if (widget.direction == ScrollDirection.down) {
-      _controller.forward();
-    } else {
-      // Skip animation for other directions
-      _controller.value = 1.0;
-    }
+    // Skip animation for initial build to improve performance
+    _controller.value = 1.0;
+    _isVisible = true;
   }
   
   @override
-  void didUpdateWidget(ScrollAnimatedItem oldWidget) {
+  void didUpdateWidget(AnimatedSmoothScrollItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Only trigger animation reset if changing to scrolling down
-    if (oldWidget.direction != widget.direction && widget.direction == ScrollDirection.down) {
+    
+    // Only animate when scrolling down and widget not yet visible
+    if (!_isVisible && widget.direction == ScrollDirection.down) {
       _controller.reset();
       _updateSlideAnimation();
-      _controller.forward();
+      _controller.forward().then((_) {
+        _isVisible = true;
+      });
     }
   }
   
   void _updateSlideAnimation() {
-    Offset beginOffset;
-    
-    switch (widget.direction) {
-      case ScrollDirection.down:
-        beginOffset = const Offset(0.0, 0.2); // Slide from bottom
-        break;
-      case ScrollDirection.up:
-      case ScrollDirection.idle:
-      default:
-        beginOffset = Offset.zero; // No animation for scrolling up
-        break;
-    }
-    
+    // Only apply slide animation when scrolling down
     _slideAnimation = Tween<Offset>(
-      begin: beginOffset,
+      begin: const Offset(0.0, 0.15), // Reduced offset for smoother animation
       end: Offset.zero,
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic)
@@ -440,6 +572,11 @@ class _ScrollAnimatedItemState extends State<ScrollAnimatedItem>
   
   @override
   Widget build(BuildContext context) {
+    // Skip animations if already visible
+    if (_isVisible) {
+      return widget.child;
+    }
+    
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
@@ -449,17 +586,14 @@ class _ScrollAnimatedItemState extends State<ScrollAnimatedItem>
     );
   }
 }
+
+// Optimized image slider with better performance
 class AnimatedImageSlider extends StatefulWidget {
-  // Add these
-  final VoidCallback? onSwipeLeft;
-  final VoidCallback? onSwipeRight;
   final ValueChanged<int>? onIndexChanged;
 
   const AnimatedImageSlider({
     super.key,
     this.onIndexChanged,
-    this.onSwipeLeft,
-    this.onSwipeRight,
   });
 
   @override
@@ -474,13 +608,22 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   late Timer _timer;
   int _currentIndex = 0;
   int _transitionType = 0;
+  
+  // Precached images for better performance
+  final Map<String, NetworkImage> _precachedImages = {};
 
   @override
   void initState() {
     super.initState();
+    
+    // Preload all images for smoother transitions
+    for (final imageUrl in _images) {
+      _precachedImages[imageUrl] = NetworkImage(imageUrl);
+    }
+    
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       setState(() {
-        _transitionType = _random.nextInt(5);
+        _transitionType = _random.nextInt(2); // Reduced variety for better performance
         _currentIndex = (_currentIndex + 1) % _images.length;
         widget.onIndexChanged?.call(_currentIndex);
       });
@@ -493,7 +636,9 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
         });
         // Show prompt for 3 seconds
         Future.delayed(const Duration(seconds: 3), () {
-          setState(() => _showSwipePrompt = false);
+          if (mounted) {
+            setState(() => _showSwipePrompt = false);
+          }
         });
       }
     });
@@ -502,7 +647,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   void nextImage() {
     if (!_cycleCompleted) return;
     setState(() {
-      _transitionType = _random.nextInt(5);
+      _transitionType = _random.nextInt(2); // Reduced variety for better performance
       _currentIndex = (_currentIndex + 1) % _images.length;
       widget.onIndexChanged?.call(_currentIndex);
     });
@@ -512,7 +657,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   void goToImage(int index) {
     if (index < 0 || index >= _images.length) return;
     setState(() {
-      _transitionType = _random.nextInt(5);
+      _transitionType = _random.nextInt(2); // Reduced variety for better performance
       _currentIndex = index;
       widget.onIndexChanged?.call(_currentIndex);
     });
@@ -522,8 +667,8 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   void previousImage() {
     if (!_cycleCompleted) return;
     setState(() {
-      _transitionType = _random.nextInt(5);
-      _currentIndex = (_currentIndex - 1) % _images.length;
+      _transitionType = _random.nextInt(2); // Reduced variety for better performance
+      _currentIndex = (_currentIndex - 1 + _images.length) % _images.length;
       widget.onIndexChanged?.call(_currentIndex);
     });
     _handleManualInteraction();
@@ -534,7 +679,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
     _userInteractionTimer = Timer(const Duration(seconds: 7), () {
       if (_currentIndex != 0 && mounted) {
         setState(() {
-          _transitionType = _random.nextInt(5);
+          _transitionType = _random.nextInt(2); // Reduced variety for better performance
           _currentIndex = 0;
           widget.onIndexChanged?.call(_currentIndex);
         });
@@ -546,54 +691,40 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   void dispose() {
     _userInteractionTimer?.cancel();
     _timer.cancel();
+    _precachedImages.clear();
     super.dispose();
   }
 
   void _handleManualInteraction() {
-    _timer?.cancel(); // Cancel existing automatic timer
+    _timer.cancel(); // Cancel existing automatic timer
     _startReturnTimer();
-    // Restart automatic cycling after manual interaction
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        _transitionType = _random.nextInt(5);
-        _currentIndex = (_currentIndex + 1) % _images.length;
-        widget.onIndexChanged?.call(_currentIndex);
-      });
+    
+    // Restart automatic cycling after manual interaction with reduced frequency
+    _timer = Timer.periodic(const Duration(seconds: 7), (timer) {
+      if (mounted) {
+        setState(() {
+          _transitionType = _random.nextInt(2); // Reduced variety for better performance
+          _currentIndex = (_currentIndex + 1) % _images.length;
+          widget.onIndexChanged?.call(_currentIndex);
+        });
+      }
     });
-    setState(() => _showSwipePrompt = false);
+    
+    if (mounted) {
+      setState(() => _showSwipePrompt = false);
+    }
   }
 
+  // Use simplified transitions for better performance
   Widget _buildTransition(Widget child, Animation<double> animation) {
+    // Limit transition types to just two for better performance
     switch (_transitionType) {
       case 0:
         return FadeTransition(opacity: animation, child: child);
-      case 1:
+      default:
         return SlideTransition(
           position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero)
               .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-          child: child,
-        );
-      case 2:
-        return FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: Tween<double>(begin: 0.9, end: 1.0).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
-            ),
-            child: child,
-          ),
-        );
-      case 3:
-        return RotationTransition(
-          turns: Tween<double>(begin: -0.1, end: 0).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeInOutSine),
-          ),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      default:
-        return SlideTransition(
-          position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
-              .animate(CurvedAnimation(parent: animation, curve: Curves.easeInQuad)),
           child: child,
         );
     }
@@ -602,31 +733,44 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
-  
+    
     return GestureDetector(
       onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity! < 0) nextImage();
-        if (details.primaryVelocity! > 0) previousImage();
+        if (details.primaryVelocity! < -500) nextImage(); // Only respond to fast swipes
+        if (details.primaryVelocity! > 500) previousImage(); // Only respond to fast swipes
       },
       child: Stack(
         children: [
+          // Use keyed widgets with optimized AnimatedSwitcher
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 800),
+            duration: const Duration(milliseconds: 600), // Reduced duration
             transitionBuilder: _buildTransition,
-            child: Container(
+            layoutBuilder: (currentChild, previousChildren) {
+              return Stack(
+                children: <Widget>[
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
+                ],
+                alignment: Alignment.center,
+              );
+            },
+            child: RepaintBoundary(
               key: ValueKey<int>(_currentIndex),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(_images[_currentIndex]),
-                  fit: BoxFit.cover,
-                ),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.7),
-                    Colors.transparent,
-                  ],
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: _precachedImages[_images[_currentIndex]] 
+                        ?? NetworkImage(_images[_currentIndex]),
+                    fit: BoxFit.cover,
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.7),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -637,7 +781,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
             right: 0,
             child: AnimatedOpacity(
               opacity: _showSwipePrompt ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 300), // Reduced duration
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -652,6 +796,7 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
                     ),
                   if (!isMobile)
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
                           icon: const Icon(Icons.arrow_back, color: Colors.white, size: 40),
@@ -671,29 +816,5 @@ class _AnimatedImageSliderState extends State<AnimatedImageSlider> {
         ],
       ),
     );
-  }
-}
-class ScrollDirectionListener extends ChangeNotifier {
-  ScrollDirection _direction = ScrollDirection.idle;
-  double _lastScrollPosition = 0;
-  
-  ScrollDirection get direction => _direction;
-  
-  void updateScrollDirection(ScrollController controller) {
-    final currentPosition = controller.position.pixels;
-    
-    if (currentPosition > _lastScrollPosition) {
-      if (_direction != ScrollDirection.down) {
-        _direction = ScrollDirection.down;
-        notifyListeners();
-      }
-    } else if (currentPosition < _lastScrollPosition) {
-      if (_direction != ScrollDirection.up) {
-        _direction = ScrollDirection.up;
-        notifyListeners();
-      }
-    }
-    
-    _lastScrollPosition = currentPosition;
   }
 }

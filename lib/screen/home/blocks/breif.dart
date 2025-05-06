@@ -278,13 +278,13 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFF2A2A2A).withOpacity(0.1 * _hoverController.value),
-                      const Color.fromARGB(6, 35, 38, 51).withOpacity(0 * _hoverController.value),
+                      const Color.fromARGB(0, 42, 42, 42).withOpacity(0.1 * _hoverController.value),
+                      const Color.fromARGB(0, 0, 0, 0).withOpacity(0 * _hoverController.value),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color.fromARGB(151, 35, 49, 48).withOpacity(0.3 * _hoverController.value),
+                      color: const Color.fromARGB(0, 35, 49, 48).withOpacity(0.3 * _hoverController.value),
                       blurRadius: 30,
                       spreadRadius: 5,
                       offset: const Offset(0, 10),
