@@ -46,7 +46,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Predictive Analytics",
         "Autonomous Systems",
         "AI Model Training & Deployment",
-        "Custom Algorithm Development"
+        "Custom Algorithm Development",
+         "Neural Network Architecture Design",
+  "Reinforcement Learning Systems",
+  "AI Ethics & Bias Mitigation",
+  "Intelligent Process Optimization",
+  "Computer Vision Quality Control",
+  "Speech Recognition & Synthesis",
+  "Anomaly Detection Systems",
+  "Human-Robot Collab Frameworks",
+  "Time Series Forecasting",
+  "Cognitive Computing Solutions"
       ],
       metrics: {
         "Operational Efficiency": "35-75%",
@@ -82,7 +92,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Serverless Computing",
         "DevOps & CI/CD Integration",
         "Database Design & Optimization",
-        "High-Performance Systems"
+        "High-Performance Systems",
+         "Multi-Cloud Strategy & Implementation",
+  "Container Orchestration (Kubernetes)",
+  "Event-Driven Architectures",
+  "Cloud Security & Compliance",
+  "Service Mesh Implementation",
+  "Distributed System Design",
+  "Infrastructure as Code (IaC)",
+  "Progressive Web Applications",
+  "Real-Time Data Processing",
+  "GraphQL API Development"
       ],
       metrics: {
         "Deployment Speed": "5x faster",
@@ -118,7 +138,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Enterprise Mobility Management",
         "Progressive Web Apps (PWAs)",
         "AR/VR Mobile Experiences",
-        "Mobile Security Protocols"
+        "Mobile Security Protocols",
+         "Offline-First App Architecture",
+  "Mobile UX/UI Design Systems",
+  "Biometric Authentication",
+  "Push Notification Strategies",
+  "Mobile Analytics Implementation",
+  "App Store Optimization (ASO)",
+  "Mobile Performance Optimization",
+  "In-App Purchase Systems",
+  "Mobile Backend as a Service (MBaaS)",
+  "Accessibility & Inclusive Design"
       ],
       metrics: {
         "Development Time": "40% reduction",
@@ -154,7 +184,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Low-power Device Design",
         "Edge Computing Solutions",
         "Industrial Automation Systems",
-        "IoT Security & Encryption"
+        "IoT Security & Encryption",
+          "Wireless Protocol Implementation",
+  "Digital Twin Development",
+  "FPGA & Hardware Acceleration",
+  "Environmental Monitoring Systems",
+  "IoT Data Analytics Pipelines",
+  "Mesh Network Architectures",
+  "Remote Device Management",
+  "OTA Update Systems",
+  "IoT Cloud Integration",
+  "Industrial IoT (IIoT) Solutions"
       ],
       metrics: {
         "Device Reliability": "99.98%",
@@ -190,7 +230,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Email Marketing Campaigns",
         "Lead Generation Programs",
         "Analytics & Performance Tracking",
-        "Conversion Rate Optimization"
+        "Conversion Rate Optimization",
+          "Marketing Automation Systems",
+  "Customer Journey Mapping",
+  "A/B Testing & Optimization",
+  "Influencer Marketing Campaigns",
+  "Video Marketing Strategy",
+  "Social Listening & Brand Monitoring",
+  "Programmatic Advertising",
+  "Data-Driven Personalization",
+  "Affiliate Marketing Programs",
+  "Omnichannel Marketing Integration"
       ],
       metrics: {
         "Lead Generation": "35-150%",
@@ -226,7 +276,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Digital Asset Creation",
         "UI/UX Design",
         "Motion Graphics & Animation",
-        "Print & Publication Design"
+        "Print & Publication Design",
+         "Brand Strategy Development",
+  "Design Systems Creation",
+  "Iconography & Illustration",
+  "Responsive Web Design",
+  "Information Architecture",
+  "Environmental & Exhibition Design",
+  "Interactive Design Experiences",
+  "Augmented Reality Design",
+  "Typography & Font Selection",
+  "Photography Direction & Styling"
       ],
       metrics: {
         "Brand Recognition": "40-75%",
@@ -312,6 +372,38 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
       ),
     );
   }
+
+// Helper method to select appropriate icon for each metric type
+IconData _getMetricIcon(String metricName) {
+  if (metricName.contains("Efficiency") || metricName.contains("Performance")) {
+    return Icons.speed;
+  } else if (metricName.contains("Cost") || metricName.contains("Infrastructure")) {
+    return Icons.savings;
+  } else if (metricName.contains("ROI") || metricName.contains("investment")) {
+    return Icons.show_chart;
+  } else if (metricName.contains("Accuracy") || metricName.contains("Reliability")) {
+    return Icons.verified;
+  } else if (metricName.contains("Time") || metricName.contains("Speed")) {
+    return Icons.timer;
+  } else if (metricName.contains("Engagement") || metricName.contains("Generation")) {
+    return Icons.people;
+  } else if (metricName.contains("Recognition") || metricName.contains("Perception")) {
+    return Icons.visibility;
+  } else if (metricName.contains("Conversion") || metricName.contains("Rates")) {
+    return Icons.shopping_cart;
+  } else if (metricName.contains("Scalability") || metricName.contains("Factor")) {
+    return Icons.scale;
+  } else if (metricName.contains("System") || metricName.contains("Lifetime")) {
+    return Icons.update;
+  } else if (metricName.contains("Processing") || metricName.contains("Data")) {
+    return Icons.memory;
+  } else if (metricName.contains("Power") || metricName.contains("Energy")) {
+    return Icons.bolt;
+  } else {
+    return Icons.trending_up;  // Default icon
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -827,6 +919,7 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
                             color: Colors.white,
                           ),
                         ),
+                        
                       ],
                     ),
                   ),
@@ -855,6 +948,7 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
                       height: 1.4,
                     ),
                   ),
+
                 ],
               ),
             ),
@@ -917,85 +1011,85 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
             SizedBox(width: 40),
             
             // Metrics column
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+           Expanded(
+  flex: 2,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Business Impact",
+        style: TextStyle(
+          fontSize: isTablet ? 24 : 28,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
+      SizedBox(height: 20),
+      Container(
+        padding: EdgeInsets.all(25),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              service.color.withOpacity(0.15),
+              Colors.black.withOpacity(0.3),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: service.color.withOpacity(0.3),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: service.color.withOpacity(0.2),
+              blurRadius: 20,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Column(
+          children: service.metrics.entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Row(
                 children: [
-                  Text(
-                    "Business Impact",
-                    style: TextStyle(
-                      fontSize: isTablet ? 24 : 28,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 20),
                   Container(
-                    padding: EdgeInsets.all(25),
+                    width: 46, // REDUCED: from 50 to 46
+                    height: 46, // REDUCED: from 50 to 46
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          service.color.withOpacity(0.15),
-                          Colors.black.withOpacity(0.3),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: service.color.withOpacity(0.3),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: service.color.withOpacity(0.2),
-                          blurRadius: 20,
-                          spreadRadius: 1,
-                        ),
-                      ],
+                      color: service.color.withOpacity(0.1),
+                      shape: BoxShape.circle,
                     ),
-                    child: Column(
-                      children: service.metrics.entries.map((entry) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: service.color.withOpacity(0.1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    entry.value,
-                                    style: TextStyle(
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15),
-                              Expanded(
-                                child: Text(
-                                  entry.key,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                    child: Center(
+                      child: Text(
+                        entry.value,
+                        style: TextStyle(
+                          fontSize: 14, // REDUCED: from 16 to 14
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: Text(
+                      entry.key,
+                      style: TextStyle(
+                        fontSize: 16, // REDUCED: from 18 to 16
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
                   
                   // Testimonial
                   if (service.testimonial != null) ...[
@@ -1334,32 +1428,7 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
                         ),
                         
                         SizedBox(height: 30),
-                        
-                        // Action button
-                        OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: BorderSide(
-                              color: service.color,
-                              width: 2,
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 15,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: Text(
-                            "Learn More",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+          
                       ],
                     ),
                   ),
@@ -1523,7 +1592,6 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
   }
 }
 
-// Simplified model classes for the responsive design
 class EnterpriseService {
   final String title;
   final Color color;
@@ -1531,7 +1599,7 @@ class EnterpriseService {
   final String badgeText;
   final String description;
   final String longDescription;
-  final List<String> features;
+  List<String> features; // Changed from final to allow updating
   final Map<String, String> metrics;
   final List<Industry> industries;
   final Testimonial? testimonial;
@@ -1568,3 +1636,4 @@ class Testimonial {
     required this.position,
   });
 }
+
