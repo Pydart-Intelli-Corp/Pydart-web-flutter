@@ -366,7 +366,7 @@ class _HeaderState extends State<Header> {
           //     color: navLinkColor,
           //   ),
           // ),
-          const SizedBox(width: 32),
+          const SizedBox(width: 0),
           // "Careers" Button with dropdown.
           MouseRegion(
             key: _careersKey,

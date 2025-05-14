@@ -368,7 +368,7 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(
-                  "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+                  "https://images.unsplash.com/photo-1718241905696-cb34c2c07bed?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
               fit: BoxFit.cover,
             ),
           ),

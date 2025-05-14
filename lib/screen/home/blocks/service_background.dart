@@ -18,11 +18,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
   late AnimationController _backgroundAnimController;
   late AnimationController _pulseAnimController;
   late AnimationController _shimmerAnimController;
-  
+  int? _hoveredServiceIndex;
   // Service state
   int _selectedServiceIndex = 0;
   bool _isHoveringTitle = false;
   Map<int, bool> _expandedPanels = {};
+  
+  // Property to track selected capability for each service
+  Map<int, int?> _selectedCapabilityIndices = {};
+  
+  // New property to track hovered capability for each service
+  Map<int, int?> _hoveredCapabilityIndices = {};
   
   // Screen size breakpoints
   final double _mobileBreakpoint = 768;
@@ -48,15 +54,15 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "AI Model Training & Deployment",
         "Custom Algorithm Development",
          "Neural Network Architecture Design",
-  "Reinforcement Learning Systems",
-  "AI Ethics & Bias Mitigation",
-  "Intelligent Process Optimization",
-  "Computer Vision Quality Control",
-  "Speech Recognition & Synthesis",
-  "Anomaly Detection Systems",
-  "Human-Robot Collab Frameworks",
-  "Time Series Forecasting",
-  "Cognitive Computing Solutions"
+         "Reinforcement Learning Systems",
+         "AI Ethics & Bias Mitigation",
+         "Intelligent Process Optimization",
+         "Computer Vision Quality Control",
+         "Speech Recognition & Synthesis",
+         "Anomaly Detection Systems",
+         "Human-Robot Collab Frameworks",
+         "Time Series Forecasting",
+         "Cognitive Computing Solutions"
       ],
       metrics: {
         "Operational Efficiency": "35-75%",
@@ -76,6 +82,32 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         author: "Michael Chen",
         position: "CTO, Global Manufacturing Corp",
       ),
+      // Add capability-specific descriptions
+      capabilityDescriptions: {
+        "Machine Learning & Deep Learning": "Our advanced ML solutions use neural networks and deep learning to extract insights from complex data and enable intelligent decision-making across your business processes.",
+        "Computer Vision Systems": "Cutting-edge vision systems that can identify objects, detect anomalies, and automate visual inspection tasks with superhuman accuracy and consistency.",
+        "Robotic Process Automation (RPA)": "Streamline repetitive tasks and workflows by implementing intelligent software robots that mimic human actions, reducing errors and freeing up staff for higher-value work.",
+        "Natural Language Processing": "Transform how your organization handles text and speech data with NLP solutions that understand, analyze, and generate human language for improved customer interactions.",
+        "Predictive Analytics": "Leverage historical data and machine learning algorithms to forecast trends, identify opportunities, and anticipate problems before they occur.",
+      },
+      // Add capability-specific testimonials
+      capabilityTestimonials: {
+        "Machine Learning & Deep Learning": Testimonial(
+          quote: "Their custom machine learning models have transformed our ability to predict customer churn with 94% accuracy, allowing us to proactively address retention and save millions annually.",
+          author: "Sarah Johnson",
+          position: "Head of Data Science, Enterprise Solutions Inc.",
+        ),
+        "Computer Vision Systems": Testimonial(
+          quote: "The computer vision quality control system they implemented reduced defects by 87% while processing inspection tasks 15x faster than our previous manual methods.",
+          author: "David Rodriguez",
+          position: "VP of Manufacturing, Precision Products",
+        ),
+        "Robotic Process Automation (RPA)": Testimonial(
+          quote: "By implementing RPA across our finance department, we've reduced processing time by 68% and virtually eliminated data entry errors, transforming our operational efficiency.",
+          author: "Jennifer Lee",
+          position: "CFO, Global Financial Services",
+        ),
+      },
     ),
     EnterpriseService(
       title: "Web & Cloud Solutions",
@@ -94,15 +126,15 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Database Design & Optimization",
         "High-Performance Systems",
          "Multi-Cloud Strategy & Implementation",
-  "Container Orchestration (Kubernetes)",
-  "Event-Driven Architectures",
-  "Cloud Security & Compliance",
-  "Service Mesh Implementation",
-  "Distributed System Design",
-  "Infrastructure as Code (IaC)",
-  "Progressive Web Applications",
-  "Real-Time Data Processing",
-  "GraphQL API Development"
+         "Container Orchestration (Kubernetes)",
+         "Event-Driven Architectures",
+         "Cloud Security & Compliance",
+         "Service Mesh Implementation",
+         "Distributed System Design",
+         "Infrastructure as Code (IaC)",
+         "Progressive Web Applications",
+         "Real-Time Data Processing",
+         "GraphQL API Development"
       ],
       metrics: {
         "Deployment Speed": "5x faster",
@@ -122,6 +154,23 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         author: "Sarah Johnson",
         position: "CIO, Enterprise Retail Solutions",
       ),
+      capabilityDescriptions: {
+        "Cloud-Native Applications": "We design and build applications specifically for cloud environments, leveraging cloud services for maximum scalability, resilience, and operational efficiency.",
+        "Microservices Architecture": "Our microservices approach breaks down complex applications into manageable, independently deployable services that enable faster development cycles and enhanced resilience.",
+        "API Design & Development": "We create robust, secure, and developer-friendly APIs that connect your systems and enable seamless integration with partners and third-party services."
+      },
+      capabilityTestimonials: {
+        "Cloud-Native Applications": Testimonial(
+          quote: "The cloud-native application they built for us handles 300% more traffic than our previous system while reducing our infrastructure costs by over 40%. The architecture scales beautifully during peak seasons.",
+          author: "James Thompson",
+          position: "CTO, Global E-Commerce Platform",
+        ),
+        "Microservices Architecture": Testimonial(
+          quote: "Moving to their microservices architecture transformed our development velocity. We now deploy new features 8x faster with dramatically fewer production incidents.",
+          author: "Elena Garcia",
+          position: "VP of Engineering, SaaS Solutions Inc.",
+        ),
+      },
     ),
     EnterpriseService(
       title: "Mobile App Development",
@@ -140,15 +189,15 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "AR/VR Mobile Experiences",
         "Mobile Security Protocols",
          "Offline-First App Architecture",
-  "Mobile UX/UI Design Systems",
-  "Biometric Authentication",
-  "Push Notification Strategies",
-  "Mobile Analytics Implementation",
-  "App Store Optimization (ASO)",
-  "Mobile Performance Optimization",
-  "In-App Purchase Systems",
-  "Mobile Backend as a Service (MBaaS)",
-  "Accessibility & Inclusive Design"
+         "Mobile UX/UI Design Systems",
+         "Biometric Authentication",
+         "Push Notification Strategies",
+         "Mobile Analytics Implementation",
+         "App Store Optimization (ASO)",
+         "Mobile Performance Optimization",
+         "In-App Purchase Systems",
+         "Mobile Backend as a Service (MBaaS)",
+         "Accessibility & Inclusive Design"
       ],
       metrics: {
         "Development Time": "40% reduction",
@@ -168,6 +217,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         author: "David Williams",
         position: "Head of Digital Banking, Global Finance",
       ),
+      capabilityDescriptions: {
+        "Flutter Cross-Platform Solutions": "Our Flutter expertise allows us to build beautiful, natively compiled applications for mobile, web, and desktop from a single codebase, reducing development time and maintenance costs.",
+        "AR/VR Mobile Experiences": "We create immersive augmented and virtual reality experiences that transform how users interact with your products and services, driving engagement and creating memorable brand experiences.",
+      },
+      capabilityTestimonials: {
+        "Flutter Cross-Platform Solutions": Testimonial(
+          quote: "Their Flutter implementation allowed us to launch on iOS and Android simultaneously, cutting our time-to-market in half while maintaining a premium user experience that our customers love.",
+          author: "Michelle Lee",
+          position: "Product Director, Retail Innovation",
+        ),
+      },
     ),
     EnterpriseService(
       title: "IoT & Embedded Systems",
@@ -186,15 +246,15 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Industrial Automation Systems",
         "IoT Security & Encryption",
           "Wireless Protocol Implementation",
-  "Digital Twin Development",
-  "FPGA & Hardware Acceleration",
-  "Environmental Monitoring Systems",
-  "IoT Data Analytics Pipelines",
-  "Mesh Network Architectures",
-  "Remote Device Management",
-  "OTA Update Systems",
-  "IoT Cloud Integration",
-  "Industrial IoT (IIoT) Solutions"
+         "Digital Twin Development",
+         "FPGA & Hardware Acceleration",
+         "Environmental Monitoring Systems",
+         "IoT Data Analytics Pipelines",
+         "Mesh Network Architectures",
+         "Remote Device Management",
+         "OTA Update Systems",
+         "IoT Cloud Integration",
+         "Industrial IoT (IIoT) Solutions"
       ],
       metrics: {
         "Device Reliability": "99.98%",
@@ -214,6 +274,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         author: "James Rodriguez",
         position: "VP of Operations, Advanced Manufacturing Inc.",
       ),
+      capabilityDescriptions: {
+        "Edge Computing Solutions": "Our edge computing solutions process data locally at the edge of the network, reducing latency, bandwidth usage, and cloud computing costs while improving system reliability and privacy.",
+        "IoT Security & Encryption": "We implement robust security protocols and encryption techniques to protect IoT ecosystems from vulnerabilities, ensuring data integrity and device protection.",
+      },
+      capabilityTestimonials: {
+        "Edge Computing Solutions": Testimonial(
+          quote: "Their edge computing implementation reduced our data transmission costs by 75% while enabling real-time analytics that previously wasn't possible with our cloud-only architecture.",
+          author: "Robert Chen",
+          position: "Director of Operations Technology, Smart Manufacturing",
+        ),
+      },
     ),
     EnterpriseService(
       title: "Digital Marketing",
@@ -232,15 +303,15 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Analytics & Performance Tracking",
         "Conversion Rate Optimization",
           "Marketing Automation Systems",
-  "Customer Journey Mapping",
-  "A/B Testing & Optimization",
-  "Influencer Marketing Campaigns",
-  "Video Marketing Strategy",
-  "Social Listening & Brand Monitoring",
-  "Programmatic Advertising",
-  "Data-Driven Personalization",
-  "Affiliate Marketing Programs",
-  "Omnichannel Marketing Integration"
+         "Customer Journey Mapping",
+         "A/B Testing & Optimization",
+         "Influencer Marketing Campaigns",
+         "Video Marketing Strategy",
+         "Social Listening & Brand Monitoring",
+         "Programmatic Advertising",
+         "Data-Driven Personalization",
+         "Affiliate Marketing Programs",
+         "Omnichannel Marketing Integration"
       ],
       metrics: {
         "Lead Generation": "35-150%",
@@ -260,6 +331,17 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         author: "Emily Thompson",
         position: "Marketing Director, SaaS Solutions Inc.",
       ),
+      capabilityDescriptions: {
+        "Search Engine Optimization (SEO)": "Our comprehensive SEO strategies improve your organic visibility, drive targeted traffic, and increase your rankings for the search terms that matter most to your business.",
+        "Content Marketing Strategy": "We develop data-driven content strategies that position you as an industry authority, drive organic traffic, and nurture prospects through every stage of the buyer's journey.",
+      },
+      capabilityTestimonials: {
+        "Search Engine Optimization (SEO)": Testimonial(
+          quote: "Their SEO work increased our organic traffic by 215% in just six months, with a 78% improvement in lead quality from organic search. Our most valuable keywords now rank in the top 3 positions.",
+          author: "Thomas Anderson",
+          position: "Digital Marketing Manager, Enterprise Solutions",
+        ),
+      },
     ),
     EnterpriseService(
       title: "Creative Design",
@@ -278,15 +360,15 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         "Motion Graphics & Animation",
         "Print & Publication Design",
          "Brand Strategy Development",
-  "Design Systems Creation",
-  "Iconography & Illustration",
-  "Responsive Web Design",
-  "Information Architecture",
-  "Environmental & Exhibition Design",
-  "Interactive Design Experiences",
-  "Augmented Reality Design",
-  "Typography & Font Selection",
-  "Photography Direction & Styling"
+         "Design Systems Creation",
+         "Iconography & Illustration",
+         "Responsive Web Design",
+         "Information Architecture",
+         "Environmental & Exhibition Design",
+         "Interactive Design Experiences",
+         "Augmented Reality Design",
+         "Typography & Font Selection",
+         "Photography Direction & Styling"
       ],
       metrics: {
         "Brand Recognition": "40-75%",
@@ -306,10 +388,20 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
         author: "Robert Garcia",
         position: "CEO, Modern Consumer Brands",
       ),
+      capabilityDescriptions: {
+        "UI/UX Design": "We create intuitive, user-centered digital experiences that balance aesthetic appeal with functional efficiency, driving engagement and conversion metrics for your digital products.",
+        "Motion Graphics & Animation": "Our dynamic motion graphics and animations bring your brand to life, creating compelling visual stories that capture attention and improve message retention.",
+      },
+      capabilityTestimonials: {
+        "UI/UX Design": Testimonial(
+          quote: "Their UI/UX redesign increased our app's user engagement by 167% and reduced cart abandonment by 42%. The intuitive interface has received overwhelmingly positive feedback from our customers.",
+          author: "Sophia Martinez",
+          position: "Head of Product, Digital Retail Platform",
+        ),
+      },
     ),
   ];
-
-  @override
+@override
   void initState() {
     super.initState();
     // Initialize animation controllers
@@ -328,15 +420,19 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
       duration: const Duration(seconds: 1),
     )..repeat();
 
+    // Initialize hover state
+    _hoveredServiceIndex = null;
+
     // Initialize expanded panels
     for (int i = 0; i < _services.length; i++) {
       _expandedPanels[i] = false;
+      _selectedCapabilityIndices[i] = 0; // Select first capability by default
+      _hoveredCapabilityIndices[i] = null; // null means no capability hovered
     }
     
     // Expand first panel by default
     _expandedPanels[0] = true;
   }
-
   @override
   void dispose() {
     _backgroundAnimController.dispose();
@@ -346,7 +442,10 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
   }
 
   // Background effect
+ // Background effect
   Widget _buildBackground() {
+    final activeServiceIndex = _getActiveServiceIndex();
+    
     return IgnorePointer(
       child: AnimatedBuilder(
         animation: _backgroundAnimController,
@@ -360,7 +459,7 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
                 transform: GradientRotation(_backgroundAnimController.value * 2 * pi),
                 colors: [
                   Colors.black,
-                  _services[_selectedServiceIndex].color.withOpacity(0.3),
+                  _services[activeServiceIndex].color.withOpacity(0.3),
                   Colors.black,
                   Colors.black.withOpacity(0.8),
                 ],
@@ -373,37 +472,48 @@ class _EnterpriseServicesBlockState extends State<EnterpriseServicesBlock>
     );
   }
 
-// Helper method to select appropriate icon for each metric type
-IconData _getMetricIcon(String metricName) {
-  if (metricName.contains("Efficiency") || metricName.contains("Performance")) {
-    return Icons.speed;
-  } else if (metricName.contains("Cost") || metricName.contains("Infrastructure")) {
-    return Icons.savings;
-  } else if (metricName.contains("ROI") || metricName.contains("investment")) {
-    return Icons.show_chart;
-  } else if (metricName.contains("Accuracy") || metricName.contains("Reliability")) {
-    return Icons.verified;
-  } else if (metricName.contains("Time") || metricName.contains("Speed")) {
-    return Icons.timer;
-  } else if (metricName.contains("Engagement") || metricName.contains("Generation")) {
-    return Icons.people;
-  } else if (metricName.contains("Recognition") || metricName.contains("Perception")) {
-    return Icons.visibility;
-  } else if (metricName.contains("Conversion") || metricName.contains("Rates")) {
-    return Icons.shopping_cart;
-  } else if (metricName.contains("Scalability") || metricName.contains("Factor")) {
-    return Icons.scale;
-  } else if (metricName.contains("System") || metricName.contains("Lifetime")) {
-    return Icons.update;
-  } else if (metricName.contains("Processing") || metricName.contains("Data")) {
-    return Icons.memory;
-  } else if (metricName.contains("Power") || metricName.contains("Energy")) {
-    return Icons.bolt;
-  } else {
-    return Icons.trending_up;  // Default icon
+  // Helper method to select appropriate icon for each metric type
+  IconData _getMetricIcon(String metricName) {
+    if (metricName.contains("Efficiency") || metricName.contains("Performance")) {
+      return Icons.speed;
+    } else if (metricName.contains("Cost") || metricName.contains("Infrastructure")) {
+      return Icons.savings;
+    } else if (metricName.contains("ROI") || metricName.contains("investment")) {
+      return Icons.show_chart;
+    } else if (metricName.contains("Accuracy") || metricName.contains("Reliability")) {
+      return Icons.verified;
+    } else if (metricName.contains("Time") || metricName.contains("Speed")) {
+      return Icons.timer;
+    } else if (metricName.contains("Engagement") || metricName.contains("Generation")) {
+      return Icons.people;
+    } else if (metricName.contains("Recognition") || metricName.contains("Perception")) {
+      return Icons.visibility;
+    } else if (metricName.contains("Conversion") || metricName.contains("Rates")) {
+      return Icons.shopping_cart;
+    } else if (metricName.contains("Scalability") || metricName.contains("Factor")) {
+      return Icons.scale;
+    } else if (metricName.contains("System") || metricName.contains("Lifetime")) {
+      return Icons.update;
+    } else if (metricName.contains("Processing") || metricName.contains("Data")) {
+      return Icons.memory;
+    } else if (metricName.contains("Power") || metricName.contains("Energy")) {
+      return Icons.bolt;
+    } else {
+      return Icons.trending_up;  // Default icon
+    }
   }
-}
 
+  // Helper method to get the active capability index
+  int _getActiveCapabilityIndex(int serviceIndex) {
+    // Prioritize hover state over selection
+    return _hoveredCapabilityIndices[serviceIndex] ?? _selectedCapabilityIndices[serviceIndex] ?? 0;
+  }
+
+ // Helper method to get the active service index
+  int _getActiveServiceIndex() {
+    // Use hovered service index if available, otherwise use selected service index
+    return _hoveredServiceIndex ?? _selectedServiceIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -412,6 +522,9 @@ IconData _getMetricIcon(String metricName) {
     final isTablet = size.width >= _mobileBreakpoint && size.width < _tabletBreakpoint;
     final isDesktop = size.width >= _tabletBreakpoint;
     final isSmallMobile = size.width < _smallMobileBreakpoint;
+    
+    // Get active service index (accounts for both hover and selection)
+    final activeServiceIndex = _getActiveServiceIndex();
 
     return Container(
       width: double.infinity,
@@ -471,7 +584,7 @@ IconData _getMetricIcon(String metricName) {
                                   shadows: [
                                     BoxShadow(
                                       color: _isHoveringTitle
-                                          ? _services[_selectedServiceIndex].color.withOpacity(0.7)
+                                          ? _services[activeServiceIndex].color.withOpacity(0.7)
                                           : Colors.black.withOpacity(0.5),
                                       blurRadius: 20,
                                       offset: Offset(0, 5),
@@ -511,8 +624,8 @@ IconData _getMetricIcon(String metricName) {
                     vertical: isMobile ? 30 : 40,
                   ),
                   child: isMobile
-                      ? _buildMobileServiceContent(_services[_selectedServiceIndex])
-                      : _buildDesktopServiceContent(_services[_selectedServiceIndex]),
+                      ? _buildMobileServiceContent(_services[activeServiceIndex])
+                      : _buildDesktopServiceContent(_services[activeServiceIndex]),
                 ),
                 
                 // CTA section
@@ -547,6 +660,10 @@ IconData _getMetricIcon(String metricName) {
           if (value != null) {
             setState(() {
               _selectedServiceIndex = value;
+              // Reset selected capability when changing service
+              _selectedCapabilityIndices[_selectedServiceIndex] = -1;
+              // Reset hovered capability when changing service
+              _hoveredCapabilityIndices[_selectedServiceIndex] = null;
             });
             // Provide haptic feedback
             HapticFeedback.selectionClick();
@@ -588,7 +705,7 @@ IconData _getMetricIcon(String metricName) {
   }
   
   // DESKTOP: Horizontal service tabs
-  Widget _buildDesktopServiceTabs() {
+ Widget _buildDesktopServiceTabs() {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= _mobileBreakpoint && size.width < _tabletBreakpoint;
     
@@ -602,48 +719,68 @@ IconData _getMetricIcon(String metricName) {
         scrollDirection: Axis.horizontal,
         children: List.generate(_services.length, (index) {
           final isSelected = _selectedServiceIndex == index;
+          final isHovered = _hoveredServiceIndex == index;
+          final isActive = isSelected || isHovered;
           
-          return GestureDetector(
-            onTap: () {
+          return MouseRegion(
+            onEnter: (_) {
               setState(() {
-                _selectedServiceIndex = index;
+                _hoveredServiceIndex = index;
               });
-              // Provide haptic feedback
-              HapticFeedback.mediumImpact();
             },
-            child: Container(
-              margin: EdgeInsets.only(right: 15),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected 
-                      ? _services[index].color.withOpacity(0.15)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isSelected
-                        ? _services[index].color
-                        : Colors.white.withOpacity(0.2),
-                    width: 2,
+            onExit: (_) {
+              setState(() {
+                _hoveredServiceIndex = null;
+              });
+            },
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedServiceIndex = index;
+                  // Reset hovered state when clicked
+                  _hoveredServiceIndex = null;
+                  // Set first capability as selected when changing service
+                  _selectedCapabilityIndices[_selectedServiceIndex] = 0;
+                  // Reset hovered capability when changing service
+                  _hoveredCapabilityIndices[_selectedServiceIndex] = null;
+                });
+                // Provide haptic feedback
+                HapticFeedback.mediumImpact();
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: 15),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16
                   ),
-                  boxShadow: isSelected ? [
-                    BoxShadow(
-                      color: _services[index].color.withOpacity(0.2),
-                      blurRadius: 15,
-                      offset: Offset(0, 5),
-                    )
-                  ] : null,
-                ),
-                child: Text(
-                  _services[index].title,
-                  style: TextStyle(
-                    fontSize: isTablet ? 14 : 16,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
+                  decoration: BoxDecoration(
+                    color: isActive 
+                        ? _services[index].color.withOpacity(0.15)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isActive
+                          ? _services[index].color
+                          : Colors.white.withOpacity(0.2),
+                      width: 2,
+                    ),
+                    boxShadow: isActive ? [
+                      BoxShadow(
+                        color: _services[index].color.withOpacity(0.2),
+                        blurRadius: 15,
+                        offset: Offset(0, 5),
+                      )
+                    ] : null,
+                  ),
+                  child: Text(
+                    _services[index].title,
+                    style: TextStyle(
+                      fontSize: isTablet ? 14 : 16,
+                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                      color: isActive ? Colors.white : Colors.white.withOpacity(0.7),
+                    ),
                   ),
                 ),
               ),
@@ -653,69 +790,109 @@ IconData _getMetricIcon(String metricName) {
       ),
     );
   }
-
-  // MOBILE: Vertical service content layout
-  Widget _buildMobileServiceContent(EnterpriseService service) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Service card
-        _buildMobileServiceCard(service),
-        
-        SizedBox(height: 30),
-        
-        // Key features
-        Text(
-          "Key Capabilities",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
+// MOBILE: Vertical service content layout with clickable capabilities
+Widget _buildMobileServiceContent(EnterpriseService service) {
+  final serviceIndex = _selectedServiceIndex;
+  final capabilityIndex = _getActiveCapabilityIndex(serviceIndex);
+  
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Service card
+      _buildMobileServiceCard(service),
+      
+      SizedBox(height: 30),
+      
+      // Key capabilities
+      Text(
+        "Key Capabilities",
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
         ),
-        SizedBox(height: 15),
-        Column(
-          children: service.features.map((feature) {
-            return Container(
-              margin: EdgeInsets.only(bottom: 10),
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: service.color.withOpacity(0.3),
-                  width: 1.5,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    color: service.color,
-                    size: 22,
+      ),
+      SizedBox(height: 15),
+      Column(
+        children: List.generate(service.features.length, (index) {
+          final isSelected = _selectedCapabilityIndices[serviceIndex] == index;
+          final isHovered = _hoveredCapabilityIndices[serviceIndex] == index;
+          final isActive = isSelected || isHovered;
+          
+          return MouseRegion(
+            onEnter: (_) {
+              setState(() {
+                _hoveredCapabilityIndices[serviceIndex] = index;
+              });
+            },
+            onExit: (_) {
+              setState(() {
+                _hoveredCapabilityIndices[serviceIndex] = null;
+              });
+            },
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedCapabilityIndices[serviceIndex] = 
+                      isSelected ? -1 : index; // Toggle selection
+                });
+                // Provide haptic feedback
+                HapticFeedback.selectionClick();
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 10),
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isActive 
+                      ? service.color.withOpacity(0.15) 
+                      : Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isActive 
+                        ? service.color 
+                        : service.color.withOpacity(0.3),
+                    width: 1.5,
                   ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      feature,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
+                  boxShadow: isActive ? [
+                    BoxShadow(
+                      color: service.color.withOpacity(0.2),
+                      blurRadius: 15,
+                      offset: Offset(0, 5),
+                    )
+                  ] : null,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      isActive ? Icons.check_circle : Icons.check_circle_outline,
+                      color: service.color,
+                      size: 22,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        service.features[index],
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            );
-          }).toList(),
-        ),
-        
-        SizedBox(height: 30),
-        
-        // Industries
+            ),
+          );
+        }),
+      ),
+      
+      SizedBox(height: 30),
+      
+      // Capability details (when capability is selected or hovered)
+      if (capabilityIndex != -1) ...[
         Text(
-          "Industries",
+          "Capability Details",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -723,51 +900,126 @@ IconData _getMetricIcon(String metricName) {
           ),
         ),
         SizedBox(height: 15),
-        Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: service.industries.map((industry) {
-            return Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: service.color.withOpacity(0.3),
-                  width: 1.5,
+        Container(
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                service.color.withOpacity(0.15),
+                Colors.black.withOpacity(0.3),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: service.color.withOpacity(0.3),
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                service.features[capabilityIndex],
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                 ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    industry.icon,
-                    color: service.color,
-                    size: 20,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    industry.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+              SizedBox(height: 15),
+              Text(
+                service.capabilityDescriptions[service.features[capabilityIndex]] ?? 
+                  "Our experts deliver industry-leading solutions in ${service.features[capabilityIndex]} to transform your operations and drive competitive advantage.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white.withOpacity(0.9),
+                  height: 1.5,
+                ),
               ),
-            );
-          }).toList(),
+            ],
+          ),
         ),
         
         SizedBox(height: 30),
-        
-        // Testimonial
-        if (service.testimonial != null)
-          Container(
+      ],
+      
+      // Industries
+      Text(
+        "Industries",
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
+      SizedBox(height: 15),
+      Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: service.industries.map((industry) {
+          return Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: service.color.withOpacity(0.3),
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  industry.icon,
+                  color: service.color,
+                  size: 20,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  industry.name,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+      
+      SizedBox(height: 30),
+      
+      // Customer Testimonial section - Always visible, but content changes based on selected capability
+      Text(
+        "Customer Testimonial",
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
+      SizedBox(height: 15),
+      Builder(
+        builder: (context) {
+          // If a capability is selected or hovered, show its testimonial if available
+          Testimonial? testimonial;
+          final capability = service.features[capabilityIndex];
+          testimonial = service.capabilityTestimonials[capability];
+          
+          // Fall back to the default service testimonial if no capability-specific one exists
+          testimonial ??= service.testimonial;
+          
+          if (testimonial == null) return SizedBox.shrink(); // Safety check
+          
+          return Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -793,7 +1045,7 @@ IconData _getMetricIcon(String metricName) {
                 ),
                 SizedBox(height: 15),
                 Text(
-                  service.testimonial!.quote,
+                  testimonial.quote,
                   style: TextStyle(
                     fontSize: 16,
                     fontStyle: FontStyle.italic,
@@ -804,7 +1056,7 @@ IconData _getMetricIcon(String metricName) {
                 ),
                 SizedBox(height: 15),
                 Text(
-                  "— ${service.testimonial!.author}, ${service.testimonial!.position}",
+                  "— ${testimonial.author}, ${testimonial.position}",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white.withOpacity(0.8),
@@ -814,11 +1066,12 @@ IconData _getMetricIcon(String metricName) {
                 ),
               ],
             ),
-          ),
-      ],
-    );
-  }
-  
+          );
+        }
+      ),
+    ],
+  );
+}
   // MOBILE: Service card design
   Widget _buildMobileServiceCard(EnterpriseService service) {
     return Container(
@@ -957,67 +1210,177 @@ IconData _getMetricIcon(String metricName) {
       ),
     );
   }
-
-  // DESKTOP: Horizontal service content layout
-  Widget _buildDesktopServiceContent(EnterpriseService service) {
-    final size = MediaQuery.of(context).size;
-    final isTablet = size.width >= _mobileBreakpoint && size.width < _tabletBreakpoint;
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Main service card
-        _buildDesktopServiceCard(service),
-        
-        SizedBox(height: 60),
-        
-        // Features and metrics
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Features column
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+Widget _buildDesktopServiceContent(EnterpriseService service) {
+  final size = MediaQuery.of(context).size;
+  final isTablet = size.width >= _mobileBreakpoint && size.width < _tabletBreakpoint;
+  final serviceIndex = _selectedServiceIndex;
+  final capabilityIndex = _getActiveCapabilityIndex(serviceIndex);
+  
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Main service card
+      _buildDesktopServiceCard(service),
+      
+      SizedBox(height: 60),
+      
+      // Features and capability details
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Features column
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Key Capabilities",
+                  style: TextStyle(
+                    fontSize: isTablet ? 24 : 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isTablet ? 2 : 3,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: isTablet ? 2.2 : 2.8,
+                  ),
+                  itemCount: service.features.length,
+                  itemBuilder: (context, index) {
+                    final isSelected = _selectedCapabilityIndices[serviceIndex] == index;
+                    final isHovered = _hoveredCapabilityIndices[serviceIndex] == index;
+                    final isActive = isSelected || isHovered;
+                    
+                    return MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          _hoveredCapabilityIndices[serviceIndex] = index;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          _hoveredCapabilityIndices[serviceIndex] = null;
+                        });
+                      },
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedCapabilityIndices[serviceIndex] = 
+                                isSelected ? -1 : index; // Toggle selection
+                          });
+                          // Provide haptic feedback
+                          HapticFeedback.selectionClick();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: isActive 
+                                ? service.color.withOpacity(0.15) 
+                                : Colors.black.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isActive 
+                                  ? service.color 
+                                  : service.color.withOpacity(0.3),
+                              width: 1.5,
+                            ),
+                            boxShadow: isActive ? [
+                              BoxShadow(
+                                color: service.color.withOpacity(0.2),
+                                blurRadius: 15,
+                                offset: Offset(0, 5),
+                              )
+                            ] : null,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: service.color.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  isActive ? Icons.check_circle : Icons.check,
+                                  size: 16,
+                                  color: service.color,
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  service.features[index],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          
+          SizedBox(width: 40),
+          
+          // Capability details column
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Capability Details",
+                  style: TextStyle(
+                    fontSize: isTablet ? 24 : 28,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
+                _buildCapabilityDetails(service),
+                
+                // Add testimonial directly under capability details with the same width
+                SizedBox(height: 30),
+                
+                // Only show testimonial when a capability is selected or hovered
+                ...[
                   Text(
-                    "Key Capabilities",
+                    "Customer Testimonial",
                     style: TextStyle(
-                      fontSize: isTablet ? 24 : 28,
+                      fontSize: isTablet ? 22 : 24,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 20),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: isTablet ? 2 : 3,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      childAspectRatio: isTablet ? 2.2 : 2.8,
-                    ),
-                    itemCount: service.features.length,
-                    itemBuilder: (context, index) {
-                      return _buildFeatureItem(service.features[index], service.color);
-                    },
-                  ),
+                  SizedBox(height: 15),
+                  _buildTestimonialContainer(service, capabilityIndex),
                 ],
-              ),
+              ],
             ),
-            
-            SizedBox(width: 40),
-            
-            // Metrics column
-           Expanded(
-  flex: 2,
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
+          ),
+        ],
+      ),
+      
+      SizedBox(height: 60),
+      
+      // Industries section
       Text(
-        "Business Impact",
+        "Industry Applications",
         style: TextStyle(
           fontSize: isTablet ? 24 : 28,
           fontWeight: FontWeight.w700,
@@ -1025,220 +1388,278 @@ IconData _getMetricIcon(String metricName) {
         ),
       ),
       SizedBox(height: 20),
-      Container(
-        padding: EdgeInsets.all(25),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              service.color.withOpacity(0.15),
-              Colors.black.withOpacity(0.3),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: service.color.withOpacity(0.3),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: service.color.withOpacity(0.2),
-              blurRadius: 20,
-              spreadRadius: 1,
+      Wrap(
+        spacing: 20,
+        runSpacing: 20,
+        children: service.industries.map((industry) {
+          return Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 15,
             ),
-          ],
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: service.color.withOpacity(0.3),
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  industry.icon,
+                  color: service.color,
+                  size: 24,
+                ),
+                SizedBox(width: 12),
+                Text(
+                  industry.name,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    ],
+  );
+}
+
+Widget _buildTestimonialContainer(EnterpriseService service, int capabilityIndex) {
+  // Get testimonial specific to the selected capability if available, otherwise use default
+  final capability = service.features[capabilityIndex];
+  final Testimonial? testimonial = service.capabilityTestimonials[capability] ?? service.testimonial;
+  
+  if (testimonial == null) return SizedBox.shrink(); // Skip if no testimonial
+  
+  return Container(
+    width: double.infinity,
+    padding: EdgeInsets.all(25),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          service.color.withOpacity(0.2),
+          Colors.black.withOpacity(0.4),
+        ],
+      ),
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(
+        color: service.color.withOpacity(0.3),
+        width: 1.5,
+      ),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Quote icon container
+        Container(
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.only(right: 15, top: 5),
+          decoration: BoxDecoration(
+            color: service.color.withOpacity(0.15),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.format_quote,
+            color: service.color,
+            size: 20,
+          ),
         ),
-        child: Column(
-          children: service.metrics.entries.map((entry) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
+        
+        // Quote content
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                testimonial.quote,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white,
+                  height: 1.6,
+                ),
+              ),
+              SizedBox(height: 15),
+              
+              // Author info
+              Row(
                 children: [
                   Container(
-                    width: 46, // REDUCED: from 50 to 46
-                    height: 46, // REDUCED: from 50 to 46
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
-                      color: service.color.withOpacity(0.1),
+                      color: service.color.withOpacity(0.2),
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: service.color.withOpacity(0.4),
+                        width: 2,
+                      ),
                     ),
                     child: Center(
                       child: Text(
-                        entry.value,
+                        testimonial.author.substring(0, 1), // First letter of author's name
                         style: TextStyle(
-                          fontSize: 14, // REDUCED: from 16 to 14
+                          fontSize: 18,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: Text(
-                      entry.key,
-                      style: TextStyle(
-                        fontSize: 16, // REDUCED: from 18 to 16
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        testimonial.author,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
+                      SizedBox(height: 4),
+                      Text(
+                        testimonial.position,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            );
-          }).toList(),
+            ],
+          ),
         ),
+      ],
+    ),
+  );
+}
+
+Widget _buildCapabilityDetails(EnterpriseService service) {
+  final size = MediaQuery.of(context).size;
+  final isTablet = size.width >= _mobileBreakpoint && size.width < _tabletBreakpoint;
+  final serviceIndex = _selectedServiceIndex;
+  final capabilityIndex = _getActiveCapabilityIndex(serviceIndex);
+  
+  // Always show capability details - there's always an active capability now
+  final capability = service.features[capabilityIndex];
+  final description = service.capabilityDescriptions[capability] ?? 
+      "Our experts deliver industry-leading solutions in $capability to transform your operations and drive competitive advantage.";
+  
+  return Container(
+    padding: EdgeInsets.all(25),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          service.color.withOpacity(0.15),
+          Colors.black.withOpacity(0.3),
+        ],
       ),
-                  
-                  // Testimonial
-                  if (service.testimonial != null) ...[
-                    SizedBox(height: 30),
-                    Text(
-                      "Client Testimonial",
-                      style: TextStyle(
-                        fontSize: isTablet ? 24 : 28,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      padding: EdgeInsets.all(25),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: service.color.withOpacity(0.3),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.format_quote,
-                            color: service.color,
-                            size: 32,
-                          ),
-                          SizedBox(height: 15),
-                          Text(
-                            service.testimonial!.quote,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.white,
-                              height: 1.6,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: service.color,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      service.color,
-                                      service.color.withOpacity(0.7),
-                                    ],
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    service.testimonial!.author.substring(0, 1),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    service.testimonial!.author,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    service.testimonial!.position,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(
+        color: service.color.withOpacity(0.3),
+        width: 1.5,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: service.color.withOpacity(0.2),
+          blurRadius: 20,
+          spreadRadius: 1,
         ),
-        
-        SizedBox(height: 60),
-        
-        // Industries section
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Text(
-          "Industry Applications",
+          capability,
           style: TextStyle(
-            fontSize: isTablet ? 24 : 28,
+            fontSize: isTablet ? 22 : 24,
             fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 15),
+        Text(
+          description,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white.withOpacity(0.9),
+            height: 1.6,
+          ),
+        ),
+        
+        // Metrics section for the capability (optional)
+        SizedBox(height: 25),
+        Text(
+          "Key Metrics",
+          style: TextStyle(
+            fontSize: isTablet ? 18 : 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(height: 15),
         Wrap(
-          spacing: 20,
-          runSpacing: 20,
-          children: service.industries.map((industry) {
+          spacing: 15,
+          runSpacing: 15,
+          children: service.metrics.entries.take(2).map((entry) {
             return Container(
               padding: EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 15,
+                horizontal: 15,
+                vertical: 12,
               ),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.black.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: service.color.withOpacity(0.3),
-                  width: 1.5,
+                  width: 1,
                 ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    industry.icon,
+                    _getMetricIcon(entry.key),
                     color: service.color,
-                    size: 24,
+                    size: 18,
                   ),
-                  SizedBox(width: 12),
-                  Text(
-                    industry.name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        entry.key,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withOpacity(0.8),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        entry.value,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -1246,51 +1667,10 @@ IconData _getMetricIcon(String metricName) {
           }).toList(),
         ),
       ],
-    );
-  }
-  
-  // DESKTOP: Feature item
-  Widget _buildFeatureItem(String feature, Color color) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 1.5,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.check,
-              size: 16,
-              color: color,
-            ),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              feature,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  
+    ),
+  );
+}
+ 
   // DESKTOP: Service card
   Widget _buildDesktopServiceCard(EnterpriseService service) {
     final size = MediaQuery.of(context).size;
@@ -1448,7 +1828,10 @@ IconData _getMetricIcon(String metricName) {
   }
 
   // CTA Section for both mobile and desktop
+  // CTA Section for both mobile and desktop
   Widget _buildCtaSection(bool isMobile, bool isTablet) {
+    final activeServiceIndex = _getActiveServiceIndex();
+    
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: isMobile ? 24 : isTablet ? 60 : 100,
@@ -1459,18 +1842,18 @@ IconData _getMetricIcon(String metricName) {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            _services[_selectedServiceIndex].color.withOpacity(0.3),
+            _services[activeServiceIndex].color.withOpacity(0.3),
             Colors.black.withOpacity(0.6),
           ],
         ),
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: _services[_selectedServiceIndex].color.withOpacity(0.3),
+          color: _services[activeServiceIndex].color.withOpacity(0.3),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: _services[_selectedServiceIndex].color.withOpacity(0.2),
+            color: _services[activeServiceIndex].color.withOpacity(0.2),
             blurRadius: 30,
             spreadRadius: 5,
             offset: Offset(0, 10),
@@ -1509,7 +1892,7 @@ IconData _getMetricIcon(String metricName) {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _services[_selectedServiceIndex].color,
+                    backgroundColor: _services[activeServiceIndex].color,
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(
                       horizontal: 30,
@@ -1565,7 +1948,7 @@ IconData _getMetricIcon(String metricName) {
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _services[_selectedServiceIndex].color,
+                          backgroundColor: _services[activeServiceIndex].color,
                           foregroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(
                             horizontal: 30,
@@ -1603,6 +1986,9 @@ class EnterpriseService {
   final Map<String, String> metrics;
   final List<Industry> industries;
   final Testimonial? testimonial;
+  // New properties for capability-specific content
+  final Map<String, String> capabilityDescriptions;
+  final Map<String, Testimonial> capabilityTestimonials;
 
   EnterpriseService({
     required this.title,
@@ -1615,6 +2001,8 @@ class EnterpriseService {
     required this.metrics,
     required this.industries,
     this.testimonial,
+    this.capabilityDescriptions = const {},
+    this.capabilityTestimonials = const {},
   });
 }
 
@@ -1636,4 +2024,3 @@ class Testimonial {
     required this.position,
   });
 }
-
