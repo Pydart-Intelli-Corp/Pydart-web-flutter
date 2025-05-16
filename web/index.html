@@ -1,62 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
- 
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Pydart Intelli Corp | Software, Mobile & Web Development | Kochi</title>
+  <meta name="description" content="Pydart Intelli Corp offers comprehensive technology solutions: software development, web & mobile apps, digital marketing, UI/UX design, and project management services in Kochi, Kerala.">
+  <meta name="keywords" content="Pydart, Pydart Intelli Corp, software development, website development, Android app, iOS app, digital marketing, graphic design, project solutions, technology, Kochi, Kerala">
+  
+  <!-- Robots Meta Tag -->
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  
+  <!-- Canonical URL -->
+  <meta rel="canonical" href="https://www.pydart.in/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.pydart.in/">
+  <meta property="og:title" content="Pydart Intelli Corp | Complete Technology Solutions">
+  <meta property="og:description" content="Expert software, web & mobile development, digital marketing, and design services based in Kochi. Your one-stop technology partner.">
+  <meta property="og:image" content="https://www.pydart.in/assets/og-image.jpg">
+  <meta property="og:site_name" content="Pydart Intelli Corp">
+  <meta property="og:locale" content="en_IN">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.pydart.in/">
+  <meta name="twitter:title" content="Pydart Intelli Corp | Complete Technology Solutions">
+  <meta name="twitter:description" content="Expert software, web & mobile development, digital marketing, and design services based in Kochi.">
+  <meta name="twitter:image" content="https://www.pydart.in/assets/twitter-image.jpg">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Flutter.dev">
+  <meta name="apple-mobile-web-app-title" content="Pydart Intelli Corp">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>Pydart</title>
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Structured Data - Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Pydart Intelli Corp",
+    "url": "https://www.pydart.in",
+    "logo": "https://www.pydart.in/icons/Icon-192.png",
+    "description": "Comprehensive technology solutions including software development, website & mobile app development, digital marketing, graphic design, and project management services.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kochi",
+      "addressRegion": "Kerala",
+      "addressCountry": "IN"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-YOUR-PHONE-NUMBER",
+      "contactType": "customer service",
+      "email": "info@pydart.in"
+    },
+    "sameAs": [
+      "https://www.facebook.com/pydartintellicorp",
+      "https://www.linkedin.com/company/pydart-intelli-corp",
+      "https://twitter.com/pydartintelli"
+    ]
+  }
+  </script>
+  
+  <!-- Structured Data - WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://www.pydart.in/",
+    "name": "Pydart Intelli Corp",
+    "description": "Software, Web & Mobile Development, Digital Marketing and Design Services",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.pydart.in/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <!-- Structured Data - Services -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Technology Solutions",
+    "provider": {
+      "@type": "Organization",
+      "name": "Pydart Intelli Corp"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Technology Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Software Development",
+            "description": "Custom software development for businesses of all sizes"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Website Development",
+            "description": "Responsive and SEO-friendly website development"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Android App Development",
+            "description": "Native and cross-platform Android applications"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "iOS App Development",
+            "description": "Native and cross-platform iOS applications"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Digital Marketing",
+            "description": "SEO, SMM, content marketing, and online advertising"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Graphic Design",
+            "description": "Brand identity, UX/UI design, and visual content creation"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Project Solutions",
+            "description": "End-to-end project management and implementation services"
+          }
+        }
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
+  <!-- Preloader with SEO-friendly content -->
+  <div id="flutter-app-preloader" style="display: block; text-align: center; padding: 20px; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif;">
+    <h1>Pydart Intelli Corp</h1>
+    <h2>Complete Technology Solutions in Kochi, Kerala</h2>
+    
+    <div style="text-align: left; margin-top: 20px;">
+      <h3>Our Services</h3>
+      <ul>
+        <li><strong>Software Development:</strong> Custom software solutions for businesses of all sizes</li>
+        <li><strong>Website Development:</strong> Responsive, SEO-optimized websites using modern technologies</li>
+        <li><strong>Mobile App Development:</strong> Native and cross-platform apps for Android and iOS</li>
+        <li><strong>Digital Marketing:</strong> SEO, social media, content marketing, and advertising</li>
+        <li><strong>Graphic Design:</strong> UI/UX design, branding, and visual identity</li>
+        <li><strong>Project Solutions:</strong> End-to-end implementation and management services</li>
+      </ul>
+      
+      <p>Based in Kochi, Kerala, we provide innovative and reliable technology solutions for businesses across India and globally.</p>
+      <p>Contact us at: <a href="mailto:info@pydart.in">info@pydart.in</a></p>
+    </div>
+    
+    <p>Loading application...</p>
+  </div>
+
   <script src="flutter_bootstrap.js" async></script>
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-analytics.js";
     import { getAuth } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    
     const firebaseConfig = {
-    apiKey: "AIzaSyAVrD3frtTV7YqPcWho43n61uFverV9coQ",
-    authDomain: "pydart-connect.firebaseapp.com",
-    projectId: "pydart-connect",
-    storageBucket: "pydart-connect.firebasestorage.app",
-    messagingSenderId: "789623234202",
-    appId: "1:789623234202:web:bf37cb5819f03e4d6dc923",
-    measurementId: "G-7HHDG5W6RT"
-  };flutter
+      apiKey: "AIzaSyAVrD3frtTV7YqPcWho43n61uFverV9coQ",
+      authDomain: "pydart-connect.firebaseapp.com",
+      projectId: "pydart-connect",
+      storageBucket: "pydart-connect.firebasestorage.app",
+      messagingSenderId: "789623234202",
+      appId: "1:789623234202:web:bf37cb5819f03e4d6dc923",
+      measurementId: "G-7HHDG5W6RT"
+    };
+    
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
+
+    // When Flutter app loads, hide the preloader
+    window.addEventListener('flutter-first-frame', function() {
+      var preloader = document.getElementById('flutter-app-preloader');
+      preloader.style.display = 'none';
+    });
   </script>
 </body>
 </html>
