@@ -588,6 +588,7 @@
   <!-- Flutter App Container -->
   <div id="flutter-app"></div>
 
+  <script src="flutter_bootstrap.js" defer></script>
   <script>
     // Initialize particles.js with cyberpunk style
     particlesJS("particles-js", {
@@ -700,10 +701,10 @@
     
     const simulateLoading = () => {
       const interval = setInterval(() => {
-        if (progress < 90) { // Only simulate up to 90%
+        if (progress < 99) { // Go up to 99% during simulation
           // Simulate varying load speeds
           const increment = Math.random() * 3 + 1;
-          progress = Math.min(progress + increment, 90);
+          progress = Math.min(progress + increment, 99);
           
           // Update loading bar
           loadingBar.style.width = `${progress}%`;
@@ -714,12 +715,38 @@
           // Update loading message
           const messageIndex = Math.floor((progress / 100) * loadingMessages.length);
           loadingStatus.textContent = loadingMessages[Math.min(messageIndex, loadingMessages.length - 1)];
-        } else if (progress >= 90) {
+        } else {
           clearInterval(interval);
-          loadingStatus.textContent = "WAITING FOR APPLICATION...";
+          finishLoading(); // Force completion after reaching 99%
         }
       }, 100);
+      
+      // Fallback timeout - force completion after 10 seconds
+      setTimeout(finishLoading, 10000);
     };
+    
+    // Function to finish loading and show the app
+    function finishLoading() {
+      if (progress < 100) { // Only run once
+        progress = 100;
+        loadingBar.style.width = '100%';
+        progressPercentage.textContent = "100%";
+        loadingStatus.textContent = "SYSTEM READY";
+        
+        setTimeout(() => {
+          loadingScreen.style.opacity = '0';
+          loadingScreen.style.visibility = 'hidden';
+          flutterApp.classList.add('visible');
+          
+          // Create a new script element for the Flutter app if needed
+          if (!document.querySelector('script[src*="main.dart.js"]')) {
+            const script = document.createElement('script');
+            script.src = 'main.dart.js';
+            document.body.appendChild(script);
+          }
+        }, 1000);
+      }
+    }
     
     // Start simulated loading
     simulateLoading();
