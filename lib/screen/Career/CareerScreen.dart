@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/screen/Career/blocks/CareerBlock.dart';
-import 'package:flutter_website/ui/blocks/common/footer.dart';
-import 'package:flutter_website/ui/blocks/common/header.dart';
+import 'package:pydart/components/colors.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/screen/Career/blocks/CareerBlock.dart';
+import 'package:pydart/ui/blocks/common/footer.dart';
+import 'package:pydart/ui/blocks/common/header.dart';
 import 'package:provider/provider.dart';
 
 class NoGlowScrollBehavior extends ScrollBehavior {

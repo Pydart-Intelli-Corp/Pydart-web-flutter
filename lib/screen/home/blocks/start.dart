@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/colors.dart' as AppColors;
-import 'package:flutter_website/components/icons.dart';
-import 'package:flutter_website/components/spacing.dart';
-import 'package:flutter_website/components/typography.dart';
-import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:pydart/components/colors.dart' as AppColors;
+import 'package:pydart/components/icons.dart';
+import 'package:pydart/components/spacing.dart';
+import 'package:pydart/components/typography.dart';
+import 'package:pydart/widgets/buttons/gradient_button.dart';
 
 class HomeHead extends StatefulWidget {
   final ValueChanged<int>? onIndicatorTapped;

@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_website/widgets/buttons/loading_button.dart';
+import 'package:pydart/widgets/buttons/loading_button.dart';
 
 class InvestorInquiryDialog extends StatefulWidget {
   const InvestorInquiryDialog({super.key});

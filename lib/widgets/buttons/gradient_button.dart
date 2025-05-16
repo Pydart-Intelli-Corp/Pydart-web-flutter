@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/typography.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/widgets/animations/loading_dots.dart';
+import 'package:pydart/components/typography.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/widgets/animations/loading_dots.dart';
 // Ensure the LoadingDots widget is imported or defined in your project.
 
 class PrimaryGradientButton extends StatefulWidget {

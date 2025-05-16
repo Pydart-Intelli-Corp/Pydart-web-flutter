@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/router.dart';
-import 'package:flutter_website/ui/blocks/common/header.dart';
-import 'package:flutter_website/ui/blocks/header contents/hoverdropdown.dart';
-import 'package:flutter_website/widgets/buttons/text_hover_button.dart';
+import 'package:pydart/router.dart';
+import 'package:pydart/ui/blocks/common/header.dart';
+import 'package:pydart/ui/blocks/header contents/hoverdropdown.dart';
+import 'package:pydart/widgets/buttons/text_hover_button.dart';
 import 'package:provider/provider.dart';
 
 class WhoWeAreContent extends StatefulWidget {

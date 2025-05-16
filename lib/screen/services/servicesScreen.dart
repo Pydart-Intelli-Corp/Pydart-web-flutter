@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
+import 'package:pydart/components/colors.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
 
-import 'package:flutter_website/screen/services/ServicesHead.dart';
-import 'package:flutter_website/screen/services/blocks/Embeddedsystem.dart';
-import 'package:flutter_website/screen/services/blocks/Generative_AI.dart';
-import 'package:flutter_website/screen/services/blocks/MobileDevelopment.dart';
-import 'package:flutter_website/screen/services/blocks/SoftwareDevelopment.dart';
-import 'package:flutter_website/screen/services/blocks/WebDevelopment.dart';
-import 'package:flutter_website/screen/services/blocks/features.dart';
-import 'package:flutter_website/ui/blocks/common/footer.dart';
-import 'package:flutter_website/ui/blocks/common/header.dart';
+import 'package:pydart/screen/services/ServicesHead.dart';
+import 'package:pydart/screen/services/blocks/Embeddedsystem.dart';
+import 'package:pydart/screen/services/blocks/Generative_AI.dart';
+import 'package:pydart/screen/services/blocks/MobileDevelopment.dart';
+import 'package:pydart/screen/services/blocks/SoftwareDevelopment.dart';
+import 'package:pydart/screen/services/blocks/WebDevelopment.dart';
+import 'package:pydart/screen/services/blocks/features.dart';
+import 'package:pydart/ui/blocks/common/footer.dart';
+import 'package:pydart/ui/blocks/common/header.dart';
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override

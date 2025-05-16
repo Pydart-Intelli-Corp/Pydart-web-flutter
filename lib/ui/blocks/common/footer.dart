@@ -1,11 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_website/widgets/buttons/icon_hover_button.dart';
+import 'package:pydart/widgets/buttons/icon_hover_button.dart';
 
 
-import 'package:flutter_website/api/config.dart';
-import 'package:flutter_website/widgets/notifications/snackbar.dart';
+import 'package:pydart/api/config.dart';
+import 'package:pydart/widgets/notifications/snackbar.dart';
 import 'package:http/http.dart' as http;
 
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/ui/carousel/forHomeScreen/carousel_slide_1.dart';
-import 'package:flutter_website/ui/carousel/forHomeScreen/carousel_slide_2.dart';
-import 'package:flutter_website/ui/carousel/forHomeScreen/carousel_slide_3.dart';
-import 'package:flutter_website/ui/carousel/forHomeScreen/carousel_slide_4.dart';
+import 'package:pydart/ui/carousel/forHomeScreen/carousel_slide_1.dart';
+import 'package:pydart/ui/carousel/forHomeScreen/carousel_slide_2.dart';
+import 'package:pydart/ui/carousel/forHomeScreen/carousel_slide_3.dart';
+import 'package:pydart/ui/carousel/forHomeScreen/carousel_slide_4.dart';
 
 class Carousel extends StatefulWidget {
   static int slideDuration = 6400;

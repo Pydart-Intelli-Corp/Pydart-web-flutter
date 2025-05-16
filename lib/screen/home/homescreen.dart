@@ -3,17 +3,17 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart'; // Added for rendering optimizations
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/screen/Insights/blocks/IndustryTrend.dart';
-import 'package:flutter_website/screen/Insights/blocks/mission.dart';
-import 'package:flutter_website/screen/Insights/blocks/vision.dart';
-import 'package:flutter_website/screen/home/blocks/breif.dart';
-import 'package:flutter_website/screen/home/blocks/service_background.dart';
-import 'package:flutter_website/screen/home/blocks/start.dart';
-import 'package:flutter_website/screen/services/blocks/features.dart';
-import 'package:flutter_website/ui/blocks/common/footer.dart';
-import 'package:flutter_website/ui/blocks/common/header.dart';
+import 'package:pydart/components/colors.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/screen/Insights/blocks/IndustryTrend.dart';
+import 'package:pydart/screen/Insights/blocks/mission.dart';
+import 'package:pydart/screen/Insights/blocks/vision.dart';
+import 'package:pydart/screen/home/blocks/breif.dart';
+import 'package:pydart/screen/home/blocks/service_background.dart';
+import 'package:pydart/screen/home/blocks/start.dart';
+import 'package:pydart/screen/services/blocks/features.dart';
+import 'package:pydart/ui/blocks/common/footer.dart';
+import 'package:pydart/ui/blocks/common/header.dart';
 
 // Image list with better quality and compressed images
 final List<String> _images = [

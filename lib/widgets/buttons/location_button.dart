@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/api/config.dart';
+import 'package:pydart/api/config.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

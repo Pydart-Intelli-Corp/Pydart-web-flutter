@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/typography.dart';
+import 'package:pydart/components/typography.dart';
 
 RichText slide1Text = RichText(
   text: const TextSpan(

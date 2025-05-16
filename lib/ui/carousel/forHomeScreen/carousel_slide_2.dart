@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/ui/carousel/forHomeScreen/carousel_text.dart';
-import 'package:flutter_website/ui/carousel/common/model_carousel_item_animation.dart';
+import 'package:pydart/ui/carousel/forHomeScreen/carousel_text.dart';
+import 'package:pydart/ui/carousel/common/model_carousel_item_animation.dart';
 
 import '../common/animation_slide_up_down_fade.dart';
 

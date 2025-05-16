@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/screen/services/servicesScreen.dart';
-import 'package:flutter_website/screen/whoweare/blocks/about.dart';
-import 'package:flutter_website/screen/whoweare/blocks/people.dart';
-import 'package:flutter_website/screen/whoweare/blocks/whatwedo.dart';
+import 'package:pydart/components/colors.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/screen/services/servicesScreen.dart';
+import 'package:pydart/screen/whoweare/blocks/about.dart';
+import 'package:pydart/screen/whoweare/blocks/people.dart';
+import 'package:pydart/screen/whoweare/blocks/whatwedo.dart';
 
-import 'package:flutter_website/screen/whoweare/blocks/whoweareblock.dart';
-import 'package:flutter_website/ui/blocks/common/footer.dart';
-import 'package:flutter_website/ui/blocks/common/header.dart';
-import 'package:flutter_website/widgets/animations/loading_dots.dart';
+import 'package:pydart/screen/whoweare/blocks/whoweareblock.dart';
+import 'package:pydart/ui/blocks/common/footer.dart';
+import 'package:pydart/ui/blocks/common/header.dart';
+import 'package:pydart/widgets/animations/loading_dots.dart';
 import 'package:video_player/video_player.dart';
 
 class WhoweareScreen extends StatefulWidget {

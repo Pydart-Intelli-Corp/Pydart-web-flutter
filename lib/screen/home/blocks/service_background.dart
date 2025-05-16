@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_website/components/colors.dart' as AppColors;
+import 'package:pydart/components/colors.dart' as AppColors;
 
 class EnterpriseServicesBlock extends StatefulWidget {
   const EnterpriseServicesBlock({super.key});

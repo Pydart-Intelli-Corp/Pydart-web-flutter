@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/icons.dart';
-import 'package:flutter_website/components/spacing.dart';
-import 'package:flutter_website/components/typography.dart';
-import 'package:flutter_website/components/colors.dart';
+import 'package:pydart/components/icons.dart';
+import 'package:pydart/components/spacing.dart';
+import 'package:pydart/components/typography.dart';
+import 'package:pydart/components/colors.dart';
 
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});

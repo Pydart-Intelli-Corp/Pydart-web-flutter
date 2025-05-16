@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/ui/blocks/header%20contents/hoverdropdown.dart';
-import 'package:flutter_website/widgets/buttons/text_hover_button.dart';
+import 'package:pydart/ui/blocks/header%20contents/hoverdropdown.dart';
+import 'package:pydart/widgets/buttons/text_hover_button.dart';
 
 class Insights extends StatefulWidget {
   final VoidCallback onItemPressed;

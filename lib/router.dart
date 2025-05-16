@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/screen/Career/CareerScreen.dart';
-import 'package:flutter_website/screen/Insights/InsightsScreen.dart';
-import 'package:flutter_website/screen/comingsoon/comingsoon.dart';
-import 'package:flutter_website/screen/services/servicesScreen.dart';
-import 'package:flutter_website/screen/home/homescreen.dart';
-import 'package:flutter_website/screen/whoweare/whoweare_screen.dart';
+import 'package:pydart/screen/Career/CareerScreen.dart';
+import 'package:pydart/screen/Insights/InsightsScreen.dart';
+import 'package:pydart/screen/comingsoon/comingsoon.dart';
+import 'package:pydart/screen/services/servicesScreen.dart';
+import 'package:pydart/screen/home/homescreen.dart';
+import 'package:pydart/screen/whoweare/whoweare_screen.dart';
 
 import 'package:get/get.dart';
 

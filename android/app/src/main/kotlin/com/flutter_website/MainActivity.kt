@@ -1,4 +1,4 @@
-package com.flutter_website
+package com.pydart
 
 import io.flutter.embedding.android.FlutterActivity
 

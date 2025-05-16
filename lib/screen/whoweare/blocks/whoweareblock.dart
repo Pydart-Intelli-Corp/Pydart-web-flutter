@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/icons.dart';
-import 'package:flutter_website/components/spacing.dart';
-import 'package:flutter_website/components/typography.dart';
+import 'package:pydart/components/icons.dart';
+import 'package:pydart/components/spacing.dart';
+import 'package:pydart/components/typography.dart';
 
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/router.dart';
-import 'package:flutter_website/ui/blocks/common/header.dart';
-import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/router.dart';
+import 'package:pydart/ui/blocks/common/header.dart';
+import 'package:pydart/widgets/buttons/gradient_button.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 

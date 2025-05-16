@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/api/config.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/widgets/buttons/gradient_button.dart';
-import 'package:flutter_website/widgets/buttons/loading_button.dart';
+import 'package:pydart/api/config.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/widgets/buttons/gradient_button.dart';
+import 'package:pydart/widgets/buttons/loading_button.dart';
 import 'dart:ui';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_website/widgets/notifications/snackbar.dart';
+import 'package:pydart/widgets/notifications/snackbar.dart';
 
 class ResponsiveDialog extends StatefulWidget {
   final String dropdownValue;

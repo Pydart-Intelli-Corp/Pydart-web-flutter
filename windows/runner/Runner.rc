@@ -92,9 +92,9 @@ BEGIN
             VALUE "CompanyName", "Codelessly Inc" "\0"
             VALUE "FileDescription", "The flutter.dev website rebuilt in Flutter." "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_website" "\0"
+            VALUE "InternalName", "pydart" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 Codelessly Inc. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_website.exe" "\0"
+            VALUE "OriginalFilename", "pydart.exe" "\0"
             VALUE "ProductName", "Flutter.dev" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END

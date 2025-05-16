@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/components/spacing.dart';
-import 'package:flutter_website/components/typography.dart';
-import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
-import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/components/spacing.dart';
+import 'package:pydart/components/typography.dart';
+import 'package:pydart/widgets/Forms/enquiry_Page.dart';
+import 'package:pydart/widgets/buttons/gradient_button.dart';
 
 class IndustryTrendsBlock extends StatefulWidget {
   const IndustryTrendsBlock({super.key});

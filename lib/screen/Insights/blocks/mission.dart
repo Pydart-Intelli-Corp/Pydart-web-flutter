@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/icons.dart';
-import 'package:flutter_website/components/spacing.dart';
-import 'package:flutter_website/components/colors.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
+import 'package:pydart/components/icons.dart';
+import 'package:pydart/components/spacing.dart';
+import 'package:pydart/components/colors.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
 
 class MissionBlock extends StatefulWidget {
   const MissionBlock({super.key});

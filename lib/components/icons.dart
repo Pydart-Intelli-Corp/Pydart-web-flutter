@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/components/colors.dart';
+import 'package:pydart/components/colors.dart';
 
 Widget buildMaterialIconCircle(String imagePath, double size) {
   return Container(

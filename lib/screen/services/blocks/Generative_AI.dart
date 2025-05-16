@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_website/core/extensions/color_extensions.dart';
-import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
+import 'package:pydart/core/extensions/color_extensions.dart';
+import 'package:pydart/widgets/Forms/enquiry_Page.dart';
 
-import 'package:flutter_website/widgets/buttons/gradient_button.dart';
+import 'package:pydart/widgets/buttons/gradient_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AIBlock extends StatefulWidget {

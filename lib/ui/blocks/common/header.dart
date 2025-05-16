@@ -2,20 +2,20 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_website/components/colors.dart' as AppColors;
-import 'package:flutter_website/widgets/Forms/enquiry_Page.dart';
-import 'package:flutter_website/widgets/buttons/gradient_button.dart';
-import 'package:flutter_website/widgets/notifications/snackbar.dart';
+import 'package:pydart/components/colors.dart' as AppColors;
+import 'package:pydart/widgets/Forms/enquiry_Page.dart';
+import 'package:pydart/widgets/buttons/gradient_button.dart';
+import 'package:pydart/widgets/notifications/snackbar.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_website/router.dart';
-import 'package:flutter_website/ui/blocks/header%20contents/careers.dart';
-import 'package:flutter_website/ui/blocks/header%20contents/insights.dart';
-import 'package:flutter_website/ui/blocks/header%20contents/services.dart';
-import 'package:flutter_website/ui/blocks/header%20contents/whoweare.dart';
+import 'package:pydart/router.dart';
+import 'package:pydart/ui/blocks/header%20contents/careers.dart';
+import 'package:pydart/ui/blocks/header%20contents/insights.dart';
+import 'package:pydart/ui/blocks/header%20contents/services.dart';
+import 'package:pydart/ui/blocks/header%20contents/whoweare.dart';
 
-import 'package:flutter_website/widgets/buttons/text_hover_button.dart';
+import 'package:pydart/widgets/buttons/text_hover_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NavigationProvider extends ChangeNotifier {
