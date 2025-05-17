@@ -5,12 +5,14 @@ import 'package:flutter/rendering.dart'; // Added for rendering optimizations
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pydart/components/colors.dart';
 import 'package:pydart/core/extensions/color_extensions.dart';
-import 'package:pydart/screen/Insights/blocks/IndustryTrend.dart';
-import 'package:pydart/screen/Insights/blocks/mission.dart';
-import 'package:pydart/screen/Insights/blocks/vision.dart';
+import 'package:pydart/screen/home/blocks/IndustryTrend.dart';
+
+
 import 'package:pydart/screen/home/blocks/breif.dart';
+import 'package:pydart/screen/home/blocks/mission.dart';
 import 'package:pydart/screen/home/blocks/service_background.dart';
 import 'package:pydart/screen/home/blocks/start.dart';
+
 import 'package:pydart/screen/services/blocks/features.dart';
 import 'package:pydart/ui/blocks/common/footer.dart';
 import 'package:pydart/ui/blocks/common/header.dart';
@@ -336,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               AnimatedSmoothScrollItem(
                 direction: _currentScrollDirection,
                 child: RepaintBoundary(
-                  child: const IndustryTrendsBlock(),
+                  child:  CyberpunkIndustryTrendsBlock(),
                 ),
               )
             ),
@@ -351,16 +353,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               )
             ),
           ),
-          SliverToBoxAdapter(
-            child: _getCachedWidget(5, () => 
-              AnimatedSmoothScrollItem(
-                direction: _currentScrollDirection,
-                child: RepaintBoundary(
-                  child: const VisionBlock(),
-                ),
-              )
-            ),
-          ),
+       
           SliverToBoxAdapter(
             child: _getCachedWidget(6, () => 
               Footer(

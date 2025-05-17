@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pydart/screen/Career/CareerScreen.dart';
-import 'package:pydart/screen/Insights/InsightsScreen.dart';
+
 import 'package:pydart/screen/comingsoon/comingsoon.dart';
+import 'package:pydart/screen/home/blocks/IndustryTrend.dart';
 import 'package:pydart/screen/services/servicesScreen.dart';
 import 'package:pydart/screen/home/homescreen.dart';
 import 'package:pydart/screen/whoweare/whoweare_screen.dart';
@@ -80,12 +81,12 @@ class Routes {
       customTransition: CustomSlideTransition(),
       transitionDuration: const Duration(milliseconds: 500),
     ),
-    GetPage(
-      name: insights,
-      page: () => InsightScreen(),
-      customTransition: CustomSlideTransition(),
-      transitionDuration: const Duration(milliseconds: 500),
-    ),
+    // GetPage(
+    //   name: insights,
+    //   page: () => CyberpunkIndustryTrendsBlock(),
+    //   customTransition: CustomSlideTransition(),
+    //   transitionDuration: const Duration(milliseconds: 500),
+    // ),
     GetPage(
       name: career,
       page: () => CareerScreen(),

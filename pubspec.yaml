@@ -53,6 +53,7 @@ dependencies:
   phosphor_flutter: ^2.1.0
   simple_animations: ^5.2.0
   supercharged: ^2.1.1
+  animated_text_kit: ^4.2.3
 #  responsive_framework:
 #    path: responsive_framework/
 
