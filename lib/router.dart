@@ -1,12 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pydart/screen/Career/CareerScreen.dart';
-
 import 'package:pydart/screen/comingsoon/comingsoon.dart';
 import 'package:pydart/screen/home/blocks/IndustryTrend.dart';
 import 'package:pydart/screen/services/servicesScreen.dart';
 import 'package:pydart/screen/home/homescreen.dart';
 import 'package:pydart/screen/whoweare/whoweare_screen.dart';
-
 import 'package:get/get.dart';
 
 // Assign an order/index to each route.
@@ -58,39 +57,79 @@ class Routes {
   static const String home = '/';
   static const String whoweare = '/whoweare';
   static const String services = '/services';
-  static const String insights = '/insights';
   static const String career = '/career';
 
   static final List<GetPage> pages = [
     GetPage(
       name: home,
-      page: () => HomeScreen(),
+      page: () {
+        if (kDebugMode) {
+          print('🏠 Loading HomeScreen for route: $home');
+        }
+        return HomeScreen();
+      },
       customTransition: CustomSlideTransition(),
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: whoweare,
-      page: () => WhoweareScreen(),
+      page: () {
+        if (kDebugMode) {
+          print('👥 Loading WhoweareScreen for route: $whoweare');
+        }
+        return WhoweareScreen();
+        
+      },
+      
       customTransition: CustomSlideTransition(),
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: services,
-      page: () => ServicesScreen(),
+      page: () {
+        if (kDebugMode) {
+          print('🔧 Loading ServicesScreen for route: $services');
+        }
+        return ServicesScreen();
+      },
       customTransition: CustomSlideTransition(),
       transitionDuration: const Duration(milliseconds: 500),
     ),
-    // GetPage(
-    //   name: insights,
-    //   page: () => CyberpunkIndustryTrendsBlock(),
-    //   customTransition: CustomSlideTransition(),
-    //   transitionDuration: const Duration(milliseconds: 500),
-    // ),
     GetPage(
       name: career,
-      page: () => CareerScreen(),
+      page: () {
+        if (kDebugMode) {
+          print('💼 Loading CareerScreen for route: $career');
+        }
+        return CareerScreen();
+      },
       customTransition: CustomSlideTransition(),
       transitionDuration: const Duration(milliseconds: 500),
     ),
   ];
+
+  // Helper method to check if a route exists
+  static bool isValidRoute(String route) {
+    return pages.any((page) => page.name == route);
+  }
+
+  // Helper method to get default route
+  static String getDefaultRoute() {
+    return home;
+  }
+
+  // Helper method to validate and sanitize routes
+  static String sanitizeRoute(String route) {
+    // Remove trailing slashes except for home route
+    if (route != home && route.endsWith('/')) {
+      route = route.substring(0, route.length - 1);
+    }
+    
+    // Ensure route starts with /
+    if (!route.startsWith('/')) {
+      route = '/$route';
+    }
+    
+    return route;
+  }
 }

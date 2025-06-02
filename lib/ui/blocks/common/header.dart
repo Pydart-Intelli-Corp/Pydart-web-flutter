@@ -14,23 +14,119 @@ import 'package:pydart/ui/blocks/header%20contents/careers.dart';
 import 'package:pydart/ui/blocks/header%20contents/insights.dart';
 import 'package:pydart/ui/blocks/header%20contents/services.dart';
 import 'package:pydart/ui/blocks/header%20contents/whoweare.dart';
-
 import 'package:pydart/widgets/buttons/text_hover_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// Updated NavigationProvider that's route-aware
 class NavigationProvider extends ChangeNotifier {
   String _active = 'home';
   String? _previousActive;
   String? _hovered;
 
+  NavigationProvider() {
+    _initializeRouteListener();
+  }
+
   String get active => _active;
   String? get previousActive => _previousActive;
   String? get hovered => _hovered;
+ void onRouteChange(String? newRoute) {
+    if (newRoute != null) {
+      String newActive = _routeToNavigationKey(newRoute);
+      
+      if (_active != newActive) {
+        _previousActive = _active;
+        _active = newActive;
+        notifyListeners();
+      }
+    }
+  }
+  // Convert route to navigation key
+  String _routeToNavigationKey(String route) {
+    switch (route) {
+      case Routes.home:
+        return 'home';
+      case Routes.whoweare:
+        return 'whoweare';
+      case Routes.services:
+        return 'ourservices';
+      case Routes.career:
+        return 'careers';
+      default:
+        return 'home';
+    }
+  }
 
+  // Convert navigation key to route
+  String _navigationKeyToRoute(String key) {
+    switch (key) {
+      case 'home':
+        return Routes.home;
+      case 'whoweare':
+        return Routes.whoweare;
+      case 'ourservices':
+        return Routes.services;
+      case 'careers':
+        return Routes.career;
+      default:
+        return Routes.home;
+    }
+  }
+
+  void _initializeRouteListener() {
+    // Set initial active based on current route
+    _updateActiveFromCurrentRoute();
+  }
+  
+  // Call this method whenever a navigation occurs
+  void updateFromRoute() {
+    _updateActiveFromCurrentRoute();
+  }
+  
+  // Helper method to manually sync with current route (useful for browser navigation)
+  void syncWithCurrentRoute() {
+    _updateActiveFromCurrentRoute();
+  }
+
+  void _updateActiveFromCurrentRoute() {
+    String currentRoute = Get.currentRoute;
+    String newActive = _routeToNavigationKey(currentRoute);
+    
+    if (_active != newActive) {
+      _previousActive = _active;
+      _active = newActive;
+      notifyListeners();
+    }
+  }
+
+  // Navigate to a section and update the route
+  void navigateTo(String navigationKey) {
+    String route = _navigationKeyToRoute(navigationKey);
+    
+    // Clear hover state
+    _hovered = null;
+    
+    // Update active state before navigation
+    if (_active != navigationKey) {
+      _previousActive = _active;
+      _active = navigationKey;
+      notifyListeners();
+    }
+    
+    // Navigate to the route
+    Get.toNamed(route);
+  }
+
+  // Backward compatibility setter for active
   set active(String value) {
     if (_active != value) {
       _previousActive = _active;
       _active = value;
+      
+      // Navigate to the corresponding route
+      String route = _navigationKeyToRoute(value);
+      Get.toNamed(route);
+      
       notifyListeners();
     }
   }
@@ -40,6 +136,11 @@ class NavigationProvider extends ChangeNotifier {
       _hovered = value;
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
 
@@ -61,31 +162,23 @@ class _HeaderState extends State<Header> {
   String? currentDropdown;
   OverlayEntry? _overlayEntry;
   Timer? _autoCloseTimer;
-  // Variable to hold the previous hovered state.
   String? _previousHovered;
-  // Cache the NavigationProvider for safe access.
   late NavigationProvider _navProvider;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Cache the provider reference once dependencies are available.
     _navProvider = Provider.of<NavigationProvider>(context, listen: false);
   }
 
-
-  /// Shows the dropdown for the given [dropdown] key.
-  /// If another dropdown is open, it is first closed without restoring the hovered state.
   void _showDropdown(String dropdown) {
     if (currentDropdown == dropdown) return;
 
     if (currentDropdown != null) {
-      // Hide any open dropdown without restoring the previous hovered state.
       _hideDropdown(restorePreviousHovered: false);
     }
 
     currentDropdown = dropdown;
-    // Calculate position using the key for the specific dropdown.
     GlobalKey keyForDropdown;
     switch (dropdown) {
       case 'whoweare':
@@ -125,8 +218,6 @@ class _HeaderState extends State<Header> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
-  /// Hides the currently open dropdown.
-  /// If [restorePreviousHovered] is true, the previously stored hovered state is restored.
   void _hideDropdown({bool restorePreviousHovered = true}) {
     currentDropdown = null;
     _overlayEntry?.remove();
@@ -149,11 +240,6 @@ class _HeaderState extends State<Header> {
           onItemPressed: _hideDropdown,
           openUrl: openUrl,
         );
-      // case 'insights':
-      //   return Insights(
-      //     onItemPressed: _hideDropdown,
-      //     openUrl: openUrl,
-      //   );
       case 'careers':
         return CareersContent(
           onItemPressed: _hideDropdown,
@@ -168,13 +254,11 @@ class _HeaderState extends State<Header> {
 
   void _scheduleAutoClose() =>
       _autoCloseTimer = Timer(const Duration(milliseconds: 200), () {
-        // When auto-closing, restore previous hovered state.
         _hideDropdown();
       });
 
   @override
   void dispose() {
-    // Avoid restoring hovered state on dispose to prevent provider update during tree lock.
     _hideDropdown(restorePreviousHovered: false);
     _autoCloseTimer?.cancel();
     super.dispose();
@@ -182,7 +266,6 @@ class _HeaderState extends State<Header> {
 
   @override
   Widget build(BuildContext context) {
-    // Ensure this widget is wrapped with a ChangeNotifierProvider<NavigationProvider>
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 600) {
@@ -194,9 +277,7 @@ class _HeaderState extends State<Header> {
     );
   }
 
-  // --- Desktop Header ---
   Widget _buildDesktopHeader() {
-    // Provider lookup is safe here.
     final navProvider = Provider.of<NavigationProvider>(context);
     return Container(
       height: 70,
@@ -213,15 +294,11 @@ class _HeaderState extends State<Header> {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Row(
         children: [
-          // Logo (clicking sets active to 'home').
+          // Logo (clicking navigates to home)
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
-              onTap: () {
-                navProvider.hovered = 'home';
-                navProvider.active = 'home';
-                Navigator.pushReplacementNamed(context, Routes.home);
-              },
+              onTap: () => navProvider.navigateTo('home'),
               child: Padding(
                 padding: const EdgeInsets.only(right: 0),
                 child: SizedBox(
@@ -237,184 +314,65 @@ class _HeaderState extends State<Header> {
               ),
             ),
           ),
-          // Home Button (no dropdown).
+          // Home Button
           MouseRegion(
             child: TextHoverButton(
               label: "Home",
-              onPressed: () {
-                navProvider.hovered = 'home';
-                navProvider.active = 'home';
-                Get.toNamed(Routes.home);
-              },
+              onPressed: () => navProvider.navigateTo('home'),
               isActive: (navProvider.hovered == 'home') ||
                   (navProvider.hovered == null && navProvider.active == 'home'),
               color: navLinkColor,
             ),
           ),
           const SizedBox(width: 32),
-          // "Who we are" Button with dropdown.
+          // "Who we are" Button
           MouseRegion(
             key: _whoweareKey,
             child: TextHoverButton(
               label: "Who we are",
-              onPressed: () {
-                Provider.of<NavigationProvider>(context, listen: false)
-                    .hovered = 'whoweare';
-                Provider.of<NavigationProvider>(context, listen: false).active =
-                    'whoweare';
-                Get.toNamed(Routes.whoweare);
-
-                // if (currentDropdown == 'whoweare') {
-                //   _hideDropdown();
-                // } else {
-                //   _previousHovered =
-                //       Provider.of<NavigationProvider>(context, listen: false).hovered;
-                //   Provider.of<NavigationProvider>(context, listen: false).hovered = 'whoweare';
-                //   _showDropdown('whoweare');
-                //   Provider.of<NavigationProvider>(context, listen: false).active = 'whoweare';
-                // }
-              },
-              // onDoubleTap: () {
-              //   Provider.of<NavigationProvider>(context, listen: false)
-              //       .hovered = 'whoweare';
-              //   Provider.of<NavigationProvider>(context, listen: false).active =
-              //       'whoweare';
-              //   Get.toNamed(Routes.whoweare);
-              // },
-              isActive: (Provider.of<NavigationProvider>(context).hovered ==
-                      'whoweare') ||
-                  (Provider.of<NavigationProvider>(context).hovered == null &&
-                      Provider.of<NavigationProvider>(context).active ==
-                          'whoweare'),
+              onPressed: () => navProvider.navigateTo('whoweare'),
+              isActive: (navProvider.hovered == 'whoweare') ||
+                  (navProvider.hovered == null && navProvider.active == 'whoweare'),
               showArrow: true,
               color: navLinkColor,
             ),
           ),
           const SizedBox(width: 32),
-          // "Our services" Button with dropdown.
+          // "Our services" Button
           MouseRegion(
             key: _ourservicesKey,
             child: TextHoverButton(
               label: "Our services",
-              onPressed: () {
-                Provider.of<NavigationProvider>(context, listen: false)
-                    .hovered = 'ourservices';
-                Provider.of<NavigationProvider>(context, listen: false).active =
-                    'ourservices';
-                Get.toNamed(Routes.services);
-
-                // if (currentDropdown == 'ourservices') {
-                //   _hideDropdown();
-                // } else {
-                //   _previousHovered =
-                //       Provider.of<NavigationProvider>(context, listen: false).hovered;
-                //   Provider.of<NavigationProvider>(context, listen: false).hovered = 'ourservices';
-                //   _showDropdown('ourservices');
-                //   Provider.of<NavigationProvider>(context, listen: false).active = 'ourservices';
-                // }
-              },
-              // onDoubleTap: () {
-              //   Provider.of<NavigationProvider>(context, listen: false)
-              //       .hovered = 'ourservices';
-              //   Provider.of<NavigationProvider>(context, listen: false).active =
-              //       'ourservices';
-              //   Navigator.pushReplacementNamed(context, Routes.services);
-              // },
-              isActive: (Provider.of<NavigationProvider>(context).hovered ==
-                      'ourservices') ||
-                  (Provider.of<NavigationProvider>(context).hovered == null &&
-                      Provider.of<NavigationProvider>(context).active ==
-                          'ourservices'),
+              onPressed: () => navProvider.navigateTo('ourservices'),
+              isActive: (navProvider.hovered == 'ourservices') ||
+                  (navProvider.hovered == null && navProvider.active == 'ourservices'),
               showArrow: true,
               color: navLinkColor,
             ),
           ),
           const SizedBox(width: 32),
-          // "Insights" Button with dropdown.
-          // MouseRegion(
-          //   key: _insightsKey,
-          //   child: TextHoverButton(
-          //     label: "Insights",
-          //     onPressed: () {
-          //       Provider.of<NavigationProvider>(context, listen: false)
-          //           .hovered = 'insights';
-          //       Provider.of<NavigationProvider>(context, listen: false).active =
-          //           'insights';
-          //       Get.toNamed(Routes.insights);
-
-          //       // if (currentDropdown == 'insights') {
-          //       //   _hideDropdown();
-          //       // } else {
-          //       //   _previousHovered =
-          //       //       Provider.of<NavigationProvider>(context, listen: false).hovered;
-          //       //   Provider.of<NavigationProvider>(context, listen: false).hovered = 'insights';
-          //       //   _showDropdown('insights');
-          //       //   Provider.of<NavigationProvider>(context, listen: false).active = 'insights';
-          //       // }
-          //     },
-          //     // onDoubleTap: () {
-          //     //   Provider.of<NavigationProvider>(context, listen: false)
-          //     //       .hovered = 'insights';
-          //     //   Provider.of<NavigationProvider>(context, listen: false).active =
-          //     //       'insights';
-          //     //   Navigator.pushReplacementNamed(context, Routes.insights);
-          //     // },
-          //     isActive: (navProvider.hovered == 'insights') ||
-          //         (navProvider.hovered == null &&
-          //             navProvider.active == 'insights'),
-          //     showArrow: true,
-          //     color: navLinkColor,
-          //   ),
-          // ),
-          const SizedBox(width: 0),
-          // "Careers" Button with dropdown.
+          // "Careers" Button
           MouseRegion(
             key: _careersKey,
             child: TextHoverButton(
               label: "Careers",
-              onPressed: () {
-                Provider.of<NavigationProvider>(context, listen: false)
-                    .hovered = 'careers';
-                Provider.of<NavigationProvider>(context, listen: false).active =
-                    'careers';
-                Get.toNamed(Routes.career);
-
-                // if (currentDropdown == 'careers') {
-                //   _hideDropdown();
-                // } else {
-                //   _previousHovered =
-                //       Provider.of<NavigationProvider>(context, listen: false).hovered;
-                //   Provider.of<NavigationProvider>(context, listen: false).hovered = 'careers';
-                //   _showDropdown('careers');
-                //   Provider.of<NavigationProvider>(context, listen: false).active = 'careers';
-                // }
-              },
-              // onDoubleTap: () {
-              //   Provider.of<NavigationProvider>(context, listen: false)
-              //       .hovered = 'careers';
-              //   Provider.of<NavigationProvider>(context, listen: false).active =
-              //       'careers';
-              //   Get.toNamed(Routes.whoweare);
-              // },
+              onPressed: () => navProvider.navigateTo('careers'),
               isActive: (navProvider.hovered == 'careers') ||
-                  (navProvider.hovered == null &&
-                      navProvider.active == 'careers'),
+                  (navProvider.hovered == null && navProvider.active == 'careers'),
               showArrow: true,
               color: navLinkColor,
             ),
           ),
           const Spacer(),
-          // "About" Button (non-dropdown).
+          // "Pystore" Button
           SecondaryGradientButton(
-            onPressed: (){  CustomSnackbar.info(context, "Coming soon ");},
+            onPressed: () => CustomSnackbar.info(context, "Coming soon "),
             text: "Pystore",
           ),
           const SizedBox(width: 32),
-          // "Contact Us" Button.
+          // "Contact Us" Button
           PrimaryGradientButton(
-            onPressed: () {
-              _showDetailsPopup(context, 'Mobile Application');
-            },
+            onPressed: () => _showDetailsPopup(context, 'Mobile Application'),
             text: "Enquire Now ",
           )
         ],
@@ -422,58 +380,71 @@ class _HeaderState extends State<Header> {
     );
   }
 
-
-  // --- Mobile Header ---
- // Replace the existing _buildMobileHeader() and _buildMobileMenu() methods with these:
-
-Widget _buildMobileHeader() {
-  return AppBar(
-    backgroundColor: const Color.fromARGB(255, 3, 10, 14),
-    leadingWidth: 150,
-    leading: SizedBox(
-      width: 130,
-      height: 60,
-      child: SvgPicture.asset(
-        "assets/logos/pydart-logo.svg",
-        semanticsLabel: 'Pydart Logo',
-        fit: BoxFit.fill,
-        allowDrawingOutsideViewBox: true,
+  Widget _buildMobileHeader() {
+    return AppBar(
+      backgroundColor: const Color.fromARGB(255, 3, 10, 14),
+      leadingWidth: 150,
+      leading: SizedBox(
+        width: 130,
+        height: 60,
+        child: SvgPicture.asset(
+          "assets/logos/pydart-logo.svg",
+          semanticsLabel: 'Pydart Logo',
+          fit: BoxFit.fill,
+          allowDrawingOutsideViewBox: true,
+        ),
       ),
-    ),
-    title: const Text(''),
-    actions: [
-      IconButton(
-        icon: const Icon(Icons.menu, color: Colors.white),
-        onPressed: () => _showRightSlideMenu(context),
+      title: const Text(''),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: () => _showRightSlideMenu(context),
+        ),
+      ],
+    );
+  }
+
+  void _showRightSlideMenu(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const RightSlideMenu(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+        opaque: false,
+        barrierColor: Colors.transparent,
       ),
-    ],
-  );
-}
+    );
+  }
 
-}
-void _showRightSlideMenu(BuildContext context) {
-  Navigator.of(context).push(
-    PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const RightSlideMenu(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0);
-        const end = Offset.zero;
-        const curve = Curves.easeInOut;
-
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        var offsetAnimation = animation.drive(tween);
-
-        return SlideTransition(
-          position: offsetAnimation,
-          child: child,
-        );
+  void _showDetailsPopup(BuildContext context, String dropdownValue) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ResponsiveDialog(dropdownValue: dropdownValue);
       },
-      transitionDuration: const Duration(milliseconds: 300),
-      opaque: false, // This is crucial
-      barrierColor: Colors.transparent, // Remove default barrier
-    ),
-  );
+    );
+  }
+
+  void openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
 }
+
 class RightSlideMenu extends StatefulWidget {
   const RightSlideMenu({super.key});
 
@@ -532,7 +503,6 @@ class _RightSlideMenuState extends State<RightSlideMenu>
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Blurred background
           GestureDetector(
             onTap: () => Navigator.pop(context),
             child: BackdropFilter(
@@ -542,8 +512,6 @@ class _RightSlideMenuState extends State<RightSlideMenu>
               ),
             ),
           ),
-          
-          // Menu content
           Positioned(
             right: 0,
             top: 0,
@@ -596,31 +564,25 @@ class _RightSlideMenuState extends State<RightSlideMenu>
                   index: 0,
                   icon: Icons.home_filled,
                   title: 'Home',
-                  onTap: () => _handleNavigation(context, Routes.home, 'home'),
+                  navigationKey: 'home',
                 ),
                 _buildAnimatedMenuItem(
                   index: 1,
                   icon: Icons.people_alt_rounded,
                   title: 'Who We Are',
-                  onTap: () => _handleNavigation(context, Routes.whoweare, 'whoweare'),
+                  navigationKey: 'whoweare',
                 ),
                 _buildAnimatedMenuItem(
                   index: 2,
                   icon: Icons.design_services_rounded,
                   title: 'Our Services',
-                  onTap: () => _handleNavigation(context, Routes.services, 'ourservices'),
+                  navigationKey: 'ourservices',
                 ),
-                // _buildAnimatedMenuItem(
-                //   index: 3,
-                //   icon: Icons.insights_rounded,
-                //   title: 'Insights',
-                //   onTap: () => _handleNavigation(context, Routes.insights, 'insights'),
-                // ),
                 _buildAnimatedMenuItem(
                   index: 4,
                   icon: Icons.work_history_rounded,
                   title: 'Careers',
-                  onTap: () => _handleNavigation(context, Routes.career, 'careers'),
+                  navigationKey: 'careers',
                 ),
                 const SizedBox(height: 32),
                 _buildAnimatedButton(
@@ -633,7 +595,6 @@ class _RightSlideMenuState extends State<RightSlideMenu>
                         _showDetailsPopup(context, 'Mobile Application');
                       },
                       text: "Enquire Now",
-                   
                     ),
                   ),
                 ),
@@ -649,7 +610,7 @@ class _RightSlideMenuState extends State<RightSlideMenu>
     required int index,
     required IconData icon,
     required String title,
-    required VoidCallback onTap,
+    required String navigationKey,
   }) {
     return MouseRegion(
       onEnter: (_) => setState(() => _itemScale[index] = 1.05),
@@ -687,7 +648,7 @@ class _RightSlideMenuState extends State<RightSlideMenu>
                   ),
                 ),
                 child: InkWell(
-                  onTap: onTap,
+                  onTap: () => _handleNavigation(context, navigationKey),
                   borderRadius: BorderRadius.circular(15),
                   splashColor: AppColors.pydart.withOpacity(0.2),
                   highlightColor: AppColors.pydart.withOpacity(0.1),
@@ -746,7 +707,6 @@ class _RightSlideMenuState extends State<RightSlideMenu>
     );
   }
 
-
   Widget _buildAnimatedButton({
     required int index,
     required Widget child,
@@ -762,15 +722,13 @@ class _RightSlideMenuState extends State<RightSlideMenu>
       ),
     );
   }
-}
- 
-  void _handleNavigation(BuildContext context, String route, String active) {
+
+  void _handleNavigation(BuildContext context, String navigationKey) {
     Navigator.pop(context);
-    Provider.of<NavigationProvider>(context, listen: false).active = active;
-    Get.toNamed(route);
+    Provider.of<NavigationProvider>(context, listen: false).navigateTo(navigationKey);
   }
 
- void _showDetailsPopup(BuildContext context, String dropdownValue) {
+  void _showDetailsPopup(BuildContext context, String dropdownValue) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -778,9 +736,5 @@ class _RightSlideMenuState extends State<RightSlideMenu>
       },
     );
   }
-  void openUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    }
-  }
+}
+

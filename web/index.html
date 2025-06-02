@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pydart Intelli Corp | Loading</title>
+  <base href="/">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -233,6 +234,14 @@
     
     let messageIndex = 0;
     
+    // Store current path for Flutter to use
+    window.flutterWebInitialRoute = window.location.pathname;
+    
+    // Debug logging
+    console.log('🌐 Current URL:', window.location.href);
+    console.log('📍 Current Path:', window.location.pathname);
+    console.log('🎯 Initial Route for Flutter:', window.flutterWebInitialRoute);
+    
     // Cycle through loading messages
     const messageInterval = setInterval(() => {
       if (!loadingComplete && messageIndex < loadingMessages.length - 1) {
@@ -253,6 +262,8 @@
         loadingComplete = true;
         clearInterval(messageInterval);
         
+        console.log('🎉 Loading complete, transitioning to Flutter app...');
+        
         loadingText.textContent = "Welcome!";
         
         setTimeout(() => {
@@ -260,9 +271,27 @@
           loadingScreen.style.visibility = 'hidden';
           flutterApp.classList.add('visible');
           
+          // Ensure Flutter gets the current route
+          window._flutter_web_set_location_strategy = function() {
+            return {
+              getPath: () => window.location.pathname + window.location.search,
+              setPath: (path) => {
+                console.log('🔄 Flutter setting path to:', path);
+                window.history.pushState(null, '', path);
+              }
+            };
+          };
+          
           if (!document.querySelector('script[src*="main.dart.js"]')) {
+            console.log('📦 Loading Flutter main.dart.js...');
             const script = document.createElement('script');
             script.src = 'main.dart.js';
+            script.onerror = function() {
+              console.error('❌ Failed to load main.dart.js');
+            };
+            script.onload = function() {
+              console.log('✅ main.dart.js loaded successfully');
+            };
             document.body.appendChild(script);
           }
         }, 1000);
@@ -275,7 +304,26 @@
     
     // When Flutter first frame is ready
     window.addEventListener('flutter-first-frame', function() {
+      console.log('🎨 Flutter first frame rendered');
       finishLoading();
+    });
+    
+    // Listen for Flutter engine ready
+    window.addEventListener('flutter-engine-ready', function() {
+      console.log('🚀 Flutter engine ready');
+    });
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function(event) {
+      console.log('🔙 Browser navigation detected:', window.location.pathname);
+    });
+    
+    // Prevent caching issues
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) {
+        console.log('📄 Page loaded from cache, forcing reload...');
+        window.location.reload();
+      }
     });
   </script>
 </body>

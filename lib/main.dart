@@ -110,6 +110,14 @@ void main() async {
   // Add more aggressive caching policy for frequently accessed images
   PaintingBinding.instance.imageCache.maximumSize = 200; // Number of images to cache
 
+  // Debug: Print all registered routes
+  if (kDebugMode) {
+    print('🛣️ Registered routes:');
+    for (var page in Routes.pages) {
+      print('  Route: ${page.name}');
+    }
+  }
+
   try {
     await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -130,9 +138,13 @@ void main() async {
     }
   }
 
+  // Create and register NavigationProvider with GetX
+  final navigationProvider = NavigationProvider();
+  Get.put(navigationProvider);
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => NavigationProvider(),
+    ChangeNotifierProvider.value(
+      value: navigationProvider,
       child: OptimizedPrecacheManager(
         assets: precacheImageList,
         child: const MyApp(),
@@ -230,28 +242,83 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Pydart Intelli corp',
       debugShowCheckedModeBanner: false,
-      initialRoute: Routes.home,
+      
       getPages: Routes.pages,
-      // Apply scroll behavior globally
-      scrollBehavior: EnhancedScrollBehavior(),
-
-       unknownRoute: GetPage(
-    name: '/404',
-    page: () => Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Page Not Found'),
-            ElevatedButton(
-              onPressed: () => Get.offNamed(Routes.home),
-              child: Text('Go Home'),
+      
+      // Enhanced routing callback with NavigationProvider integration
+      routingCallback: (routing) {
+        if (kDebugMode) {
+          print('🚀 Routing to: ${routing?.current}');
+          print('📍 Previous route: ${routing?.previous}');
+        }
+        
+        // Update NavigationProvider when routes change
+        if (routing?.current != null) {
+          try {
+            // Get the NavigationProvider instance and update it
+            final navProvider = Get.find<NavigationProvider>();
+            navProvider.onRouteChange(routing!.current);
+          } catch (e) {
+            if (kDebugMode) {
+              print('⚠️ NavigationProvider not found or error updating: $e');
+            }
+          }
+        }
+      },
+      
+      // Handle unknown routes
+      unknownRoute: GetPage(
+        name: '/404',
+        page: () => Scaffold(
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.grey.shade50,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.grey.shade600,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Page Not Found',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'The page you are looking for does not exist.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => Get.offNamed(Routes.home),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE58742),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    ),
+                    child: Text('Go Home'),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
-    ),
-  ),
+      
+      // Apply scroll behavior globally
+      scrollBehavior: EnhancedScrollBehavior(),
       theme: ThemeData(
         useMaterial3: true,
         primaryColor: const Color(0xFFE58742),
@@ -276,7 +343,6 @@ class MyApp extends StatelessWidget {
             );
           },
         ),
-        
         breakpoints: const [
           rf.Breakpoint(start: 0, end: 480, name: 'MOBILE_SMALL'),
           rf.Breakpoint(start: 481, end: 850, name: 'MOBILE'),

@@ -190,22 +190,22 @@ class _IntroBlockState extends State<IntroBlock> {
                     // CTA Button (shown on larger screens)
                     if (!isMobile) ...[
                       const SizedBox(height: 32),
-                      PrimaryGradientButton(
-                        onPressed: () {
-                                 Provider.of<NavigationProvider>(context, listen: false)
-                    .hovered = 'insights';
-                Provider.of<NavigationProvider>(context, listen: false).active =
-                    'insights';
+                //       PrimaryGradientButton(
+                //         onPressed: () {
+                //                  Provider.of<NavigationProvider>(context, listen: false)
+                //     .hovered = 'insights';
+                // Provider.of<NavigationProvider>(context, listen: false).active =
+                //     'insights';
                           
                           
-                          Get.toNamed(Routes.insights);},
-                        text: "Explore Our Vision →",
-                        padding: isMobile
-                            ? const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 14)
-                            : const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 16),
-                      ),
+                //           Get.toNamed(Routes.insights);},
+                //         text: "Explore Our Vision →",
+                //         padding: isMobile
+                //             ? const EdgeInsets.symmetric(
+                //                 horizontal: 24, vertical: 14)
+                //             : const EdgeInsets.symmetric(
+                //                 horizontal: 32, vertical: 16),
+                //       ),
                     ],
                   ],
                 ),

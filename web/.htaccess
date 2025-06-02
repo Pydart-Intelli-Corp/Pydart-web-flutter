@@ -1,4 +1,56 @@
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ /index.html [L]
+# Flutter Web Deep Linking Configuration
+# This file should be placed in your web root directory (same folder as index.html)
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Handle Angular and other HTML5 routing
+    # Don't rewrite files or directories that exist
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Don't rewrite service worker, manifest, or other special files
+    RewriteCond %{REQUEST_URI} !^/(manifest\.json|flutter_service_worker\.js|version\.json|main\.dart\.js|flutter_bootstrap\.js)
+    
+    # Don't rewrite assets directory
+    RewriteCond %{REQUEST_URI} !^/assets/
+    RewriteCond %{REQUEST_URI} !^/icons/
+    RewriteCond %{REQUEST_URI} !^/canvaskit/
+    
+    # Rewrite everything else to index.html to allow Flutter routing
+    RewriteRule ^.*$ /index.html [L]
+</IfModule>
+
+# Optional: Set correct MIME types for Flutter files
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/wasm .wasm
+    AddType application/json .json
+</IfModule>
+
+# Optional: Enable compression for better performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Optional: Set cache headers for static assets
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType application/wasm "access plus 1 year"
+</IfModule>
