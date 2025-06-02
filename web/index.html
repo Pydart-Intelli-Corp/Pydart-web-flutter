@@ -5,34 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pydart Intelli Corp | Loading</title>
   
-  <!-- Google Fonts - Cyberpunk style -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Animation Library -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  
-  <!-- Particles -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-  
-  <!-- GSAP for advanced animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --primary-color: #0ff;
-      --secondary-color: #f0f;
-      --accent-color: #0f0;
-      --dark-color: #0c0e16;
-      --light-color: #2a3040;
-      --gradient-1: linear-gradient(135deg, #0ff 0%, #00b3b3 100%);
-      --gradient-2: linear-gradient(135deg, #f0f 0%, #b300b3 100%);
-      --gradient-3: linear-gradient(135deg, #0f0 0%, #00b300 100%);
-      --neon-blue: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
-      --neon-pink: 0 0 5px #f0f, 0 0 10px #f0f, 0 0 20px #f0f, 0 0 30px #f0f;
-      --neon-green: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
-      --circuit-color: rgba(0, 255, 255, 0.3);
+      --dot-1: #ff6b6b;
+      --dot-2: #4ecdc4;
+      --dot-3: #45b7d1;
+      --text-primary: #2c3e50;
+      --text-secondary: #7f8c8d;
+      --background: #ffffff;
     }
     
     * {
@@ -42,54 +27,14 @@
     }
     
     body {
-      font-family: 'Rajdhani', sans-serif;
-      background-color: var(--dark-color);
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--background);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      position: relative;
-    }
-    
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        linear-gradient(rgba(12, 14, 22, 0.9), rgba(12, 14, 22, 0.9)),
-        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20zm20 0h20v20H40V20zm40 0h20v20H80V20zm0 20h20v20H80V40zm-40 0h20v20H40V40zm60 0h20v20h-20V40zm0 20h20v20h-20V60zm-60 0h20v20H40V60z' fill='%230ff' fill-opacity='0.05'/%3E%3C/svg%3E");
-      z-index: -2;
-      opacity: 0.8;
-    }
-    
-    body::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.1),
-        rgba(0, 0, 0, 0.1) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-      pointer-events: none;
-      z-index: 999;
-      animation: scanlines 8s linear infinite;
-    }
-    
-    @keyframes scanlines {
-      0% { background-position: 0 0; }
-      100% { background-position: 0 100vh; }
+      color: var(--text-primary);
+      overflow: hidden;
     }
     
     #loading-screen {
@@ -98,393 +43,87 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: var(--dark-color);
+      background: var(--background);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-    }
-    
-    #particles-js {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-    
-    /* Circuit board background */
-    .circuit-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230ff' fill-opacity='0.1'%3E%3Cpath d='M0 0h1v15h-1zm10 0h1v15h-1zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM5 0h1v15H5zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM0 30h1v15h-1zm10 0h1v15h-1zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM5 30h1v15H5zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM0 60h1v15h-1zm10 0h1v15h-1zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM5 60h1v15H5zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM0 90h1v15h-1zm10 0h1v15h-1zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM5 90h1v15H5zm20 0h1v15h-1zm30 0h1v15h-1zm40 0h1v15h-1zM10 130h60v-40H10v40zm0-80h60V10H10v40zm60 40h20v40h-20v-40zm-60 0h20v40H10v-40zM50 50h20v-20H50v20zm0 0v-20H30v20h20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      z-index: -1;
-    }
-    
-    /* Binary code animation */
-    .binary-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(rgba(12, 14, 22, 0.8), rgba(12, 14, 22, 0.8)),
-                  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Ctext x='5' y='10' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10010110%3C/text%3E%3Ctext x='35' y='15' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01101001%3C/text%3E%3Ctext x='15' y='20' fill='%230ff' fill-opacity='0.15' font-size='5'%3E11001010%3C/text%3E%3Ctext x='45' y='25' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10110101%3C/text%3E%3Ctext x='25' y='30' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01011010%3C/text%3E%3Ctext x='55' y='35' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10101101%3C/text%3E%3Ctext x='5' y='40' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01101001%3C/text%3E%3Ctext x='35' y='45' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10010110%3C/text%3E%3Ctext x='15' y='50' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01101001%3C/text%3E%3Ctext x='45' y='55' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10110101%3C/text%3E%3Ctext x='25' y='60' fill='%230ff' fill-opacity='0.15' font-size='5'%3E11001010%3C/text%3E%3Ctext x='55' y='65' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01011010%3C/text%3E%3Ctext x='5' y='70' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10101101%3C/text%3E%3Ctext x='35' y='75' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01101001%3C/text%3E%3Ctext x='15' y='80' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10010110%3C/text%3E%3Ctext x='45' y='85' fill='%230ff' fill-opacity='0.15' font-size='5'%3E01101001%3C/text%3E%3Ctext x='25' y='90' fill='%230ff' fill-opacity='0.15' font-size='5'%3E10110101%3C/text%3E%3Ctext x='55' y='95' fill='%230ff' fill-opacity='0.15' font-size='5'%3E11001010%3C/text%3E%3C/svg%3E");
-      z-index: -1;
-      animation: binary-scroll 30s linear infinite;
-    }
-    
-    @keyframes binary-scroll {
-      0% { background-position: 0 0; }
-      100% { background-position: 0 1000px; }
+      transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
     }
     
     .loading-content {
-      position: relative;
-      z-index: 10;
       text-align: center;
-      max-width: 800px;
-      padding: 40px;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--circuit-color);
-      border-radius: 5px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-      animation: border-pulse 2s infinite alternate;
     }
     
-    @keyframes border-pulse {
-      0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
-      100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
-    }
-    
-    /* Futuristic subtitle */
-    .subtitle {
-      font-size: 1rem;
-      color: var(--primary-color);
-      margin-bottom: 40px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      animation: text-flicker 5s infinite;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 400;
-      text-shadow: var(--neon-blue);
-    }
-    
-    @keyframes cyber-fade-in {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes text-flicker {
-      0% { opacity: 1; }
-      3% { opacity: 0.8; }
-      6% { opacity: 1; }
-      7% { opacity: 0.8; }
-      8% { opacity: 1; }
-      9% { opacity: 0.8; }
-      10% { opacity: 1; }
-      99% { opacity: 1; }
-      100% { opacity: 0.8; }
-    }
-    
-    /* Cyberpunk loading bar */
-    .loading-bar-container {
-      width: 280px;
-      height: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--circuit-color);
-      margin: 0 auto 10px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .loading-bar-container::before,
-    .loading-bar-container::after {
-      content: '';
-      position: absolute;
-      height: 4px;
-      width: 4px;
-      border-radius: 50%;
-      top: 50%;
-      transform: translateY(-50%);
-      background: var(--primary-color);
-      box-shadow: var(--neon-blue);
-      z-index: 2;
-    }
-    
-    .loading-bar-container::before {
-      left: -2px;
-    }
-    
-    .loading-bar-container::after {
-      right: -2px;
-    }
-    
-    .loading-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, 
-                                  var(--primary-color) 0%, 
-                                  var(--secondary-color) 50%, 
-                                  var(--primary-color) 100%);
-      transition: width 0.2s ease;
-      position: relative;
-      box-shadow: var(--neon-blue);
-    }
-    
-    .loading-bar::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, 
-        rgba(255,255,255,0) 0%, 
-        rgba(255,255,255,0.8) 50%, 
-        rgba(255,255,255,0) 100%);
-      animation: cyber-shimmer 1s infinite;
-    }
-    
-    @keyframes cyber-shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    
-    /* Tech text */
-    .loading-text {
-      font-size: 0.9rem;
-      color: var(--primary-color);
-      margin-top: 10px;
-      opacity: 0.8;
-      font-family: 'Rajdhani', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .loading-status {
-      height: 18px;
-      font-size: 0.8rem;
-      color: var(--secondary-color);
-      margin-top: 5px;
-      opacity: 0.9;
-      font-family: monospace;
-      position: relative;
-      display: inline-block;
-    }
-    
-    .loading-status::after {
-      content: "_";
-      position: absolute;
-      right: -10px;
-      animation: blink 1s infinite;
-    }
-    
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-    
-    /* Tech icons as futuristic HUD elements */
-    .tech-stack {
-      display: flex;
-      justify-content: center;
-      margin-top: 30px;
-      gap: 15px;
+    .company-logo {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3rem;
+      letter-spacing: -0.02em;
       opacity: 0;
-      animation: cyber-fade-in 1s both 1s;
+      animation: fadeIn 0.8s ease-out 0.2s both;
     }
     
-    .tech-icon {
-      width: 40px;
-      height: 40px;
-      background: rgba(0, 0, 0, 0.3);
+    .dots-container {
       display: flex;
-      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
       justify-content: center;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-      animation: icon-pulse 3s ease-in-out infinite;
-      position: relative;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      align-items: center;
     }
     
-    .tech-icon svg {
-      fill: var(--primary-color);
-      width: 20px;
-      height: 20px;
-      filter: drop-shadow(0 0 2px var(--primary-color));
+    .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
     }
     
-    .tech-icon:nth-child(1) { animation-delay: 0s; }
-    .tech-icon:nth-child(2) { animation-delay: 0.2s; }
-    .tech-icon:nth-child(3) { animation-delay: 0.4s; }
-    .tech-icon:nth-child(4) { animation-delay: 0.6s; }
-    .tech-icon:nth-child(5) { animation-delay: 0.8s; }
-    
-    .tech-icon::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, 
-                  rgba(0, 255, 255, 0.2), 
-                  rgba(255, 0, 255, 0.2));
-      z-index: -1;
+    .dot:nth-child(1) {
+      background: var(--dot-1);
+      animation-delay: -0.32s;
     }
     
-    .tech-icon::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      right: 2px;
-      bottom: 2px;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      background: rgba(0, 0, 0, 0.7);
-      z-index: -1;
+    .dot:nth-child(2) {
+      background: var(--dot-2);
+      animation-delay: -0.16s;
     }
     
-    @keyframes icon-pulse {
-      0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
-      50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 255, 255, 0.7); }
-      100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+    .dot:nth-child(3) {
+      background: var(--dot-3);
+      animation-delay: 0s;
     }
     
-    /* Geometric decorative elements */
-    .cyber-decorations {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 2;
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
     }
     
-    .cyber-shapes div {
-      position: absolute;
-      border: 1px solid var(--circuit-color);
-      opacity: 0.3;
+    .loading-text {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.6s both;
     }
     
-    .cyber-angle-1 {
-      top: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      border-left: 2px solid var(--primary-color) !important;
-      border-top: 2px solid var(--primary-color) !important;
-      border-right: none !important;
-      border-bottom: none !important;
-    }
-    
-    .cyber-angle-2 {
-      top: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border-right: 2px solid var(--secondary-color) !important;
-      border-top: 2px solid var(--secondary-color) !important;
-      border-left: none !important;
-      border-bottom: none !important;
-    }
-    
-    .cyber-angle-3 {
-      bottom: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-      border-left: 2px solid var(--accent-color) !important;
-      border-bottom: 2px solid var(--accent-color) !important;
-      border-right: none !important;
-      border-top: none !important;
-    }
-    
-    .cyber-angle-4 {
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border-right: 2px solid var(--primary-color) !important;
-      border-bottom: 2px solid var(--primary-color) !important;
-      border-left: none !important;
-      border-top: none !important;
-    }
-    
-    /* Data lines */
-    .data-lines {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      overflow: hidden;
-    }
-    
-    .data-line {
-      position: absolute;
-      height: 1px;
-      background: linear-gradient(90deg, 
-                                 transparent, 
-                                 var(--primary-color), 
-                                 transparent);
-      animation: data-line-move 3s linear infinite;
-    }
-    
-    .data-line:nth-child(1) {
-      top: 10%;
-      width: 60%;
-      left: -60%;
-      animation-duration: 2s;
-    }
-    
-    .data-line:nth-child(2) {
-      top: 30%;
-      width: 45%;
-      left: -45%;
-      animation-duration: 2.5s;
-      animation-delay: 0.5s;
-      opacity: 0.7;
-    }
-    
-    .data-line:nth-child(3) {
-      top: 50%;
-      width: 70%;
-      left: -70%;
-      animation-duration: 3s;
-      animation-delay: 1s;
-    }
-    
-    .data-line:nth-child(4) {
-      top: 70%;
-      width: 50%;
-      left: -50%;
-      animation-duration: 2.2s;
-      animation-delay: 1.5s;
-      opacity: 0.5;
-    }
-    
-    .data-line:nth-child(5) {
-      top: 90%;
-      width: 65%;
-      left: -65%;
-      animation-duration: 2.8s;
-      animation-delay: 0.3s;
-    }
-    
-    @keyframes data-line-move {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(calc(100vw + 100%)); }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .hidden {
@@ -492,7 +131,6 @@
       visibility: hidden;
     }
     
-    /* Flutter app container - initially hidden */
     #flutter-app {
       position: fixed;
       top: 0;
@@ -508,237 +146,120 @@
       opacity: 1;
       visibility: visible;
     }
-
-    /* Progress percentage display */
-    .progress-percentage {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      margin-top: 15px;
-      text-shadow: var(--neon-blue);
+    
+    /* Alternative pulse animation */
+    .pulse-mode .dot {
+      animation: pulse 2s infinite ease-in-out;
+    }
+    
+    .pulse-mode .dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .pulse-mode .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .pulse-mode .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1.3);
+        opacity: 1;
+      }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .company-logo {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .dot {
+        width: 14px;
+        height: 14px;
+      }
+      
+      .dots-container {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .loading-text {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div id="loading-screen">
-    <div id="particles-js"></div>
-    <div class="circuit-layer"></div>
-    <div class="binary-overlay"></div>
-    
-    <!-- Cyber decorations -->
-    <div class="cyber-decorations">
-      <div class="cyber-shapes">
-        <div class="cyber-angle-1"></div>
-        <div class="cyber-angle-2"></div>
-        <div class="cyber-angle-3"></div>
-        <div class="cyber-angle-4"></div>
-      </div>
-      
-      <div class="data-lines">
-        <div class="data-line"></div>
-        <div class="data-line"></div>
-        <div class="data-line"></div>
-        <div class="data-line"></div>
-        <div class="data-line"></div>
-      </div>
-    </div>
-    
     <div class="loading-content">
-      <h2 class="subtitle">ADVANCED TECH SYSTEMS</h2>
+      <h1 class="company-logo">Pydart Intelli Corp</h1>
       
-      <div class="loading-bar-container">
-        <div id="loading-bar" class="loading-bar"></div>
+      <div class="dots-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
       </div>
       
-      <div class="progress-percentage" id="progress-percentage">0%</div>
-      <div class="loading-text">SYSTEM INITIALIZATION...</div>
-      <div id="loading-status" class="loading-status">SYNCING NEURAL NETWORKS</div>
-      
-      <div class="tech-stack">
-        <div class="tech-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M14.314 0L2.3 12 6 15.7 21.684.013h-7.357zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/>
-          </svg>
-        </div>
-        <div class="tech-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-          </svg>
-        </div>
-        <div class="tech-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M3 9h4V5H3v4zm0 5h4v-4H3v4zm0 5h4v-4H3v4zm5-10h4V5H8v4zm0 5h4v-4H8v4zm0 5h4v-4H8v4zm5-10h4V5h-4v4zm0 5h4v-4h-4v4zm0 5h4v-4h-4v4z"/>
-          </svg>
-        </div>
-        <div class="tech-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
-          </svg>
-        </div>
-        <div class="tech-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M21.928 11.607c-.202-.488-.635-.605-.928-.633V8c0-1.103-.897-2-2-2h-6V4.61c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5c-1.103 0-2 .897-2 2v2.997l-.082.006A1 1 0 0 0 1 12l.002.003a1.001 1.001 0 0 0 1.08 1.004c1.967-.183 3.404 1.5 3.422 1.546a1 1 0 0 0 1.573.048l.02-.022c.39-.405.252-1.149.166-1.278-.082-.127-1.889-2.298-4.246-2.298L3 8h6v12h4v-6h2v6h4V8h2l.016 5c-2.246.254-3.927 2.23-3.992 2.315-.398.521-.275 1.112.08 1.487.355.375.934.487 1.433.309 0 0 1.313-.596 2.463-.596 1.15 0 1.99.579 2 .579a1.001 1.001 0 0 0 1.185-.11.991.991 0 0 0 .3-1.095c-.064-.157-.581-1.297-1.485-2.187"/>
-          </svg>
-        </div>
-      </div>
+      <p id="loading-text" class="loading-text">Loading...</p>
     </div>
   </div>
   
-  <!-- Flutter App Container -->
   <div id="flutter-app"></div>
 
   <script src="flutter_bootstrap.js" defer></script>
   <script>
-    // Initialize particles.js with cyberpunk style
-    particlesJS("particles-js", {
-      "particles": {
-        "number": {
-          "value": 80,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color": {
-          "value": ["#0ff", "#f0f", "#0f0"]
-        },
-        "shape": {
-          "type": ["circle", "triangle", "polygon"],
-          "stroke": {
-            "width": 1,
-            "color": "#0ff"
-          },
-          "polygon": {
-            "nb_sides": 6
-          }
-        },
-        "opacity": {
-          "value": 0.5,
-          "random": true,
-          "anim": {
-            "enable": true,
-            "speed": 1,
-            "opacity_min": 0.1,
-            "sync": false
-          }
-        },
-        "size": {
-          "value": 3,
-          "random": true,
-          "anim": {
-            "enable": true,
-            "speed": 2,
-            "size_min": 0.1,
-            "sync": false
-          }
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#0ff",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 2,
-          "direction": "none",
-          "random": true,
-          "straight": false,
-          "out_mode": "out",
-          "bounce": false,
-          "attract": {
-            "enable": true,
-            "rotateX": 600,
-            "rotateY": 1200
-          }
-        }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": {
-            "enable": true,
-            "mode": "repulse"
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          },
-          "resize": true
-        },
-        "modes": {
-          "repulse": {
-            "distance": 100,
-            "duration": 0.4
-          },
-          "push": {
-            "particles_nb": 4
-          }
-        }
-      },
-      "retina_detect": true
-    });
-
-    // Simulated loading progress with cyberpunk-themed messages
-    const loadingBar = document.getElementById('loading-bar');
-    const loadingStatus = document.getElementById('loading-status');
     const loadingScreen = document.getElementById('loading-screen');
     const flutterApp = document.getElementById('flutter-app');
-    const progressPercentage = document.getElementById('progress-percentage');
+    const loadingText = document.getElementById('loading-text');
+    const dotsContainer = document.querySelector('.dots-container');
     
-    let progress = 0;
+    let loadingComplete = false;
+    
     const loadingMessages = [
-      "INITIALIZING NEURAL NETWORKS...",
-      "SYNCHRONIZING QUANTUM PROCESSORS...",
-      "CALIBRATING HOLOGRAPHIC INTERFACE...",
-      "OPTIMIZING CYBERNETIC PROTOCOLS...",
-      "ESTABLISHING SECURE DATA NODES...",
-      "INJECTING SYNTHETIC INTELLIGENCE...",
-      "SYSTEM OVERRIDE IMMINENT..."
+      "Loading...",
+      "Preparing interface...",
+      "Almost ready...",
+      "Welcome!"
     ];
     
-    const simulateLoading = () => {
-      const interval = setInterval(() => {
-        if (progress < 99) { // Go up to 99% during simulation
-          // Simulate varying load speeds
-          const increment = Math.random() * 3 + 1;
-          progress = Math.min(progress + increment, 99);
-          
-          // Update loading bar
-          loadingBar.style.width = `${progress}%`;
-          
-          // Update percentage
-          progressPercentage.textContent = `${Math.floor(progress)}%`;
-          
-          // Update loading message
-          const messageIndex = Math.floor((progress / 100) * loadingMessages.length);
-          loadingStatus.textContent = loadingMessages[Math.min(messageIndex, loadingMessages.length - 1)];
-        } else {
-          clearInterval(interval);
-          finishLoading(); // Force completion after reaching 99%
-        }
-      }, 100);
-      
-      // Fallback timeout - force completion after 10 seconds
-      setTimeout(finishLoading, 10000);
-    };
+    let messageIndex = 0;
     
-    // Function to finish loading and show the app
+    // Cycle through loading messages
+    const messageInterval = setInterval(() => {
+      if (!loadingComplete && messageIndex < loadingMessages.length - 1) {
+        messageIndex++;
+        loadingText.textContent = loadingMessages[messageIndex];
+      }
+    }, 1500);
+    
+    // Switch to pulse animation after 3 seconds
+    setTimeout(() => {
+      if (!loadingComplete) {
+        dotsContainer.parentElement.classList.add('pulse-mode');
+      }
+    }, 3000);
+    
     function finishLoading() {
-      if (progress < 100) { // Only run once
-        progress = 100;
-        loadingBar.style.width = '100%';
-        progressPercentage.textContent = "100%";
-        loadingStatus.textContent = "SYSTEM READY";
+      if (!loadingComplete) {
+        loadingComplete = true;
+        clearInterval(messageInterval);
+        
+        loadingText.textContent = "Welcome!";
         
         setTimeout(() => {
           loadingScreen.style.opacity = '0';
           loadingScreen.style.visibility = 'hidden';
           flutterApp.classList.add('visible');
           
-          // Create a new script element for the Flutter app if needed
           if (!document.querySelector('script[src*="main.dart.js"]')) {
             const script = document.createElement('script');
             script.src = 'main.dart.js';
@@ -748,26 +269,13 @@
       }
     }
     
-    // Start simulated loading
-    simulateLoading();
+    // Simulate loading time (5-8 seconds)
+    const loadingDuration = Math.random() * 3000 + 5000;
+    setTimeout(finishLoading, loadingDuration);
     
     // When Flutter first frame is ready
     window.addEventListener('flutter-first-frame', function() {
-      // Complete the loading to 100% when Flutter is ready
-      progress = 100;
-      loadingBar.style.width = '100%';
-      progressPercentage.textContent = "100%";
-      loadingStatus.textContent = "SYSTEM READY";
-      
-      // Wait a moment to show the complete status
-      setTimeout(() => {
-        // Hide loading screen with animation
-        loadingScreen.style.opacity = '0';
-        loadingScreen.style.visibility = 'hidden';
-        
-        // Show Flutter app
-        flutterApp.classList.add('visible');
-      }, 1000);
+      finishLoading();
     });
   </script>
 </body>

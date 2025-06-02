@@ -14,11 +14,16 @@ class Brief extends StatefulWidget {
   State<Brief> createState() => _BriefState();
 }
 
-class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
+class _BriefState extends State<Brief> with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   bool _isVisible = true;
   final GlobalKey _briefKey = GlobalKey();
   late AnimationController _hoverController;
+  
+  // Add separate animation controllers for network lines
+  late AnimationController _networkController1;
+  late AnimationController _networkController2;
+  late AnimationController _networkController3;
   
   // Random image selection
   final Random _random = Random();
@@ -57,11 +62,41 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
+    
+    // Initialize network animation controllers with different durations and patterns
+    _networkController1 = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3000),
+    );
+    
+    _networkController2 = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 4000),
+    );
+    
+    _networkController3 = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3500),
+    );
+    
     _scrollController.addListener(_scrollListener);
     
     // Randomly select initial background images
     _currentBgIndex = _random.nextInt(_backgroundImages.length);
     _currentCardBgIndex = _random.nextInt(_cardImages.length);
+    
+    // Start network animations with different delays
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _networkController1.repeat();
+    });
+    
+    Future.delayed(const Duration(milliseconds: 800), () {
+      _networkController2.repeat();
+    });
+    
+    Future.delayed(const Duration(milliseconds: 1100), () {
+      _networkController3.repeat();
+    });
     
     // Setup timer to change background images every 15 seconds
     Future.delayed(const Duration(seconds: 15), _changeBackgroundImages);
@@ -80,6 +115,9 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _hoverController.dispose();
+    _networkController1.dispose();
+    _networkController2.dispose();
+    _networkController3.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -154,160 +192,154 @@ class _BriefState extends State<Brief> with SingleTickerProviderStateMixin {
                 _buildGlowingOrbs(),
                 
                 // Content
-        // Content section with improved desktop alignment
-ResponsiveRowColumn(
-  layout: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
-      ? ResponsiveRowColumnType.COLUMN
-      : ResponsiveRowColumnType.ROW,
-  // Change from start to center for better vertical alignment in ROW mode
-  rowCrossAxisAlignment: CrossAxisAlignment.center,
-  // Keep center alignment for COLUMN mode
-  columnCrossAxisAlignment: CrossAxisAlignment.center,
-  columnMainAxisSize: MainAxisSize.min,
-  // Add mainAxisAlignment for row layout
-  rowMainAxisAlignment: MainAxisAlignment.spaceBetween,
-  rowPadding: const EdgeInsets.symmetric(horizontal: 60, vertical: 80),
-  columnPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 60),
-  columnSpacing: 60,
-  rowSpacing: 50,
-  children: [
-    // Main heading with animation - increase flex and adjust width
-    ResponsiveRowColumnItem(
-      rowFlex: 1, // Changed from 0 to 1 to give it space to grow
-      columnFlex: 0,
-      child: Container(
-        // Use container with width constraint instead of SizedBox with fixed width
-        width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP) 
-            ? double.infinity : MediaQuery.of(context).size.width * 0.25,
-        // Add max width constraint to container
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          // Align title in desktop mode
-          crossAxisAlignment: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.start,
-          children: [
-            // Heading content remains the same
-            Text(
-              "PYDART",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 6,
-                color: _primaryColor,
-              ),
-            )
-            .animate(autoPlay: true)
-            .fadeIn(duration: 800.ms)
-            .slideX(begin: -0.2, end: 0),
-            const SizedBox(height: 12),
-            Text(
-              "Future-Forward Innovation",
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.w800,
-                height: 1.2,
-                color: _lightColor,
-                shadows: [
-                  Shadow(
-                    color: _primaryColor.withOpacity(0.6),
-                    blurRadius: 15,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-            )
-            .animate(autoPlay: true)
-            .fadeIn(delay: 300.ms, duration: 800.ms)
-            .slideY(begin: 0.2, end: 0),
-            const SizedBox(height: 20),
-            Container(
-              height: 4,
-              width: 60,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [_primaryColor, _tertiaryColor],
+                ResponsiveRowColumn(
+                  layout: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                      ? ResponsiveRowColumnType.COLUMN
+                      : ResponsiveRowColumnType.ROW,
+                  rowCrossAxisAlignment: CrossAxisAlignment.center,
+                  columnCrossAxisAlignment: CrossAxisAlignment.center,
+                  columnMainAxisSize: MainAxisSize.min,
+                  rowMainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  rowPadding: const EdgeInsets.symmetric(horizontal: 60, vertical: 80),
+                  columnPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 60),
+                  columnSpacing: 60,
+                  rowSpacing: 50,
+                  children: [
+                    // Main heading with animation
+                    ResponsiveRowColumnItem(
+                      rowFlex: 1,
+                      columnFlex: 0,
+                      child: Container(
+                        width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP) 
+                            ? double.infinity : MediaQuery.of(context).size.width * 0.25,
+                        constraints: const BoxConstraints(maxWidth: 400),
+                        child: Column(
+                          crossAxisAlignment: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "PYDART INTELLI CORP",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 4,
+                                color: _primaryColor,
+                              ),
+                            )
+                            .animate(autoPlay: true)
+                            .fadeIn(duration: 800.ms)
+                            .slideX(begin: -0.2, end: 0),
+                            const SizedBox(height: 12),
+                            Text(
+                              "Dual Division Excellence",
+                              style: TextStyle(
+                                fontSize: 36,
+                                fontWeight: FontWeight.w800,
+                                height: 1.2,
+                                color: _lightColor,
+                                shadows: [
+                                  Shadow(
+                                    color: _primaryColor.withOpacity(0.6),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                            )
+                            .animate(autoPlay: true)
+                            .fadeIn(delay: 300.ms, duration: 800.ms)
+                            .slideY(begin: 0.2, end: 0),
+                            const SizedBox(height: 20),
+                            Container(
+                              height: 4,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [_primaryColor, _tertiaryColor],
+                                ),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            )
+                            .animate(autoPlay: true)
+                            .fadeIn(delay: 600.ms, duration: 800.ms)
+                            .slideX(begin: -0.5, end: 0, curve: Curves.easeOutExpo),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    // Cards
+                    ResponsiveRowColumnItem(
+                      rowFlex: 3,
+                      child: Container(
+                        width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                            ? double.infinity
+                            : MediaQuery.of(context).size.width * 0.7,
+                        child: ResponsiveRowColumn(
+                          layout: ResponsiveBreakpoints.of(context).smallerThan(TABLET)
+                              ? ResponsiveRowColumnType.COLUMN
+                              : ResponsiveRowColumnType.ROW,
+                          rowCrossAxisAlignment: CrossAxisAlignment.start,
+                          rowMainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          columnCrossAxisAlignment: CrossAxisAlignment.center,
+                          columnMainAxisSize: MainAxisSize.min,
+                          columnSpacing: 40,
+                          rowSpacing: 30,
+                          children: [
+                            ResponsiveRowColumnItem(
+                              rowFlex: 1,
+                              child: _buildAnimatedCard(
+                                iconAsset: "assets/icons/LOC.png",
+                                networkIcon: Icons.business,
+                                title: "Welcome to PYDART",
+                                description: "PYDART Intelli Corp stands at the forefront of technological "
+                                  "advancement with two specialized divisions working in perfect synergy. "
+                                  "We combine cutting-edge robotics with comprehensive digital solutions "
+                                  "to transform industries and enhance human capabilities through intelligent automation.",
+                                  
+                                delay: 0,
+                                accentColor: _primaryColor,
+                                cardIndex: 0,
+                              )
+                            ),
+                            ResponsiveRowColumnItem(
+                              rowFlex: 1,
+                              child: _buildAnimatedCard(
+                                iconAsset: "assets/icons/FUT.png",
+                                networkIcon: Icons.precision_manufacturing,
+                                title: "Robotics & Automations",
+                                description: "Pioneering the future with advanced AI technology products, "
+                                  "human-assist robotic machinery, and innovative manufacturing solutions. "
+                                  "Our robotics division creates intelligent machines that seamlessly integrate "
+                                  "with human workflows, enhancing productivity and safety across industries.",
+                                delay: 300,
+                                accentColor: _tertiaryColor,
+                                cardIndex: 1,
+                              )
+                            ),
+                            ResponsiveRowColumnItem(
+                              rowFlex: 1,
+                              child: _buildAnimatedCard(
+                                iconAsset: "assets/icons/PRO.png",
+                                networkIcon: Icons.computer,
+                                title: "Business Solutions",
+                                description: "Comprehensive digital services including app development, "
+                                  "web development, custom software solutions, strategic digital marketing, "
+                                  "and creative graphics designing. We deliver end-to-end technology solutions "
+                                  "that drive business growth and digital transformation.",
+                                delay: 600,
+                                accentColor: _accentColor,
+                                cardIndex: 2,
+                              )
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            )
-            .animate(autoPlay: true)
-            .fadeIn(delay: 600.ms, duration: 800.ms)
-            .slideX(begin: -0.5, end: 0, curve: Curves.easeOutExpo),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    ),
-    
-    // Cards - adjust flex and width constraints
-    ResponsiveRowColumnItem(
-      rowFlex: 3, // Increase to give cards more space in row layout
-      child: Container(
-        width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
-            ? double.infinity
-            : MediaQuery.of(context).size.width * 0.7,
-        child: ResponsiveRowColumn(
-          layout: ResponsiveBreakpoints.of(context).smallerThan(TABLET)
-              ? ResponsiveRowColumnType.COLUMN
-              : ResponsiveRowColumnType.ROW,
-          // Improve alignment for row layout
-          rowCrossAxisAlignment: CrossAxisAlignment.start,
-          rowMainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          columnCrossAxisAlignment: CrossAxisAlignment.center,
-          columnMainAxisSize: MainAxisSize.min,
-          columnSpacing: 40,
-          rowSpacing: 30,
-          children: [
-            // Make each card have equal width in row layout
-            ResponsiveRowColumnItem(
-              rowFlex: 1, // Add equal flex to each card
-              child: _buildAnimatedCard(
-                iconAsset: "assets/icons/LOC.png",
-                networkIcon: Icons.language,
-                title: "Where Are You Now?",
-                description: "Welcome to Pydart Intelli Corp's digital headquarters - "
-                  "where innovation meets implementation. As a forward-thinking tech startup, "
-                  "we create intelligent solutions that enhance human productivity through "
-                  "AI-driven automation and IoT integration.",
-                delay: 0,
-                accentColor: _primaryColor,
-              )
-            ),
-            ResponsiveRowColumnItem(
-              rowFlex: 1, // Add equal flex to each card
-              child: _buildAnimatedCard(
-                iconAsset: "assets/icons/FUT.png",
-                networkIcon: Icons.device_hub,
-                title: "Future-Ready Products",
-                description: "Our development pipeline features AI-powered tools that redefine "
-                  "business automation and human-machine collaboration. Currently evolving: "
-                  "adaptive workflow optimizers, smart IoT ecosystems, and intelligent "
-                  "analytics platforms.""\n",
-                delay: 300,
-                accentColor: _tertiaryColor,
-              )
-            ),
-            ResponsiveRowColumnItem(
-              rowFlex: 1, // Add equal flex to each card
-              child: _buildAnimatedCard(
-                iconAsset: "assets/icons/PRO.png",
-                networkIcon: Icons.cloud,
-                title: "Comprehensive Services",
-                description: "We deliver integrated technology solutions combining AI development, "
-                  "IoT systems, and strategic business automation. Our full-cycle services "
-                  "range from intelligent web/app development to embedded systems design "
-                  "and digital transformation consulting.",
-                delay: 600,
-                accentColor: _accentColor,
-              )
-            ),
-          ],
-        ),
-      ),
-    ),
-  ],
-),
               ],
             ),
           ),
@@ -369,13 +401,30 @@ ResponsiveRowColumn(
     );
   }
 
-  // Modified network lines animation
-  Widget _buildNetworkLines(IconData networkIcon, int delay, Color accentColor) {
+  // Modified network lines animation with card-specific controllers
+  Widget _buildNetworkLines(IconData networkIcon, int delay, Color accentColor, int cardIndex) {
+    // Select the appropriate controller based on card index
+    AnimationController networkController;
+    switch (cardIndex) {
+      case 0:
+        networkController = _networkController1;
+        break;
+      case 1:
+        networkController = _networkController2;
+        break;
+      case 2:
+        networkController = _networkController3;
+        break;
+      default:
+        networkController = _networkController1;
+    }
+
     return Positioned.fill(
       child: CustomPaint(
         painter: NetworkLinesPainter(
-          animation: _hoverController,
+          animation: networkController,
           color: accentColor,
+          pattern: cardIndex, // Pass pattern index for different behaviors
         ),
         child: Center(
           child: Icon(
@@ -511,6 +560,7 @@ ResponsiveRowColumn(
     required String description,
     required int delay,
     required Color accentColor,
+    required int cardIndex, // Add cardIndex parameter
   }) {
     final randomImageIndex = _random.nextInt(_cardImages.length);
     
@@ -575,8 +625,8 @@ ResponsiveRowColumn(
                       ),
                     ),
                     
-                    // Network lines animation
-                    _buildNetworkLines(networkIcon, delay, accentColor),
+                    // Network lines animation with card index
+                    _buildNetworkLines(networkIcon, delay, accentColor, cardIndex),
                     
                     // Card content
                     Padding(
@@ -775,28 +825,44 @@ class ParticlesPainter extends CustomPainter {
   bool shouldRepaint(ParticlesPainter oldDelegate) => true;
 }
 
-// Enhanced network line painter
+// Enhanced network line painter with Future Ready Product style for all cards
 class NetworkLinesPainter extends CustomPainter {
   final Animation<double> animation;
   final Color color;
+  final int pattern; // Keep pattern for timing variation but use same visual style
   
-  NetworkLinesPainter({required this.animation, required this.color}) : super(repaint: animation);
+  NetworkLinesPainter({
+    required this.animation, 
+    required this.color, 
+    required this.pattern,
+  }) : super(repaint: animation);
   
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint linePaint = Paint()
-      ..color = color.withOpacity(0.15 + 0.25 * animation.value)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-      
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width < size.height ? size.width / 4 : size.height / 4;
     
-    // Draw 10 lines radiating from center with pulse effect
-    for (int i = 0; i < 10; i++) {
-      final angle = i * (3.14159 * 2 / 10);
-      final pulseValue = 0.5 + 0.5 * sin((animation.value * 6.28) + (i * 0.5));
-      final lineLength = radius * (0.8 + 0.4 * pulseValue);
+    // Use Future Ready Product style (pattern 1) for all cards with slight timing variations
+    double animationIntensity;
+    double phaseOffset;
+    double speedMultiplier;
+    
+    // All cards use pulsing animation but with different phase offsets for variety
+    animationIntensity = 0.2 + 0.8 * (0.5 + 0.5 * sin(animation.value * 6.28 * 2));
+    phaseOffset = pattern * 1.2; // Different phase offset for each card
+    speedMultiplier = 1.5;
+    
+    final Paint linePaint = Paint()
+      ..color = color.withOpacity(0.15 + 0.25 * animationIntensity)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+    
+    // Use consistent 10 lines for all cards (Future Ready Product style)
+    final numberOfLines = 10;
+    for (int i = 0; i < numberOfLines; i++) {
+      final angle = i * (3.14159 * 2 / numberOfLines);
+      final pulseValue = 0.5 + 0.5 * sin((animation.value * speedMultiplier * 6.28) + (i * 0.5) + phaseOffset);
+      final lineLength = radius * (0.8 + 0.4 * pulseValue * animationIntensity);
       final x = center.dx + cos(angle) * lineLength;
       final y = center.dy + sin(angle) * lineLength;
       
@@ -804,29 +870,30 @@ class NetworkLinesPainter extends CustomPainter {
       
       // Draw pulsing nodes
       final nodePaint = Paint()
-        ..color = color.withOpacity(0.3 + 0.5 * pulseValue)
+        ..color = color.withOpacity(0.3 + 0.5 * pulseValue * animationIntensity)
         ..style = PaintingStyle.fill;
         
-      final nodeSize = 2.0 + 2.0 * pulseValue;
+      final nodeSize = 2.0 + 2.0 * pulseValue * animationIntensity;
       canvas.drawCircle(Offset(x, y), nodeSize, nodePaint);
     }
     
-    // Draw connecting lines between nodes
+    // Draw connecting lines between nodes - use Future Ready Product style
     final arcPaint = Paint()
-      ..color = color.withOpacity(0.08 + 0.15 * animation.value)
+      ..color = color.withOpacity(0.08 + 0.15 * animationIntensity)
       ..strokeWidth = 0.8
       ..style = PaintingStyle.stroke;
+    
+    for (int i = 0; i < numberOfLines; i++) {
+      final angle1 = i * (3.14159 * 2 / numberOfLines);
       
-    // Create a more intricate network pattern
-    for (int i = 0; i < 10; i++) {
-      final angle1 = i * (3.14159 * 2 / 10);
+      // Use 3 connections per node for all cards (Future Ready Product style)
+      final connectionsPerNode = 3;
       
-      // Connect to multiple other nodes
-      for (int j = 1; j <= 3; j++) {
-        final angle2 = ((i + j * 2) % 10) * (3.14159 * 2 / 10);
+      for (int j = 1; j <= connectionsPerNode; j++) {
+        final angle2 = ((i + j * 3) % numberOfLines) * (3.14159 * 2 / numberOfLines);
         
-        final pulseValue = 0.5 + 0.5 * sin((animation.value * 6.28) + (i * 0.3));
-        final lineLength = radius * (0.8 + 0.4 * pulseValue);
+        final pulseValue = 0.5 + 0.5 * sin((animation.value * speedMultiplier * 6.28) + (i * 0.3) + phaseOffset);
+        final lineLength = radius * (0.8 + 0.4 * pulseValue * animationIntensity);
         
         final x1 = center.dx + cos(angle1) * lineLength;
         final y1 = center.dy + sin(angle1) * lineLength;
@@ -834,26 +901,26 @@ class NetworkLinesPainter extends CustomPainter {
         final x2 = center.dx + cos(angle2) * lineLength;
         final y2 = center.dy + sin(angle2) * lineLength;
         
-        // Use a curved path for more organic feel
+        // Use curved paths for all cards (Future Ready Product style)
         final path = Path();
         path.moveTo(x1, y1);
         
-        // Control point for the quadratic curve
-        final controlX = center.dx + (cos(angle1) + cos(angle2)) * lineLength * 0.3;
-        final controlY = center.dy + (sin(angle1) + sin(angle2)) * lineLength * 0.3;
-        
+        final controlMultiplier = 0.3; // Use Future Ready Product control multiplier
+        final controlX = center.dx + (cos(angle1) + cos(angle2)) * lineLength * controlMultiplier;
+        final controlY = center.dy + (sin(angle1) + sin(angle2)) * lineLength * controlMultiplier;
         path.quadraticBezierTo(controlX, controlY, x2, y2);
+        
         canvas.drawPath(path, arcPaint);
       }
     }
     
-    // Draw outer circle
+    // Draw outer circle - consistent style for all cards
     final outerCirclePaint = Paint()
-      ..color = color.withOpacity(0.05 + 0.15 * animation.value)
+      ..color = color.withOpacity(0.05 + 0.15 * animationIntensity)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
-      
-    canvas.drawCircle(center, radius * 1.2, outerCirclePaint);
+    
+    canvas.drawCircle(center, radius * 1.3, outerCirclePaint); // Slightly larger for Future Ready feel
   }
   
   @override
