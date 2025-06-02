@@ -14,8 +14,7 @@ final Map<String, int> routeOrder = {
   Routes.home: 0,
   Routes.whoweare: 1,
   Routes.services: 2,
-  Routes.insights: 3,
-  Routes.career: 4,
+  Routes.career: 3,
 };
 
 /// A custom slide transition that determines the slide direction

@@ -234,6 +234,24 @@ class MyApp extends StatelessWidget {
       getPages: Routes.pages,
       // Apply scroll behavior globally
       scrollBehavior: EnhancedScrollBehavior(),
+
+       unknownRoute: GetPage(
+    name: '/404',
+    page: () => Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Page Not Found'),
+            ElevatedButton(
+              onPressed: () => Get.offNamed(Routes.home),
+              child: Text('Go Home'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
       theme: ThemeData(
         useMaterial3: true,
         primaryColor: const Color(0xFFE58742),
@@ -258,6 +276,7 @@ class MyApp extends StatelessWidget {
             );
           },
         ),
+        
         breakpoints: const [
           rf.Breakpoint(start: 0, end: 480, name: 'MOBILE_SMALL'),
           rf.Breakpoint(start: 481, end: 850, name: 'MOBILE'),
