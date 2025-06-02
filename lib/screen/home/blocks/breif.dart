@@ -297,7 +297,7 @@ class _BriefState extends State<Brief> with TickerProviderStateMixin {
                                 description: "PYDART Intelli Corp stands at the forefront of technological "
                                   "advancement with two specialized divisions working in perfect synergy. "
                                   "We combine cutting-edge robotics with comprehensive digital solutions "
-                                  "to transform industries and enhance human capabilities through intelligent automation.",
+                                  "to transform industries and enhance human capabilities through intelligent automation.              ",
                                   
                                 delay: 0,
                                 accentColor: _primaryColor,
@@ -328,7 +328,7 @@ class _BriefState extends State<Brief> with TickerProviderStateMixin {
                                 description: "Comprehensive digital services including app development, "
                                   "web development, custom software solutions, strategic digital marketing, "
                                   "and creative graphics designing. We deliver end-to-end technology solutions "
-                                  "that drive business growth and digital transformation.",
+                                  "that drive business growth and digital transformation.                    ",
                                 delay: 600,
                                 accentColor: _accentColor,
                                 cardIndex: 2,
